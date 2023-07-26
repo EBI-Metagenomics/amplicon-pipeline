@@ -58,6 +58,7 @@ def fetch_mcp(file, prefix_len, beg='1', rev='0'):
         rev
     ]
 
+    print(' '.join(cmd))
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = proc.communicate()
     output = stdout.decode('ascii')

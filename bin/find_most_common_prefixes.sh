@@ -11,9 +11,9 @@
 # -o test/PRJNA714811/SRR13978073_1_mcp
 
 beg=1
+rev=0
 
-
-while getopts i:c:l:b: option
+while getopts i:c:l:b:r: option
 do 
     case "${option}"
         in
@@ -21,17 +21,18 @@ do
         l)length=${OPTARG};;
         c)count=${OPTARG};;
         b)beg=${OPTARG};;
+        r)rev=${OPTARG};;
     esac
 done
 
 IFS='.' read -r -a array <<< "$input_file"
 file_type=${array[-1]}
 
-if [ $file_type = "gz" ]
+if [ $rev == 0 ]
 then
     zcat $input_file | sed -n '2~4p' | cut -c$beg-$length | sort | uniq -c | sort -rg
 else
-    cat $input_file | sed -n '2~4p' | cut -c$beg-$length | sort | uniq -c | sort -rg
+    zcat $input_file | sed -n '2~4p'| rev | cut -c$beg-$length | sort | uniq -c | sort -rg
 fi
 
 

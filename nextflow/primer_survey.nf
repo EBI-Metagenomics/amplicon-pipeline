@@ -7,6 +7,8 @@ include { fastp } from './modules/fastp.nf'
 include { seqprep_merge } from './modules/seqprep_merge.nf'
 include { std_primer_flag } from './modules/std_primer_flag.nf'
 include { general_primer_flag } from './modules/general_primer_flag.nf'
+include { trimming_conductor } from './modules/trimming_conductor.nf'
+include { parse_conductor } from './modules/parse_conductor.nf'
 
 
 params.path = null
@@ -14,6 +16,7 @@ params.outdir = null
 params.cpu = null
 
 reads = Channel.fromFilePairs( "${params.path}/**/raw/*_{1,2}.fastq.gz" )
+// reads = Channel.fromPath( "${params.outdir}/merged/**/*_MERGED.fastq.gz" )
 projects = Channel.fromPath( "${params.path}/*", type: 'dir' )
 outdir = params.outdir
 cpu = params.cpu
@@ -24,15 +27,43 @@ process COMBINE_READS_PROJECTS {
 
     input:
     tuple val(sampleId), path(fastq)
+    // path fastq
+
     val proj_path
 
     output:
     tuple val(sampleId), path(fastq), val(project), emit: combined_reads_projects
+    // tuple path(fastq), val(project), emit: combined_reads_projects
+
 
     script:
     project = "${proj_path}".split('/').last()
 
     """
+    """
+
+}
+
+process std_trimmer {
+
+    label 'light'
+    
+    input:
+    tuple val(project), val(fwd_flag), val(rev_flag) 
+    path std_primer_out
+    path fastq_1
+    path fastq_2
+
+    output:
+    stdout
+
+    """
+    if [[ $fwd_flag = "std" ]] | [[ $rev_flag = "std" ]]; then
+        echo 'std trimming!'
+    else
+        echo 'not std trimming!'
+    fi
+
     """
 
 }
@@ -47,23 +78,14 @@ workflow {
     std_primer_flag(seqprep_merge.out.merged_fastq, outdir)
     general_primer_flag(seqprep_merge.out.merged_fastq, outdir)
 
+    // general_primer_flag(COMBINE_READS_PROJECTS.out.combined_reads_projects, outdir)
 
+    comb_flags = general_primer_flag.out.general_primer_out
+    .join(std_primer_flag.out.std_primer_out)
     
-    
-    // fastq_to_fasta(SeqPrep.out.merged_fastq, outdir)
+    trimming_conductor(comb_flags, outdir)
+    parse_conductor(trimming_conductor.out.trimming_conductor_out, outdir)
+    std_trimmer(parse_conductor.out.trimming_flags_out, std_primer_flag.out.std_primer_out.map{ it[1] }, fastp.out.cleaned_fastq.map{ it[1] }, fastp.out.cleaned_fastq.map{ it[2] }).collect().view()
 
-    // std_primer_out = std_primer_out_parse(std_primer_agrep.out)
-    
-    // general_primer_out = general_primer_out_parse(general_primer_flag.out)
-
-    // std_primer_out.view()
-    // std_primer_out.count('2').view()
-    // std_primer_out.count('1').view()
-    // std_primer_out.count('0').view()
-    
-    // // general_primer_out.view()
-    // general_primer_out.count('2').view()
-    // general_primer_out.count('1').view()
-    // general_primer_out.count('0').view()
 
 }

@@ -48,19 +48,23 @@ def are_there_primers_in_this_sample(_PATH, rev=False):
 
     drops_list = []
     drops_list_post_cut = []
+    final_window = []
     window_size = 10
     window_count = 0
     window_count_post_cut = 0
+    test_window = []
+    test_window_post_cut = []
+    print(cons_confs)
 
     max_cons = np.quantile(cons_confs, 0.75)
     threshold = max_cons - 0.15
     print(max_cons)
-    if max_cons < 0.8:
-        threshold = 0.8
-    max_cons_post_cut = np.max(cons_confs[20:])
-    threshold_post_cut = max_cons_post_cut - 0.1
-    if max_cons_post_cut < 0.8:
-        threshold_post_cut = 0.8
+    if max_cons < 0.75:
+        threshold = 0.75
+    max_cons_post_cut = np.quantile(cons_confs[20:], 0.75)
+    threshold_post_cut = max_cons_post_cut - 0.15
+    if max_cons_post_cut < 0.75:
+        threshold_post_cut = 0.75
 
     if max_cons < 0.6:
         return False
@@ -69,6 +73,7 @@ def are_there_primers_in_this_sample(_PATH, rev=False):
         if i%window_size == 0 and i !=0:
             subwindow = [window_count] * window_size
             drops_list.extend(subwindow)
+            final_window.append(window_count)
             window_count = 0
             if i > 20:
                 subwindow = [window_count_post_cut] * window_size
@@ -76,6 +81,13 @@ def are_there_primers_in_this_sample(_PATH, rev=False):
                 window_count_post_cut = 0 
         if val < threshold:
             window_count += 1
+            test_window.append(1)
+            if i > 20:
+                test_window_post_cut.append(1)
+        else:
+            test_window.append(0)
+            if i > 20:
+                test_window_post_cut.append(0)
         if i > 20 and val < threshold_post_cut:
             window_count_post_cut += 1
         
@@ -87,13 +99,16 @@ def are_there_primers_in_this_sample(_PATH, rev=False):
 
     primer_flag = False
 
-    for val in drops_list[:20]:
-        if val <= 1:
-            primer_flag = True
-
+    if 1 in final_window[:2] or 0 in final_window[:2]:
+        primer_flag = True
+    elif sum(final_window[:2]) <= 4:
+        primer_flag = True
 
     print(drops_list)
     print(drops_list_post_cut)
+    print(final_window)
+    print(test_window)
+    print(test_window_post_cut)
             
 
     print(cons_seq)
