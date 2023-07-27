@@ -7,7 +7,7 @@ import seaborn as sns
 import numpy as np
 
 from assess_mcp_proportions_MERGED import fetch_mcp
-from utils import split_dir_into_sample_paths, get_read_count, build_cons_seq
+from utils import get_read_count, build_cons_seq
 
 def parse_args():
 
@@ -29,7 +29,7 @@ def are_there_primers_in_this_sample(_PATH, rev=False):
     fwd_read_count = get_read_count(_PATH, 'fastq')
     subs_len = 100
 
-    fwd_mcp_count_dict = fetch_mcp(_PATH, subs_len, rev)
+    fwd_mcp_count_dict = fetch_mcp(_PATH, subs_len, rev=rev)
 
     fwd_mcp_cons_list = []
 

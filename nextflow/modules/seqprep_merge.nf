@@ -10,7 +10,7 @@ process seqprep_merge {
     val outdir
 
     output:
-    tuple path("*_MERGED.fastq.gz"), val(project), emit: merged_fastq
+    tuple  val(project), path("*_MERGED.fastq.gz"), emit: merged_fastq
 
     """
     echo "Forward strand: $fastq_1"

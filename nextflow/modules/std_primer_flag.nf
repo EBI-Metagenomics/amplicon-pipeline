@@ -5,7 +5,7 @@ process std_primer_flag {
     publishDir "${outdir}/merged/${project}", mode : "copy"
 
     input:
-    tuple path(fastq), val(project)
+    tuple  val(project), path(fastq)
     val outdir
 
     output:

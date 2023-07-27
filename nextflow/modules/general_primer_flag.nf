@@ -6,7 +6,7 @@ process general_primer_flag {
     // container = '/hps/nobackup/rdf/metagenomics/singularity_cache_nextflow/quay.io-biocontainers-biopython-1.75.img'
 
     input:
-    tuple path(fasta), val(project)
+    tuple  val(project), path(fasta)
     val outdir
 
     output:

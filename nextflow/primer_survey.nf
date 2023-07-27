@@ -10,6 +10,8 @@ include { general_primer_flag } from './modules/general_primer_flag.nf'
 include { trimming_conductor } from './modules/trimming_conductor.nf'
 include { parse_conductor } from './modules/parse_conductor.nf'
 
+include { automatic_primer_trimming } from './subworkflows/automatic_primer_trimming.nf'
+
 
 params.path = null
 params.outdir = null
@@ -49,7 +51,9 @@ process std_trimmer {
     label 'light'
     
     input:
-    tuple val(project), val(fwd_flag), val(rev_flag) 
+    val project
+    val fwd_flag 
+    val rev_flag
     path std_primer_out
     path fastq_1
     path fastq_2
@@ -58,7 +62,7 @@ process std_trimmer {
     stdout
 
     """
-    if [[ $fwd_flag = "std" ]] | [[ $rev_flag = "std" ]]; then
+    if [[ ${fwd_flag} = "std" ]] | [[ ${rev_flag} = "std" ]]; then
         echo 'std trimming!'
     else
         echo 'not std trimming!'
@@ -84,8 +88,24 @@ workflow {
     .join(std_primer_flag.out.std_primer_out)
     
     trimming_conductor(comb_flags, outdir)
-    parse_conductor(trimming_conductor.out.trimming_conductor_out, outdir).view()
-    std_trimmer(parse_conductor.out.trimming_flags_out, std_primer_flag.out.std_primer_out.map{ it[1] }, fastp.out.cleaned_fastq.map{ it[1] }, fastp.out.cleaned_fastq.map{ it[2] }).collect().view()
+    parse_conductor(trimming_conductor.out.trimming_conductor_out, outdir)
+    // std_trimmer(
+    //     parse_conductor.out.project,
+    //     parse_conductor.out.fwd_flag,
+    //     parse_conductor.out.rev_flag,   
+    //     std_primer_flag.out.std_primer_out.map{ it[1] }, 
+    //     fastp.out.cleaned_fastq.map{ it[1] }, 
+    //     fastp.out.cleaned_fastq.map{ it[2] }
+    //     )
+
+    
+    auto_trimming_input = parse_conductor.out.conductor_out.join(seqprep_merge.out)
+    
+    automatic_primer_trimming(
+        auto_trimming_input,
+        outdir
+        )
+
 
 
 }

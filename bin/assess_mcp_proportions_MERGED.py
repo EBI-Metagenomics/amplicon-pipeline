@@ -143,20 +143,16 @@ def main():
             fwd_out = find_mcp_props_for_sample(_PATH)
             rev_out = find_mcp_props_for_sample(_PATH, rev=True)
             res_df = concat_out(fwd_out, rev_out)
-            print(res_df)
         case "F":
             fwd_out = find_mcp_props_for_sample(_PATH)
             res_df = concat_out(fwd_out)
-            print(res_df)
         case "R":
             rev_out = find_mcp_props_for_sample(_PATH, rev=True)
             res_df = concat_out(rev_out=rev_out)
-            print(res_df)
         case _:
             print("Incorrect strand input. Should be F for forward, R for reverse, or FR for both.")
             exit(1)
 
-        
     res_df.to_csv(f'{_OUTPUT}/{_SAMPLE}_mcp_cons.tsv', sep='\t')
 
     

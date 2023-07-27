@@ -9,7 +9,7 @@ process parse_conductor {
     val outdir
 
     output:
-    tuple val(project), env(fwd_flag), env(rev_flag), emit: trimming_flags_out
+    tuple val(project), env(fwd_flag), env(rev_flag), emit: conductor_out
 
     script:
     """

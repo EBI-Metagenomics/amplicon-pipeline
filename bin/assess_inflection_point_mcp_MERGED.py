@@ -41,7 +41,6 @@ def assess_inflection_point_mcp_for_sample(_PATH, inf_point_list, rev=False):
     beg_cons_lens = []
 
     do_not_include_list = [ i + 5 for i in inf_point_list ]
-    # subs_len = 15
 
     read_count = get_read_count(_PATH)
 
@@ -75,8 +74,6 @@ def assess_inflection_point_mcp_for_sample(_PATH, inf_point_list, rev=False):
 
 
         # fwd_confs.append(fwd_prop)
-        print(1, beg, cons_seq)
-
     for i, end in enumerate(inf_point_list):
         end += 5
         subs_len = beg_cons_lens[i]
@@ -105,14 +102,8 @@ def assess_inflection_point_mcp_for_sample(_PATH, inf_point_list, rev=False):
         # fwd_end_confs.append(fwd_prop)
 
         # fwd_confs.append(fwd_prop)
-        print(end, l, cons_seq)
-
     diff_res = [ beg_confs[i] - end_confs[i] for i in range(len(beg_confs))]
     diff_res_sorted = sorted(diff_res, reverse=True)
-
-    print(beg_confs)
-    print(end_confs)
-    print(diff_res)
 
     ini_max_res = diff_res_sorted[0]
     curr_max_index = diff_res.index(ini_max_res)
@@ -140,15 +131,24 @@ def main():
     r_slice = inf_df[inf_df.strand == 'R']
     r_slice = r_slice.reset_index(drop=True)
 
+    f_cutoff = ''
+    r_cutoff = ''
+
     if not f_slice.empty:
         inf_list = f_slice.inf_point.tolist()
-        print(inf_list)
-        assess_inflection_point_mcp_for_sample(_PATH, inf_list)
+        f_cutoff = assess_inflection_point_mcp_for_sample(_PATH, inf_list)
 
     if not r_slice.empty:
         inf_list = r_slice.inf_point.tolist()
-        print(inf_list)
-        assess_inflection_point_mcp_for_sample(_PATH, inf_list, rev=True)
+        r_cutoff = assess_inflection_point_mcp_for_sample(_PATH, inf_list, rev=True)
+
+    with open(f'{_OUTPUT}/{_SAMPLE}_cutoff.txt', 'w') as fw:
+        
+        if f_cutoff != '':
+            fw.write(f'F: {f_cutoff}\n')
+        if r_cutoff != '':
+            fw.write(f'R: {r_cutoff}\n')
+
 
 
 if __name__ == "__main__":
