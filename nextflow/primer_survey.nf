@@ -84,7 +84,7 @@ workflow {
     .join(std_primer_flag.out.std_primer_out)
     
     trimming_conductor(comb_flags, outdir)
-    parse_conductor(trimming_conductor.out.trimming_conductor_out, outdir)
+    parse_conductor(trimming_conductor.out.trimming_conductor_out, outdir).view()
     std_trimmer(parse_conductor.out.trimming_flags_out, std_primer_flag.out.std_primer_out.map{ it[1] }, fastp.out.cleaned_fastq.map{ it[1] }, fastp.out.cleaned_fastq.map{ it[2] }).collect().view()
 
 

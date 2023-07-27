@@ -133,15 +133,17 @@ def main():
         elif general_res == '0-1' and std_res == '0-0':
             # print(res_df.iloc[i, 0], general_res, std_res)
             res_counts['GG__'] += 1
-        elif general_res == '0-0' and (std_res == '0-1' or std_res == '1-0' or std_res == '1-1'):
+        elif (general_res == '0-1' or general_res == '1-0' or general_res == '0-0') and std_res == '1-1':
+            res_counts['__SS'] += 1
+        elif general_res == '0-0' and (std_res == '0-1' or std_res == '1-0'):
             # print(res_df.iloc[i, 0], general_res, std_res)
-            res_counts['gg__'] += 1
-        elif general_res == '1-0' and (std_res == '0-1' or std_res == '1-1'):
+            res_counts['____'] += 1
+        elif general_res == '1-0' and (std_res == '0-1' or std_res == '1-0'):
             # print(res_df.iloc[i, 0], general_res, std_res)
-            res_counts['gg__'] += 1
-        elif general_res == '0-1' and (std_res == '1-0' or std_res == '1-1'):
+            res_counts['____'] += 1
+        elif general_res == '0-1' and (std_res == '1-0' or std_res == '0-1'):
             # print(res_df.iloc[i, 0], general_res, std_res)
-            res_counts['gg__'] += 1
+            res_counts['____'] += 1
 
 
     res_counts_df = pd.DataFrame(res_counts, index=[0])
