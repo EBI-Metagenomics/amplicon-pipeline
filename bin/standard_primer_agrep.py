@@ -29,6 +29,7 @@ def parse_args():
 def parse_std_primers():
 
     std_primer_dict = defaultdict(defaultdict)
+    std_primer_dict_regex = defaultdict(defaultdict)
 
     dir = os.listdir(_STD_PRIMERS)
     dir = [ f'{_STD_PRIMERS}/{path}' for path in dir ]
@@ -53,9 +54,10 @@ def parse_std_primers():
                         rev_flag = False
 
                     primer = primer_regex_query_builder(line)
-                    std_primer_dict[region][key] = primer
+                    std_primer_dict_regex[region][key] = primer
+                    std_primer_dict[region][key] = line
 
-    return std_primer_dict
+    return std_primer_dict_regex, std_primer_dict
 
 def run_primer_agrep_once(input_path, input_primer, strand, mismatches=1):
 
@@ -82,19 +84,15 @@ def run_primer_agrep_once(input_path, input_primer, strand, mismatches=1):
 
     return output
 
-def get_primer_props(std_primer_dict, input_path):
+def get_primer_props(std_primer_dict_regex, input_path):
 
     threshold = 0.60
-    final_primers = []
-
     already_searched = []
-    primer_counts = []
 
     read_count = get_read_count(input_path, 'fastq')
-
     res_dict = defaultdict(defaultdict)
 
-    for region, primer in std_primer_dict.items():
+    for region, primer in std_primer_dict_regex.items():
         res_dict[region]['F'] = {}
         res_dict[region]['R'] = {}
 
@@ -200,35 +198,52 @@ def get_primer_props(std_primer_dict, input_path):
 
 
 
-def save_out(results, sample_id, output):
+def save_out(results, sample_id, output, std_primer_dict):
 
-    with open(f'{output}/{sample_id}_std_primer_out.txt', 'w') as fw:
+    with open(f'{output}/{sample_id}_std_primer_out.txt', 'w') as fw_out, open(f'{output}/{sample_id}_std_primers.fasta', 'w') as fw_seq:
         if results == []:
-            fw.write(f'')
+            fw_out.write(f'')
+            fw_seq.write(f'')
         
         elif len(results) == 2:
             region = results[0]
             primer_name = list(results[1].keys())[0]
             primer_prop = results[1][list(results[1].keys())[0]]
-            fw.write(f'{region}\n')
-            fw.write(f'{primer_name}: {primer_prop}')
+            seq = std_primer_dict[region][primer_name]
+            seq = str(Seq(seq).reverse_complement())
+            
+            fw_out.write(f'{region}\n')
+            fw_out.write(f'{primer_name}: {primer_prop}')
+
+            fw_seq.write(f'>{primer_name}\n{seq}')
+            
         
         elif len(results) == 3:
             region = results[0]
             f_primer_name = list(results[1].keys())[0]
             f_primer_prop = results[1][list(results[1].keys())[0]]
+            f_seq = std_primer_dict[region][f_primer_name]
+            f_seq = str(Seq(f_seq).reverse_complement())
             r_primer_name = list(results[2].keys())[0]
             r_primer_prop = results[2][list(results[2].keys())[0]]
-            fw.write(f'{region}\n')
-            fw.write(f'{f_primer_name}: {f_primer_prop}\n')
-            fw.write(f'{r_primer_name}: {r_primer_prop}')
+            r_seq = std_primer_dict[region][r_primer_name]
+            r_seq = str(Seq(r_seq).reverse_complement())
+            
+
+            fw_out.write(f'{region}\n')
+            fw_out.write(f'{f_primer_name}: {f_primer_prop}\n')
+            fw_out.write(f'{r_primer_name}: {r_primer_prop}')
+
+            fw_seq.write(f'>{f_primer_name}\n{f_seq}\n')
+            fw_seq.write(f'>{r_primer_name}\n{r_seq}')
+
     
 def main():
     
     _INPUT, _SAMPLE, _OUTPUT = parse_args()
-    std_primer_dict = parse_std_primers()
-    results = get_primer_props(std_primer_dict, _INPUT)
-    save_out(results, _SAMPLE, _OUTPUT)
+    std_primer_dict_regex, std_primer_dict = parse_std_primers()
+    results = get_primer_props(std_primer_dict_regex, _INPUT)
+    save_out(results, _SAMPLE, _OUTPUT, std_primer_dict)
     
 
 if __name__ == "__main__":

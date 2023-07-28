@@ -16,10 +16,11 @@ include { automatic_primer_trimming } from './subworkflows/automatic_primer_trim
 params.path = null
 params.outdir = null
 params.cpu = null
+params.filter = file("$projectDir/assets/NO_FILE")
 
-reads = Channel.fromFilePairs( "${params.path}/**/raw/*_{1,2}.fastq.gz" )
+reads = Channel.fromFilePairs( "${params.path}/DRP**/raw/*_{1,2}.fastq.gz" )
 // reads = Channel.fromPath( "${params.outdir}/merged/**/*_MERGED.fastq.gz" )
-projects = Channel.fromPath( "${params.path}/*", type: 'dir' )
+projects = Channel.fromPath( "${params.path}/DRP*", type: 'dir' )
 outdir = params.outdir
 cpu = params.cpu
 
@@ -51,9 +52,7 @@ process std_trimmer {
     label 'light'
     
     input:
-    val project
-    val fwd_flag 
-    val rev_flag
+    tuple val(project), val(fwd_flag), val(rev_flag)
     path std_primer_out
     path fastq_1
     path fastq_2
@@ -67,14 +66,34 @@ process std_trimmer {
     else
         echo 'not std trimming!'
     fi
-
     """
 
 }
 
+process cutadapt {
+
+    label 'light'
+    
+    input:
+    tuple val(project), path(std_primers), path(auto_primers)
+
+    output:
+    stdout
+
+    // script:
+    // def auto_filter = auto_primers.name != "NO_FILE" ? "$auto_primers" : ''
+
+    """
+    if [[ -s $auto_primers ]]; then
+        echo $auto_primers
+    else
+        echo 'no auto primers!'
+    fi
+    """
+}
+
 
 workflow {
-    
 
     COMBINE_READS_PROJECTS(reads, projects)
     fastp(COMBINE_READS_PROJECTS.out.combined_reads_projects, outdir)
@@ -89,23 +108,29 @@ workflow {
     
     trimming_conductor(comb_flags, outdir)
     parse_conductor(trimming_conductor.out.trimming_conductor_out, outdir)
+    
     // std_trimmer(
-    //     parse_conductor.out.project,
-    //     parse_conductor.out.fwd_flag,
-    //     parse_conductor.out.rev_flag,   
+    //     parse_conductor.out.conductor_out,
     //     std_primer_flag.out.std_primer_out.map{ it[1] }, 
     //     fastp.out.cleaned_fastq.map{ it[1] }, 
     //     fastp.out.cleaned_fastq.map{ it[2] }
-    //     )
-
+    //     ).collect()
+    //     .view()
     
     auto_trimming_input = parse_conductor.out.conductor_out.join(seqprep_merge.out)
-    
     automatic_primer_trimming(
         auto_trimming_input,
         outdir
         )
 
+    cutadapt_input = std_primer_flag.out.std_primer_out
+    .join(automatic_primer_trimming.out.auto_primer_trimming_out, remainder: true)
 
+    null_filter = cutadapt_input.map( {if (it[2] == null){ tuple(it[0], params.filter) } else { tuple(it[0], it[2]) } } )
+
+    final_cutadapt_input = std_primer_flag.out.std_primer_out
+    .join(null_filter)
+
+    cutadapt(final_cutadapt_input).view()
 
 }

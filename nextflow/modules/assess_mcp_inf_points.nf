@@ -9,7 +9,7 @@ process assess_mcp_inf_points {
     val outdir
 
     output:
-    path "*cutoff.txt"
+    tuple val(project), path("*auto_primers.fasta"), emit: auto_primer_out
 
     """
     python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/assess_inflection_point_mcp_MERGED.py -i $fastq -p $inf_points_out -s ${fastq.simpleName} -o ./

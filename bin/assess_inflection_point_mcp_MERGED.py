@@ -3,7 +3,7 @@ import argparse
 from collections import defaultdict
 from multiprocessing import Pool
 
-
+from Bio.Seq import Seq
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -11,7 +11,7 @@ import seaborn as sns
 from tqdm import tqdm
 
 from assess_mcp_proportions_MERGED import fetch_mcp
-from utils import split_dir_into_sample_paths, get_read_count, build_cons_seq
+from utils import get_read_count, build_cons_seq
 
 def parse_args():
 
@@ -39,6 +39,7 @@ def assess_inflection_point_mcp_for_sample(_PATH, inf_point_list, rev=False):
     beg_confs = []
     end_confs = []
     beg_cons_lens = []
+    cons_seq_list = []
 
     do_not_include_list = [ i + 5 for i in inf_point_list ]
 
@@ -62,6 +63,7 @@ def assess_inflection_point_mcp_for_sample(_PATH, inf_point_list, rev=False):
             mcp_cons_list.append(index_base_dict)
 
         cons_seq, cons_confs = build_cons_seq(mcp_cons_list, read_count, n_prop, do_not_include_list)
+        cons_seq_list.append(cons_seq)
         mcp_sum = sum(mcp_count_dict.values())
         prop = mcp_sum/read_count
 
@@ -78,7 +80,7 @@ def assess_inflection_point_mcp_for_sample(_PATH, inf_point_list, rev=False):
         end += 5
         subs_len = beg_cons_lens[i]
         l = end + subs_len - 1
-        mcp_count_dict = fetch_mcp(_PATH, l, end)
+        mcp_count_dict = fetch_mcp(_PATH, l, end, rev=rev)
         mcp_cons_list = []
         mcp_len = len(list(mcp_count_dict.keys())[0])
 
@@ -117,10 +119,14 @@ def assess_inflection_point_mcp_for_sample(_PATH, inf_point_list, rev=False):
             curr_max_index = curr_res_index
 
     cutoff = inf_point_list[curr_max_index] + 5
+    primer = cons_seq_list[curr_max_index]
+
+    if rev:
+        primer = str(Seq(primer).reverse_complement())
 
     print(cutoff)
 
-    return cutoff
+    return cutoff, primer
 
 def main():
 
@@ -133,21 +139,28 @@ def main():
 
     f_cutoff = ''
     r_cutoff = ''
+    f_primer = ''
+    r_primer = ''
 
     if not f_slice.empty:
         inf_list = f_slice.inf_point.tolist()
-        f_cutoff = assess_inflection_point_mcp_for_sample(_PATH, inf_list)
+        f_cutoff, f_primer = assess_inflection_point_mcp_for_sample(_PATH, inf_list)
 
     if not r_slice.empty:
         inf_list = r_slice.inf_point.tolist()
-        r_cutoff = assess_inflection_point_mcp_for_sample(_PATH, inf_list, rev=True)
+        r_cutoff, r_primer = assess_inflection_point_mcp_for_sample(_PATH, inf_list, rev=True)
 
     with open(f'{_OUTPUT}/{_SAMPLE}_cutoff.txt', 'w') as fw:
-        
         if f_cutoff != '':
             fw.write(f'F: {f_cutoff}\n')
         if r_cutoff != '':
-            fw.write(f'R: {r_cutoff}\n')
+            fw.write(f'R: {r_cutoff}')
+
+    with open(f'{_OUTPUT}/{_SAMPLE}_auto_primers.fasta', 'w') as fw:
+        if f_cutoff != '':
+            fw.write(f'>F_auto\n{f_primer}\n')
+        if r_cutoff != '':
+            fw.write(f'>R_auto\n{r_primer}')
 
 
 
