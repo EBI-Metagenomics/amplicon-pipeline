@@ -210,8 +210,8 @@ def save_out(results, sample_id, output, std_primer_dict):
             primer_name = list(results[1].keys())[0]
             primer_prop = results[1][list(results[1].keys())[0]]
             seq = std_primer_dict[region][primer_name]
-            seq = str(Seq(seq).reverse_complement())
-            
+            if 'R' in primer_name:
+                seq = str(Seq(seq).reverse_complement())
             fw_out.write(f'{region}\n')
             fw_out.write(f'{primer_name}: {primer_prop}')
 
@@ -223,7 +223,6 @@ def save_out(results, sample_id, output, std_primer_dict):
             f_primer_name = list(results[1].keys())[0]
             f_primer_prop = results[1][list(results[1].keys())[0]]
             f_seq = std_primer_dict[region][f_primer_name]
-            f_seq = str(Seq(f_seq).reverse_complement())
             r_primer_name = list(results[2].keys())[0]
             r_primer_prop = results[2][list(results[2].keys())[0]]
             r_seq = std_primer_dict[region][r_primer_name]
@@ -235,7 +234,7 @@ def save_out(results, sample_id, output, std_primer_dict):
             fw_out.write(f'{r_primer_name}: {r_primer_prop}')
 
             fw_seq.write(f'>{f_primer_name}\n{f_seq}\n')
-            fw_seq.write(f'>{r_primer_name}\n{r_seq}')
+            fw_seq.write(f'>{r_primer_name}\n{r_seq}\n')
 
     
 def main():

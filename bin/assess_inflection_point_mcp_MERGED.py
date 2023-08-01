@@ -160,7 +160,7 @@ def main():
         if f_cutoff != '':
             fw.write(f'>F_auto\n{f_primer}\n')
         if r_cutoff != '':
-            fw.write(f'>R_auto\n{r_primer}')
+            fw.write(f'>R_auto\n{r_primer}\n')
 
 
 

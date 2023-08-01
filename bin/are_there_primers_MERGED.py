@@ -130,7 +130,7 @@ def save_out(results, sample_id, output):
 
     with open(f'{output}/{sample_id}_general_primer_out.txt', 'w') as fw:
         fw.write(f'{results[0]}\n')
-        fw.write(f'{results[1]}')
+        fw.write(f'{results[1]}\n')
 
 
 def main():

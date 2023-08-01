@@ -2,15 +2,14 @@
 process fastp {
 
     label 'light'
-    // publishDir "${outdir}/merged/${project}", mode : "copy"
     container = '/hps/nobackup/rdf/metagenomics/singularity_cache/quay.io_microbiome-informatics_fastp:0.23.1.sif'
 
     input:
-    tuple val(sampleId), path(fastq), val(project)
+    tuple val(project), val(sampleId), path(fastq)
     val outdir
 
     output:
-    tuple val(sampleId), path("*1_fastp.fastq.gz"), path("*2_fastp.fastq.gz"), val(project), emit: cleaned_fastq, optional: true
+    tuple val(project), val(sampleId), path("*1_fastp.fastq.gz"), path("*2_fastp.fastq.gz"), emit: cleaned_fastq, optional: true
 
     """
     if [ -s ${fastq[0]} ] && [ -s ${fastq[1]} ]; then

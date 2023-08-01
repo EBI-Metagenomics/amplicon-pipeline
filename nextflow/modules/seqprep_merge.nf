@@ -6,7 +6,7 @@ process seqprep_merge {
     container = '/hps/nobackup/rdf/metagenomics/singularity_cache_nextflow/quay.io-biocontainers-seqprep-1.3.2--hed695b0_4.img'
 
     input:
-    tuple val(sampleId), path(fastq_1), path(fastq_2), val(project)
+    tuple val(project), val(sampleId), path(fastq_1), path(fastq_2)
     val outdir
 
     output:
