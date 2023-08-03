@@ -10,6 +10,7 @@ include { general_primer_flag } from './modules/general_primer_flag.nf'
 include { trimming_conductor } from './modules/trimming_conductor.nf'
 include { parse_conductor } from './modules/parse_conductor.nf'
 include { cutadapt } from './modules/cutadapt.nf'
+include { concat_primers } from './modules/concat_primers.nf'
 
 include { automatic_primer_trimming } from './subworkflows/automatic_primer_trimming.nf'
 
@@ -54,6 +55,7 @@ workflow {
     comb_flags = general_primer_flag.out.general_primer_out
     .join(std_primer_flag.out.std_primer_out)
     
+
     trimming_conductor(comb_flags, outdir)
     parse_conductor(trimming_conductor.out.trimming_conductor_out, outdir)
     
@@ -63,23 +65,19 @@ workflow {
         outdir
         )
 
-    cutadapt_input = std_primer_flag.out.std_primer_out
-    .join(automatic_primer_trimming.out.auto_primer_trimming_out, remainder: true)
+    concat_input = std_primer_flag.out.std_primer_out
+    .join(automatic_primer_trimming.out.auto_primer_trimming_out)
 
-    null_filter = cutadapt_input.map( {if (it[2] == null){ tuple(it[0], params.filter) } else { tuple(it[0], it[2]) } } )
+    concat_primers(concat_input, outdir)
 
-    final_cutadapt_input = std_primer_flag.out.std_primer_out
-    .join(null_filter)
-    final_cutadapt_input = final_cutadapt_input
+    cutadapt_input = concat_primers.out.concat_primers_out
     .join(fastp.out.cleaned_fastq)
-
-    cutadapt(final_cutadapt_input, outdir)
+    
+    cutadapt(cutadapt_input, outdir)
 
     final_out = fastp.out.cleaned_fastq
     .join(cutadapt.out.cutadapt_out, remainder: true)
     .map( { if (it[4] == null) { tuple(it[0], it[1], it[2], it[3]) } else { tuple(it[0], it[1], it[4], it[5]) }} )
-
-    final_out.view()
 
 
 }

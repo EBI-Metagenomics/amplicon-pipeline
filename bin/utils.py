@@ -44,7 +44,7 @@ def get_read_count(read_path, type='fastq'):
 
     return read_count
 
-def build_cons_seq(cons_list, read_count, cons_threshold=0.80, do_not_include=[], counter=1):
+def build_cons_seq(cons_list, read_count, cons_threshold=0.85, do_not_include=[], counter=1):
 
     cons_seq = ''
     cons_confs = []
@@ -96,7 +96,7 @@ def build_cons_seq(cons_list, read_count, cons_threshold=0.80, do_not_include=[]
                 cons_seq += amb_base
                 
         except ZeroDivisionError:
-            prop = 0.0
+            max_prop = 0.0
 
         cons_confs.append(max_prop)
 

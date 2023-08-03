@@ -45,7 +45,7 @@ def assess_inflection_point_mcp_for_sample(_PATH, inf_point_list, rev=False):
 
     read_count = get_read_count(_PATH)
 
-    n_prop = 0.95
+    n_prop = 0.8
 
     for beg in inf_point_list:
         beg += 4
@@ -122,9 +122,7 @@ def assess_inflection_point_mcp_for_sample(_PATH, inf_point_list, rev=False):
     primer = cons_seq_list[curr_max_index]
 
     if rev:
-        primer = str(Seq(primer).reverse_complement())
-
-    print(cutoff)
+        primer = str(Seq(primer).complement())
 
     return cutoff, primer
 
@@ -154,7 +152,7 @@ def main():
         if f_cutoff != '':
             fw.write(f'F: {f_cutoff}\n')
         if r_cutoff != '':
-            fw.write(f'R: {r_cutoff}')
+            fw.write(f'R: {r_cutoff}\n')
 
     with open(f'{_OUTPUT}/{_SAMPLE}_auto_primers.fasta', 'w') as fw:
         if f_cutoff != '':

@@ -18,6 +18,5 @@ process flag_hyperex_result {
     """
     primer_count=$(grep '^>' $hyperex_fa | cut -d' ' -f3-4 | sort | uniq -c)
     read_count = $(grep -c '^>' merged/ERP119447/ERR6093661_MERGED_hyperex.fa)
-
     """
 }

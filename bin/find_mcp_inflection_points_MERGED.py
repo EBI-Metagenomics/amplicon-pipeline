@@ -47,8 +47,9 @@ def main():
             inf_point_dict['strand'].append(strand)
             inf_point_dict['inf_point'].append(inf_point)
 
-    inf_point_df = pd.DataFrame.from_dict(inf_point_dict)
-    inf_point_df.to_csv(f'{_OUTPUT}/{_SAMPLE}_inf_points.tsv', sep='\t', index=False)
+    if len(inf_point_dict) > 0:
+        inf_point_df = pd.DataFrame.from_dict(inf_point_dict)
+        inf_point_df.to_csv(f'{_OUTPUT}/{_SAMPLE}_inf_points.tsv', sep='\t', index=False)
 
 
 if __name__ == "__main__":

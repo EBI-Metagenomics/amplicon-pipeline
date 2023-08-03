@@ -23,6 +23,8 @@ workflow automatic_primer_trimming {
         assess_mcp_inf_points(assess_inf_input, outdir)
 
    emit:
+//    Had to make even std runs go through this workflow (albeit just outputting empty files for every process) due to a join later being slow otherwise. 
+//    Wonder if there's a better way?
      auto_primer_trimming_out = assess_mcp_inf_points.out
 
 }

@@ -2,7 +2,7 @@
 process seqprep_merge {
 
     label 'light'
-    publishDir "${outdir}/merged/${project}", mode : "copy"
+    // publishDir "${outdir}/merged/${project}", mode : "copy"
     container = '/hps/nobackup/rdf/metagenomics/singularity_cache_nextflow/quay.io-biocontainers-seqprep-1.3.2--hed695b0_4.img'
 
     input:

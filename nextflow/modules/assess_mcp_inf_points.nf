@@ -12,7 +12,11 @@ process assess_mcp_inf_points {
     tuple val(project), path("*auto_primers.fasta"), emit: auto_primer_out
 
     """
-    python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/assess_inflection_point_mcp_MERGED.py -i $fastq -p $inf_points_out -s ${fastq.simpleName} -o ./
+    if [[ -s ./$inf_points_out ]]; then
+        python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/assess_inflection_point_mcp_MERGED.py -i $fastq -p $inf_points_out -s ${fastq.simpleName} -o ./
+    else
+        touch ${fastq.simpleName}_auto_primers.fasta
+    fi
     """
 
 }
