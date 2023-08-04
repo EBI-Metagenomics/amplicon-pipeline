@@ -1,5 +1,6 @@
 
 process assess_mcp_inf_points {
+    // Select inflection points most likely to be primer cutoff points
 
     label 'light'
     publishDir "${outdir}/merged/${project}", mode : "copy"

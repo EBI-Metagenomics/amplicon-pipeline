@@ -1,5 +1,6 @@
 
 process cutadapt {
+    // Trim the given primers using cutadapt for two paired-end read files
 
     label 'light'
     publishDir "${outdir}/merged/${project}", mode : "copy"

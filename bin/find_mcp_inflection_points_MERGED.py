@@ -51,6 +51,11 @@ def main():
         inf_point_df = pd.DataFrame.from_dict(inf_point_dict)
         inf_point_df.to_csv(f'{_OUTPUT}/{_SAMPLE}_inf_points.tsv', sep='\t', index=False)
 
+    else:
+        # make empty inf_points file
+        fw = open(f'{_OUTPUT}/{_SAMPLE}_inf_points.tsv', 'w')
+        fw.close()
+
 
 if __name__ == "__main__":
     main()

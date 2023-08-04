@@ -1,5 +1,6 @@
 
 process fastp {
+    // Run fastp on paired-end reads
 
     label 'light'
     container = '/hps/nobackup/rdf/metagenomics/singularity_cache/quay.io_microbiome-informatics_fastp:0.23.1.sif'

@@ -5,10 +5,10 @@ import os
 import subprocess
 
 from Bio.Seq import Seq
-import numpy as np
 
 from utils import primer_regex_query_builder, get_read_count
 
+# Folder containing the library of standard primers as fasta files
 _STD_PRIMERS = "/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/standard_primers"
 
 def parse_args():
@@ -27,9 +27,23 @@ def parse_args():
     return _INPUT, _SAMPLE, _OUTPUT
 
 def parse_std_primers():
+    """
+    Parse the library of standard primers.
 
-    std_primer_dict = defaultdict(defaultdict)
+    Reads the fasta files in the given directory "_STD_PRIMERS"
+    Primer names (which are the fasta headers) are labeled with F or R for 5'-3' and 3'-5' primers respectively
+
+    Returns two dictionaries:
+        std_primer_dict_regex
+            key: region+primer name
+            val: primer sequence from 5' to 3'
+        std_primer_dict
+            key: region+primer name
+            val: primer sequence from 5' to 3' for forward primers, 3' to 5' for reverse
+    """
+
     std_primer_dict_regex = defaultdict(defaultdict)
+    std_primer_dict = defaultdict(defaultdict)
 
     dir = os.listdir(_STD_PRIMERS)
     dir = [ f'{_STD_PRIMERS}/{path}' for path in dir ]
@@ -44,7 +58,7 @@ def parse_std_primers():
                 line = line.strip()
                 print(region)
                 if line[0] == '>':
-                    if 'R' in line:
+                    if 'R' in line: # If a primer is a reverse primer
                         rev_flag = True
                     key = line[1:]
                 else:
@@ -60,6 +74,12 @@ def parse_std_primers():
     return std_primer_dict_regex, std_primer_dict
 
 def run_primer_agrep_once(input_path, input_primer, strand, mismatches=1):
+    """
+    Run the primer_agrep script.
+
+    Takes one primer, strand, and fastq input
+    Returns number of agrep matches
+    """
 
     cmd = [
         'bash',
@@ -85,26 +105,38 @@ def run_primer_agrep_once(input_path, input_primer, strand, mismatches=1):
     return output
 
 def get_primer_props(std_primer_dict_regex, input_path):
+    """
+    Look for the standard primers in the input fastq file.
 
-    threshold = 0.60
-    already_searched = []
+    Will loop through the dictionary of primers, using approximate grep (agrep) to find matching primers.
+    If a std primer is present above a set threshold proportion, it is collected. Both strands are searched for.
+    If there is an std primer for both the F and R strands, the maximum prop for each strand is chosen and the pair
+    is output as a combination.
 
-    read_count = get_read_count(input_path, 'fastq')
+    Returns a list containing two elements:
+        max_region: the amplified region the chosen primers belong to
+        max_primers: dictionary containing the F and/or R primers that were chosen
+    """
+
+    threshold = 0.60 # Arbitrary threshold for collecting a matched primer
+    read_count = get_read_count(input_path, 'fastq') # Get read count of fastq file to calculate proportion with
     res_dict = defaultdict(defaultdict)
 
+    # Loop through every primer region
     for region, primer in std_primer_dict_regex.items():
         res_dict[region]['F'] = {}
         res_dict[region]['R'] = {}
 
+        # Loop through every primer of a certain region
         for primer_name, primer_seq in primer.items():
             
             region_name_str = f'{region};{primer_name}'
             primer_count = 0.0
 
             if 'F' in primer_name:
-                primer_count = run_primer_agrep_once(input_path, primer_seq, 'F', 1)
+                primer_count = run_primer_agrep_once(input_path, primer_seq, 'F', 1) # Get proportion of a F primer with agrep
             elif 'R' in primer_name:
-                primer_count = run_primer_agrep_once(input_path, primer_seq, 'R', 1)
+                primer_count = run_primer_agrep_once(input_path, primer_seq, 'R', 1) # Get proportion of a R primer with agrep
 
             try:
                 primer_prop = primer_count / read_count
@@ -112,15 +144,15 @@ def get_primer_props(std_primer_dict_regex, input_path):
                 primer_prop = 0
 
             if 'F' in primer_name:
-                if primer_prop > threshold:
+                if primer_prop > threshold: # Only collect primer if it's above threshold
                     res_dict[region]['F'][primer_name] = primer_prop
             elif 'R' in primer_name:
-                if primer_prop > threshold:
+                if primer_prop > threshold: # Only collect primer if it's above threshold
                     res_dict[region]['R'][primer_name] = primer_prop
 
-            already_searched.append(region_name_str)
             print(f'{region_name_str}: {primer_prop}')
         
+        # If an F or/and R primer wasn't found then just remove it from the dictionary
         if res_dict[region]['F'] == {}:
             res_dict[region].pop('F')
         if res_dict[region]['R'] == {}:
@@ -130,8 +162,9 @@ def get_primer_props(std_primer_dict_regex, input_path):
     singles = defaultdict(str)
     doubles = defaultdict(list)
 
-    double_status = False
+    double_status = False # Flag for whether primers were found on both strands
 
+    #  Loop through every collected primer and put primers in singles or doubles
     for region in res_dict.keys():
         strands = res_dict[region]
                 
@@ -154,8 +187,9 @@ def get_primer_props(std_primer_dict_regex, input_path):
     max_primers = {}
     max_mean_prop = 0
     
+    # if at least one pair of primers was collected
     if double_status:
-        for region in doubles:
+        for region in doubles: # Loop through all pairs of primers and choose the best one
             primers = doubles[region]
 
             f_primer_name = list(primers[0].keys())[0]
@@ -170,7 +204,7 @@ def get_primer_props(std_primer_dict_regex, input_path):
                 max_primers = [{f_primer_name: f_primer_prop}, {r_primer_name: r_primer_prop}]
 
     else:
-        for region in singles:
+        for region in singles: # Choose the best single primer
             primer = singles[region]
             primer_name = list(primer.keys())[0]
             prop = primer[primer_name]
@@ -199,6 +233,9 @@ def get_primer_props(std_primer_dict_regex, input_path):
 
 
 def save_out(results, sample_id, output, std_primer_dict):
+    """
+    Save found std primers into a fasta file.
+    """
 
     with open(f'{output}/{sample_id}_std_primer_out.txt', 'w') as fw_out, open(f'{output}/{sample_id}_std_primers.fasta', 'w') as fw_seq:
         if results == []:
@@ -240,8 +277,8 @@ def save_out(results, sample_id, output, std_primer_dict):
 def main():
     
     _INPUT, _SAMPLE, _OUTPUT = parse_args()
-    std_primer_dict_regex, std_primer_dict = parse_std_primers()
-    results = get_primer_props(std_primer_dict_regex, _INPUT)
+    std_primer_dict_regex, std_primer_dict = parse_std_primers() # Parse std primer library into dictionaries
+    results = get_primer_props(std_primer_dict_regex, _INPUT) # Find all the std primers in the input and select most common
     save_out(results, _SAMPLE, _OUTPUT, std_primer_dict)
     
 

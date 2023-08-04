@@ -71,11 +71,7 @@ def assess_inflection_point_mcp_for_sample(_PATH, inf_point_list, rev=False):
 
         beg_confs.append(np.mean(cons_confs))
         beg_cons_lens.append(len(cons_seq))
-        # fwd_beg_confs.append(n_count)
-        # fwd_beg_confs.append(fwd_prop)
 
-
-        # fwd_confs.append(fwd_prop)
     for i, end in enumerate(inf_point_list):
         end += 5
         subs_len = beg_cons_lens[i]
@@ -100,10 +96,7 @@ def assess_inflection_point_mcp_for_sample(_PATH, inf_point_list, rev=False):
         n_count = float(cons_seq.count('N'))/len(cons_seq)
 
         end_confs.append(np.mean(cons_confs))
-        # fwd_end_confs.append(n_count)
-        # fwd_end_confs.append(fwd_prop)
 
-        # fwd_confs.append(fwd_prop)
     diff_res = [ beg_confs[i] - end_confs[i] for i in range(len(beg_confs))]
     diff_res_sorted = sorted(diff_res, reverse=True)
 

@@ -1,5 +1,8 @@
 
 process parse_conductor {
+    
+    // Parse the trimming_conductor output and store 
+    // the flags into environment variables 
 
     label 'light'
     // publishDir "${outdir}/merged/${project}", mode : "copy"

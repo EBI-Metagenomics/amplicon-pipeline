@@ -1,5 +1,7 @@
 
 process trimming_conductor {
+    // Parse the outputs of the std and general primer searches and output
+    // flags into "trimming_conductor_out.txt"
 
     label 'light'
     publishDir "${outdir}/merged/${project}", mode : "copy"
