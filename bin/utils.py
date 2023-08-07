@@ -3,8 +3,6 @@ from collections import defaultdict
 import os
 import subprocess
 
-import numpy as np
-
 from constants.regex_ambiguous_bases import _AMBIGUOUS_BASES_DICT, _AMBIGUOUS_BASES_DICT_REV
 
 def split_dir_into_sample_paths(_DIR):
@@ -44,16 +42,13 @@ def get_read_count(read_path, type='fastq'):
 
     return read_count
 
-def build_cons_seq(cons_list, read_count, cons_threshold=0.85, do_not_include=[], counter=1):
+def build_cons_seq(cons_list, read_count, cons_threshold=0.80, do_not_include=[], counter=1):
 
     cons_seq = ''
     cons_confs = []
-    print(read_count)
 
     for count_dict in cons_list:
-        max_base = '*'
         max_count = 0
-        total_count = float(sum(count_dict.values()))
         cons_dict = defaultdict(float)
 
         if counter in do_not_include:
@@ -71,14 +66,14 @@ def build_cons_seq(cons_list, read_count, cons_threshold=0.85, do_not_include=[]
                 max_count = count
 
         counter += 1
-        # print(cons_dict)
+        
         try:
             max_prop = max_count/read_count
 
             cons_bases = []
             curr_prop = 0.0
             sorted_cons_dict = dict(sorted(cons_dict.items(), key=lambda x:x[1], reverse=True))
-            print(sorted_cons_dict)
+
             for base, prop in sorted_cons_dict.items():
                 cons_bases.append(base)
                 curr_prop += prop
@@ -86,7 +81,6 @@ def build_cons_seq(cons_list, read_count, cons_threshold=0.85, do_not_include=[]
                     break
 
             cons_bases = sorted(cons_bases)
-            
 
             if len(cons_bases) == 1:
                 cons_seq += cons_bases[0]
@@ -114,3 +108,22 @@ def primer_regex_query_builder(primer):
             query += str(_AMBIGUOUS_BASES_DICT[char])
 
     return query
+
+def build_mcp_cons_dict_list(mcp_count_dict, mcp_len):
+    """
+    Generate list of dictionaries of base conservation for mcp output (mcp_cons_list)
+    e.g. [{'A':0.9, 'C':0.1}, {'T':1.0}, ....] for every base position
+    """
+
+    mcp_cons_list = []
+
+    for i in range(mcp_len):
+        index_base_dict = defaultdict(int)
+        for mcp in mcp_count_dict.keys():
+            if len(mcp) < mcp_len:
+                continue
+            base = mcp[i]
+            index_base_dict[base] += mcp_count_dict[mcp]
+        mcp_cons_list.append(index_base_dict)
+    
+    return mcp_cons_list

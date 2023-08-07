@@ -85,8 +85,7 @@ workflow {
     .join(fastp.out.cleaned_fastq)
     cutadapt(cutadapt_input, outdir)
 
-
-    // Just some logging for myself
+    // Just some logging for myself, will delete this eventually
     // final_out = fastp.out.cleaned_fastq
     // .join(cutadapt.out.cutadapt_out, remainder: true)
     // .map( { if (it[4] == null) { tuple(it[0], it[1], it[2], it[3]) } else { tuple(it[0], it[1], it[4], it[5]) }} )

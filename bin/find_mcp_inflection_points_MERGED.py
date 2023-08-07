@@ -21,39 +21,57 @@ def parse_args():
 
     return _PATH, _SAMPLE, _OUTPUT
 
+def find_mcp_inf_points(mcp_df):
+    """
+    Find inflection points from an mcp_df file output by "assess_mcp_proportions_MERGED.py"
+
+    Takes the list of average mcp conservations and gets the derivative of the curve
+    Keep any points of the derivative where value is above the 80th percentile
+
+    Outputs a dictionary with key-val pairs where vals are lists:
+        'strand' -> strand list
+        'inf_point' -> inf_point list
+
+    """
+
+    inf_point_dict = defaultdict(list)
+    start_indices = [ int(i) for i in mcp_df.columns.tolist() ]
+
+    for i in range(len(mcp_df)): # Loop through both possible strands of the mcp_df
+        strand = mcp_df.index[i]
+        props = mcp_df.iloc[i].tolist()
+        props = [ -val for val in props ] 
+
+        prop_diff = np.diff(props)/np.diff(start_indices) # Get the derivative
+        infl_points = np.where(prop_diff > np.percentile(prop_diff, 80))[0] # Grab points above 80th percentile
+
+        for ind in infl_points:
+            inf_point = start_indices[ind]
+
+            if inf_point < 10 or inf_point > 20: # Rule to facilitate results - won't accept 
+                continue                         # points below index 10 or above index 20
+                                                 # 10 means a cutoff of 15 and 20 a cutoff of 25
+                                                 # literature points to no primers existing that are 
+                                                 # shorter or bigger  than these lengths
+
+            inf_point_dict['strand'].append(strand)
+            inf_point_dict['inf_point'].append(inf_point)
+    
+    return inf_point_dict
+
 def main():
 
     _PATH, _SAMPLE, _OUTPUT = parse_args()
 
-    mcp_df = pd.read_csv(_PATH, sep='\t', index_col=0)
-    inf_point_dict = defaultdict(list)
+    mcp_df = pd.read_csv(_PATH, sep='\t', index_col=0) # Read mcp_df
+    inf_point_dict = find_mcp_inf_points(mcp_df) # Generate inflection points dict
 
-    x = [ int(i) for i in mcp_df.columns.tolist() ]
+    if len(inf_point_dict) > 0: # If the inf_point_dict isn't empty..
+        inf_point_df = pd.DataFrame.from_dict(inf_point_dict) # .. turn it into a dataframe
+        inf_point_df.to_csv(f'{_OUTPUT}/{_SAMPLE}_inf_points.tsv', sep='\t', index=False) # ..save it to a .tsv file
 
-    for i in range(len(mcp_df)):
-        strand = mcp_df.index[i]
-        props = mcp_df.iloc[i].tolist()
-        props = [ -val for val in props ]
-
-        prop_diff = np.diff(props)/np.diff(x)
-
-        infl_points = np.where(prop_diff > np.percentile(prop_diff, 80))[0]
-        for ind in infl_points:
-            inf_point = x[ind]
-
-            if inf_point < 15 or inf_point > 20:
-                continue
-
-            inf_point_dict['strand'].append(strand)
-            inf_point_dict['inf_point'].append(inf_point)
-
-    if len(inf_point_dict) > 0:
-        inf_point_df = pd.DataFrame.from_dict(inf_point_dict)
-        inf_point_df.to_csv(f'{_OUTPUT}/{_SAMPLE}_inf_points.tsv', sep='\t', index=False)
-
-    else:
-        # make empty inf_points file
-        fw = open(f'{_OUTPUT}/{_SAMPLE}_inf_points.tsv', 'w')
+    else: # If it is empty..
+        fw = open(f'{_OUTPUT}/{_SAMPLE}_inf_points.tsv', 'w') # ..make an empty file
         fw.close()
 
 
