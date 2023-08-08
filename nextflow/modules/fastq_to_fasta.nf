@@ -6,11 +6,11 @@ process fastq_to_fasta {
     container = '/hps/nobackup/rdf/metagenomics/singularity_cache/quay.io_biocontainers_seqtk:1.3.sif'
 
     input:
-    tuple path(fastq), val(project)
+    tuple val(project), path(fastq)
     val outdir
 
     output:
-    tuple path("*.fasta"), val(project), emit: conv_fasta
+    tuple val(project), path("*.fasta"), emit: merged_fasta
 
     """
     seqtk seq -a $fastq > ${fastq.simpleName}.fasta

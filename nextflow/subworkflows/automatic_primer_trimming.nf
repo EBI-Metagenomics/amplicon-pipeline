@@ -3,7 +3,7 @@ include { assess_mcp_cons } from '../modules/assess_mcp_cons.nf'
 include { find_mcp_inf_points } from '../modules/find_mcp_inf_points.nf'
 include { assess_mcp_inf_points } from '../modules/assess_mcp_inf_points.nf'
 
-workflow AUTOMATIC_PRIMER_TRIMMING {
+workflow AUTOMATIC_PRIMER_PREDICTION {
 
     // Subworkflow that performs automatic primer trimming on sequencing reads
     // Takes flags for the forward and reverse strands to make sure primers are  
