@@ -3,7 +3,7 @@ process assess_mcp_inf_points {
     // Select inflection points most likely to be primer cutoff points
 
     label 'light'
-    publishDir "${outdir}/merged/${project}", mode : "copy"
+    publishDir "${outdir}/${project}", mode : "copy"
 
     input:
     tuple val(project), path(inf_points_out), path(fastq)

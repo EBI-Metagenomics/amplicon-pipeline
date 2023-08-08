@@ -4,7 +4,7 @@ process trimming_conductor {
     // flags into "trimming_conductor_out.txt"
 
     label 'light'
-    publishDir "${outdir}/merged/${project}", mode : "copy"
+    publishDir "${outdir}/${project}", mode : "copy"
 
     input:
     tuple val(project), path(general_primer_flag), path(std_primer_flag)

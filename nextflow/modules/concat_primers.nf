@@ -5,7 +5,7 @@ process concat_primers {
     // strand has an auto primer
 
     label 'light'
-    publishDir "${outdir}/merged/${project}", mode : "copy"
+    publishDir "${outdir}/${project}", mode : "copy"
     
     input:
     tuple val(project), path(std_primers), path(auto_primers)

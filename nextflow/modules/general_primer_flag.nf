@@ -3,7 +3,7 @@ process general_primer_flag {
     // Check for the presence of primers in general
     
     label 'light'
-    publishDir "${outdir}/merged/${project}", mode : "copy"
+    publishDir "${outdir}/${project}", mode : "copy"
     // container = '/hps/nobackup/rdf/metagenomics/singularity_cache_nextflow/quay.io-biocontainers-biopython-1.75.img'
 
     input:

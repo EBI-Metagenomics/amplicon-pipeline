@@ -3,7 +3,7 @@ process std_primer_flag {
     // Check for presence of standard library of primers (stored in ./data/standard_primers)
 
     label 'light'
-    publishDir "${outdir}/merged/${project}", mode : "copy"
+    publishDir "${outdir}/${project}", mode : "copy"
 
     input:
     tuple  val(project), path(fastq)
