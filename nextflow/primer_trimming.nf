@@ -37,6 +37,8 @@ workflow {
         outdir
     )
 
+    // CMSEARCH.out.cmsearch_deoverlap_out.view()
+
     // TODO: amplified region process will go here
 
     // Automatic primer identification
