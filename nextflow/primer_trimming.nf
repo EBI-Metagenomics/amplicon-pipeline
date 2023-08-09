@@ -5,6 +5,7 @@ nextflow.enable.dsl=2
 
 include { cutadapt } from './modules/cutadapt.nf'
 include { concat_primers } from './modules/concat_primers.nf'
+include { classify_var_regions } from './modules/classify_var_regions.nf'
 
 include { QC } from './subworkflows/qc_swf.nf'
 include { PRIMER_IDENTIFICATION } from './subworkflows/primer_identification_swf.nf'
@@ -37,9 +38,11 @@ workflow {
         outdir
     )
 
-    // CMSEARCH.out.cmsearch_deoverlap_out.view()
-
-    // TODO: amplified region process will go here
+    // Classify amplified regions
+    classify_var_regions(
+        CMSEARCH.out.cmsearch_deoverlap_out,
+        outdir
+    )
 
     // Automatic primer identification
     PRIMER_IDENTIFICATION(
