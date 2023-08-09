@@ -24,6 +24,7 @@ workflow {
     // Workflow for running the primer-trimming survey on sequencing reads
 
     // Quality control
+    // TODO: need to get this working for single-end reads
     QC(
         project,
         reads,
@@ -35,8 +36,6 @@ workflow {
         QC.out.merged_fasta,
         outdir
     )
-
-    CMSEARCH.out.cmsearch_out.view()
 
     // TODO: amplified region process will go here
 
@@ -69,10 +68,10 @@ workflow {
     .join(QC.out.fastp_cleaned_fastq)
     cutadapt(cutadapt_input, outdir)
 
-    Just some logging for myself, will delete this eventually
-    final_out = fastp.out.cleaned_fastq
-    .join(cutadapt.out.cutadapt_out, remainder: true)
-    .map( { if (it[4] == null) { tuple(it[0], it[1], it[2], it[3]) } else { tuple(it[0], it[1], it[4], it[5]) }} )
+    // Just some logging for myself, will delete this eventually
+    // final_out = fastp.out.cleaned_fastq
+    // .join(cutadapt.out.cutadapt_out, remainder: true)
+    // .map( { if (it[4] == null) { tuple(it[0], it[1], it[2], it[3]) } else { tuple(it[0], it[1], it[4], it[5]) }} )
 
 
 }

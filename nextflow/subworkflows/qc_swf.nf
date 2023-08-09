@@ -5,6 +5,9 @@ include { fastq_to_fasta } from '../modules/fastq_to_fasta.nf'
 
 workflow QC {
 
+    // Quality control subworkflow
+    // Removes adapters with fastp, merges paired-end reads with seqprep, converts resulting fastq file to fasta
+
     take:
         project
         reads
