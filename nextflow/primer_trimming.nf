@@ -51,34 +51,34 @@ workflow {
         outdir
     )
 
-    // Automatic primer identification
-    PRIMER_IDENTIFICATION(
-        QC.out.merged_reads,
-        outdir
-    )
+    // // Automatic primer identification
+    // PRIMER_IDENTIFICATION(
+    //     QC.out.merged_reads,
+    //     outdir
+    // )
 
-    // Join flags with merged fastq files
-    auto_trimming_input = PRIMER_IDENTIFICATION.out.conductor_out
-    .join(QC.out.merged_reads)
+    // // Join flags with merged fastq files
+    // auto_trimming_input = PRIMER_IDENTIFICATION.out.conductor_out
+    // .join(QC.out.merged_reads)
 
 
-    // Run subworkflow for automatic primer trimming
-    // Outputs either empty fasta file or fasta file containing predicted primers
-    AUTOMATIC_PRIMER_TRIMMING(
-        auto_trimming_input,
-        outdir
-        )
+    // // Run subworkflow for automatic primer trimming
+    // // Outputs either empty fasta file or fasta file containing predicted primers
+    // AUTOMATIC_PRIMER_PREDICTION(
+    //     auto_trimming_input,
+    //     outdir
+    //     )
 
-    // Join auto flags to std flags and generated a concatenated fasta file containing primers to trim off
-    // This can contain any valid combination of stranded std/auto primers 
-    concat_input = PRIMER_IDENTIFICATION.out.std_primer_out
-    .join(AUTOMATIC_PRIMER_TRIMMING.out.auto_primer_trimming_out)
-    concat_primers(concat_input, outdir)
+    // // Join auto flags to std flags and generated a concatenated fasta file containing primers to trim off
+    // // This can contain any valid combination of stranded std/auto primers 
+    // concat_input = PRIMER_IDENTIFICATION.out.std_primer_out
+    // .join(AUTOMATIC_PRIMER_TRIMMING.out.auto_primer_trimming_out)
+    // concat_primers(concat_input, outdir)
 
-    // Join concatenated primers to the fastp-cleaned paired reads files and run cutadapt on them
-    cutadapt_input = concat_primers.out.concat_primers_out
-    .join(QC.out.fastp_cleaned_fastq)
-    cutadapt(cutadapt_input, outdir)
+    // // Join concatenated primers to the fastp-cleaned paired reads files and run cutadapt on them
+    // cutadapt_input = concat_primers.out.concat_primers_out
+    // .join(QC.out.fastp_cleaned_fastq)
+    // cutadapt(cutadapt_input, outdir)
 
     // Just some logging for myself, will delete this eventually
     // final_out = fastp.out.cleaned_fastq
