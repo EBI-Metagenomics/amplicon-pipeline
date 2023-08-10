@@ -259,20 +259,31 @@ def print_to_table(tsv_out, results):
         results: The dictionary that contains a list of variable regions for a run and their match proportions.
     """
     #logging.info(results)
+
+    prefix = tsv_out.split('.tsv')[0]
+
     f = open(tsv_out, 'w')
+    fw = open(f'{prefix}_regions.txt', 'w')
     # print the table header to file
     f.write('Run\tAssertionEvidence\tAssertionMethod\tMarker gene\tVariable region\n')
     for run, amplified_region_dict in results.items():
         records = set()
+        records_regions = set()
         for domain, amplified_regions in amplified_region_dict.items():
             for vr in amplified_regions.keys():
                 if not vr == '':
                     record = '{}\tECO_0000363\tautomatic assertion\t{}\t{}\n'.format(run, determine_marker_gene(domain),
                                                                                      vr)
                     records.add(record)
+                    records_regions.add(f'{determine_marker_gene(domain)};{vr}\n')
         for record_to_print in records:
             f.write(record_to_print)
+        
+        for record_to_print in records_regions:
+            fw.write(record_to_print)
+
     f.close()
+    fw.close()
 
 
 def retrieve_regions(tblout_file_list, outfile_prefix, stats_out, condensed_out, missing_out, seq_count_out):

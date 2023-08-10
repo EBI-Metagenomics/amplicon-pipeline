@@ -6,6 +6,7 @@ nextflow.enable.dsl=2
 include { cutadapt } from './modules/cutadapt.nf'
 include { concat_primers } from './modules/concat_primers.nf'
 include { classify_var_regions } from './modules/classify_var_regions.nf'
+include { parse_var_classification } from './modules/parse_var_classification'
 
 include { QC } from './subworkflows/qc_swf.nf'
 include { PRIMER_IDENTIFICATION } from './subworkflows/primer_identification_swf.nf'
@@ -16,7 +17,7 @@ params.path = null
 params.project = null
 params.outdir = null
 
-reads = Channel.fromFilePairs( "${params.path}/ERR447178*_{1,2}.fastq.gz" )
+reads = Channel.fromFilePairs( "${params.path}/ERR4471746*_{1,2}.fastq.gz" )
 project = Channel.value( params.project )
 outdir = params.outdir
 
@@ -41,6 +42,12 @@ workflow {
     // Classify amplified regions
     classify_var_regions(
         CMSEARCH.out.cmsearch_deoverlap_out,
+        outdir
+    )
+
+    parse_var_classification(
+        classify_var_regions.out.classify_var_summary,
+        classify_var_regions.out.classify_var_regions,
         outdir
     )
 
