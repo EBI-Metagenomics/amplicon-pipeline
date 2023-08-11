@@ -1,5 +1,5 @@
 
-process assess_mcp_inf_points {
+process ASSESS_MCP_INF_POINTS {
     // Select inflection points most likely to be primer cutoff points
 
     label 'light'

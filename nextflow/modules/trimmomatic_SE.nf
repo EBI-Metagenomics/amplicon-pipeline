@@ -1,5 +1,5 @@
 
-process trimmomatic_SE {
+process TRIMMOMATIC_SE {
     
     label 'light'
 

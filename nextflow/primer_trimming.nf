@@ -3,15 +3,16 @@ nextflow.enable.dsl=2
 // nextflow run nextflow/primer_trimming.nf --path /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_datasets/ERP123542/raw --project ERP123542 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged
 // nextflow run nextflow/primer_trimming.nf -profile lsf --path /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_datasets/ERP123542/raw --project ERP123542 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing
 
-include { cutadapt } from './modules/cutadapt.nf'
-include { concat_primers } from './modules/concat_primers.nf'
-include { classify_var_regions } from './modules/classify_var_regions.nf'
-include { parse_var_classification } from './modules/parse_var_classification'
+
+include { CLASSIFY_VAR_REGIONS } from './modules/classify_var_regions.nf'
+include { PARSE_VAR_CLASSIFICATION } from './modules/parse_var_classification'
+include { CUTADAPT } from './modules/cutadapt.nf'
+include { CONCAT_PRIMERS } from './modules/concat_primers.nf'
 
 include { QC } from './subworkflows/qc_swf.nf'
+include { CMSEARCH_SUBWF } from './subworkflows/cmsearch_swf.nf'
 include { PRIMER_IDENTIFICATION } from './subworkflows/primer_identification_swf.nf'
 include { AUTOMATIC_PRIMER_PREDICTION } from './subworkflows/automatic_primer_trimming.nf'
-include { CMSEARCH } from './subworkflows/cmsearch_swf.nf'
 
 params.path = null
 params.project = null
@@ -34,20 +35,20 @@ workflow {
     )
 
     // cmsearch to get rRNA matches
-    CMSEARCH(
+    CMSEARCH_SUBWF(
         QC.out.merged_fasta,
         outdir
     )
 
     // Classify amplified regions
-    classify_var_regions(
-        CMSEARCH.out.cmsearch_deoverlap_out,
+    CLASSIFY_VAR_REGIONS(
+        CMSEARCH_SUBWF.out.cmsearch_deoverlap_out,
         outdir
     )
 
-    parse_var_classification(
-        classify_var_regions.out.classify_var_summary,
-        classify_var_regions.out.classify_var_regions,
+    PARSE_VAR_CLASSIFICATION(
+        CLASSIFY_VAR_REGIONS.out.classify_var_summary,
+        CLASSIFY_VAR_REGIONS.out.classify_var_regions,
         outdir
     )
 
@@ -59,7 +60,7 @@ workflow {
 
     // Join flags with merged fastq files
     auto_trimming_input = PRIMER_IDENTIFICATION.out.conductor_out
-    .join(QC.out.merged_reads)
+                          .join(QC.out.merged_reads)
 
 
     // Run subworkflow for automatic primer trimming
@@ -67,22 +68,30 @@ workflow {
     AUTOMATIC_PRIMER_PREDICTION(
         auto_trimming_input,
         outdir
-        )
+    )
 
     // Join auto flags to std flags and generated a concatenated fasta file containing primers to trim off
     // This can contain any valid combination of stranded std/auto primers 
     concat_input = PRIMER_IDENTIFICATION.out.std_primer_out
-    .join(AUTOMATIC_PRIMER_TRIMMING.out.auto_primer_trimming_out)
-    concat_primers(concat_input, outdir)
+                   .join(AUTOMATIC_PRIMER_PREDICTION.out.auto_primer_trimming_out)
+   
+    CONCAT_PRIMERS(
+        concat_input,
+        outdir
+    )
 
     // Join concatenated primers to the fastp-cleaned paired reads files and run cutadapt on them
-    cutadapt_input = concat_primers.out.concat_primers_out
-    .join(QC.out.fastp_cleaned_fastq)
-    cutadapt(cutadapt_input, outdir)
+    cutadapt_input = CONCAT_PRIMERS.out.concat_primers_out
+                     .join(QC.out.fastp_cleaned_fastq)
+   
+    CUTADAPT(
+        cutadapt_input,
+        outdir
+    )
 
     // Just some logging for myself, will delete this eventually
     // final_out = fastp.out.cleaned_fastq
-    // .join(cutadapt.out.cutadapt_out, remainder: true)
+    // .join(CUTADAPT.out.cutadapt_out, remainder: true)
     // .map( { if (it[4] == null) { tuple(it[0], it[1], it[2], it[3]) } else { tuple(it[0], it[1], it[4], it[5]) }} )
 
 

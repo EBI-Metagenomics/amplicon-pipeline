@@ -1,7 +1,7 @@
 
-include { assess_mcp_cons } from '../modules/assess_mcp_cons.nf'
-include { find_mcp_inf_points } from '../modules/find_mcp_inf_points.nf'
-include { assess_mcp_inf_points } from '../modules/assess_mcp_inf_points.nf'
+include { ASSESS_MCP_CONS } from '../modules/assess_mcp_cons.nf'
+include { FIND_MCP_INF_POINTS } from '../modules/find_mcp_inf_points.nf'
+include { ASSESS_MCP_INF_POINTS } from '../modules/assess_mcp_inf_points.nf'
 
 workflow AUTOMATIC_PRIMER_PREDICTION {
 
@@ -17,22 +17,32 @@ workflow AUTOMATIC_PRIMER_PREDICTION {
         outdir
     main:
         // Use Most Common Prefix (MCP) method to generate curves of base conservation
-        assess_mcp_cons(
+        ASSESS_MCP_CONS(
             auto_trimming_input.map{ it[0] }, // project ID
             auto_trimming_input.map{ it[1] }, // fwd_flag
             auto_trimming_input.map{ it[2] }, // rev_flag
             auto_trimming_input.map{ it[3] }, // fastq
             outdir
-            )
+        )
 
-        find_mcp_inf_points(assess_mcp_cons.out.mcp_cons_out, outdir) // Find inflection points in conservation curves
-        assess_inf_input = find_mcp_inf_points.out.inf_points_out // Join fastq channel and the inf_points channel
-        .join(auto_trimming_input.map{ it[0, 3] })
-        assess_mcp_inf_points(assess_inf_input, outdir) // Select inflection points most likely to be primer cutoff points
+        // Find inflection points in conservation curves
+        FIND_MCP_INF_POINTS(
+            ASSESS_MCP_CONS.out.mcp_cons_out,
+            outdir
+        ) 
 
+        // Join fastq channel and the inf_points channel
+        assess_inf_input = FIND_MCP_INF_POINTS.out.inf_points_out 
+                           .join(auto_trimming_input.map{ it[0, 3] })
+        
+        // Select inflection points most likely to be primer cutoff points
+        ASSESS_MCP_INF_POINTS(
+            assess_inf_input,
+            outdir
+        )
    emit:
         // Had to make even std runs go through this workflow (albeit just outputting empty files for every process) due to a join later being slow otherwise. 
         // wonder if there's a better way?
-        auto_primer_trimming_out = assess_mcp_inf_points.out
+        auto_primer_trimming_out = ASSESS_MCP_INF_POINTS.out
 
 }

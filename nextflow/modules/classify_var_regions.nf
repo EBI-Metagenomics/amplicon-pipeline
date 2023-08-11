@@ -1,5 +1,5 @@
 
-process classify_var_regions {
+process CLASSIFY_VAR_REGIONS {
 
     label 'light'
 

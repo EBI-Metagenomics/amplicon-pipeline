@@ -1,5 +1,5 @@
 
-process find_mcp_inf_points {
+process FIND_MCP_INF_POINTS {
     // Find inflection points in conservation curves
 
     label 'light'

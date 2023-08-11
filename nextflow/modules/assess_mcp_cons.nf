@@ -1,5 +1,5 @@
 
-process assess_mcp_cons {
+process ASSESS_MCP_CONS {
     // Use Most Common Prefix (MCP) method to generate curves of base conservation
 
     label 'light'

@@ -1,5 +1,5 @@
 
-process trimming_conductor {
+process TRIMMING_CONDUCTOR {
     // Parse the outputs of the std and general primer searches and output
     // flags into "trimming_conductor_out.txt"
 

@@ -1,5 +1,5 @@
 
-process parse_conductor {
+process PARSE_CONDUCTOR {
     
     // Parse the trimming_conductor output and store 
     // the flags into environment variables 

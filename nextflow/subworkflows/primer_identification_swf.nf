@@ -1,8 +1,8 @@
 
-include { std_primer_flag } from '../modules/std_primer_flag.nf'
-include { general_primer_flag } from '../modules/general_primer_flag.nf'
-include { trimming_conductor } from '../modules/trimming_conductor.nf'
-include { parse_conductor } from '../modules/parse_conductor.nf'
+include { STD_PRIMER_FLAG } from '../modules/std_primer_flag.nf'
+include { GENERAL_PRIMER_FLAG } from '../modules/general_primer_flag.nf'
+include { TRIMMING_CONDUCTOR } from '../modules/trimming_conductor.nf'
+include { PARSE_CONDUCTOR } from '../modules/parse_conductor.nf'
 
 workflow PRIMER_IDENTIFICATION {
     
@@ -17,20 +17,37 @@ workflow PRIMER_IDENTIFICATION {
         outdir
 
     main:
-        // Check for presence of primers
-        std_primer_flag(merged_reads, outdir) // Standard Library primers
-        general_primer_flag(merged_reads, outdir) // Primers in general
+        // Standard Library primers
+        STD_PRIMER_FLAG(
+            merged_reads,
+            outdir
+        ) 
+        // Primers in general
+        GENERAL_PRIMER_FLAG(
+            merged_reads, 
+            outdir
+        ) 
 
         // Combining std and general primer outputs and parsing them to guide 
         // samples through automatic primer identification and trimming by cutadapt
-        comb_flags = general_primer_flag.out.general_primer_out
-        .join(std_primer_flag.out.std_primer_out)
-        trimming_conductor(comb_flags, outdir) // Generate a flags file with vals of 'none/std/auto' for both fwd and rev
-        parse_conductor(trimming_conductor.out.trimming_conductor_out, outdir) // Parse flags file into env variables
+        comb_flags = GENERAL_PRIMER_FLAG.out.general_primer_out
+                     .join(STD_PRIMER_FLAG.out.std_primer_out)
+        
+        // Generate a flags file with vals of 'none/std/auto' for both fwd and rev
+        TRIMMING_CONDUCTOR(
+            comb_flags,
+            outdir
+        )
+        
+        // Parse flags file into env variables
+        PARSE_CONDUCTOR(
+            TRIMMING_CONDUCTOR.out.trimming_conductor_out,
+            outdir
+        )
 
     
     emit:
-        conductor_out = parse_conductor.out.conductor_out
-        std_primer_out = std_primer_flag.out.std_primer_out
+        conductor_out = PARSE_CONDUCTOR.out.conductor_out
+        std_primer_out = STD_PRIMER_FLAG.out.std_primer_out
     
 }

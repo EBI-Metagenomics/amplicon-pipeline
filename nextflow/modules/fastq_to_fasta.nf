@@ -1,5 +1,5 @@
 
-process fastq_to_fasta {
+process FASTQ_TO_FASTA {
     
     label 'light'
     // publishDir "${outdir}/merged/${project}", mode : "copy"

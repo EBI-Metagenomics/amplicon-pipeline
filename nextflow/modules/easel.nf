@@ -1,5 +1,5 @@
 
-process easel {
+process EASEL {
 
     label 'light'
     container = '/hps/nobackup/rdf/metagenomics/singularity_cache_nextflow/quay.io-biocontainers-easel-0.48--hec16e2b_1.img'

@@ -1,5 +1,5 @@
 
-process seqprep_merge {
+process SEQPREP_MERGE {
     // Merge paired-end reads with seqprep
 
     label 'light'

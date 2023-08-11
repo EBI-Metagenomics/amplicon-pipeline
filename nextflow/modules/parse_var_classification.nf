@@ -1,5 +1,5 @@
 
-process parse_var_classification {
+process PARSE_VAR_CLASSIFICATION {
 
     label 'light'
 

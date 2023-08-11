@@ -1,5 +1,5 @@
 
-process fastp {
+process FASTP {
     // Run fastp on paired-end reads
 
     label 'light'

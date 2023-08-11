@@ -1,7 +1,7 @@
 
 rfam_clan = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/rfam/ribo.claninfo")
 
-process cmsearch_deoverlap {
+process CMSEARCH_DEOVERLAP {
 
     label 'light' 
     container = '/hps/nobackup/rdf/metagenomics/singularity_cache_nextflow/quay.io-biocontainers-perl-5.22.2.1.img'

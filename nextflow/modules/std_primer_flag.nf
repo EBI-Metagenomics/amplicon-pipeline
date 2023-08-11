@@ -1,5 +1,5 @@
 
-process std_primer_flag {
+process STD_PRIMER_FLAG {
     // Check for presence of standard library of primers (stored in ./data/standard_primers)
 
     label 'light'

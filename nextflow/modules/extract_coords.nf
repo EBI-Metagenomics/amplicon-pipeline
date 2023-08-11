@@ -1,5 +1,5 @@
 
-process extract_coords {
+process EXTRACT_COORDS {
 
     label 'light'
 

@@ -1,10 +1,10 @@
 
-include { cmsearch } from '../modules/cmsearch.nf'
-include { cmsearch_deoverlap } from '../modules/cmsearch_deoverlap.nf'
-include { easel } from '../modules/easel.nf'
-include { extract_coords } from '../modules/extract_coords.nf'
+include { CMSEARCH } from '../modules/cmsearch.nf'
+include { CMSEARCH_DEOVERLAP } from '../modules/cmsearch_deoverlap.nf'
+include { EASEL } from '../modules/easel.nf'
+include { EXTRACT_COORDS } from '../modules/extract_coords.nf'
 
-workflow CMSEARCH {
+workflow CMSEARCH_SUBWF {
 
     // Subworkflow that runs cmsearch to find matches in RFAM in fasta files
     
@@ -13,19 +13,34 @@ workflow CMSEARCH {
         outdir
 
     main:
-        cmsearch(fasta, outdir)
-        cmsearch_deoverlap(cmsearch.out.cmsearch_out, outdir)
+        CMSEARCH(
+            fasta, 
+            outdir
+        )
 
-        easel_input = fasta.join(cmsearch_deoverlap.out.cmsearch_deoverlap_out)
+        CMSEARCH_DEOVERLAP(
+            CMSEARCH.out.cmsearch_out,
+            outdir
+        )
+
+        easel_input = fasta
+                      .join(CMSEARCH_DEOVERLAP.out.cmsearch_deoverlap_out)
         
-        easel(easel_input, outdir)
-        extract_coords(easel.out.easel_coords, outdir)
+        EASEL(
+            easel_input,
+            outdir
+        )
+
+        EXTRACT_COORDS(
+            EASEL.out.easel_coords,
+            outdir
+        )
 
     emit:
-        cmsearch_out = cmsearch.out.cmsearch_out
-        cmsearch_deoverlap_out = cmsearch_deoverlap.out.cmsearch_deoverlap_out
-        easel_out = easel.out.easel_coords
-        ssu_fasta = extract_coords.out.ssu_fasta
-        lsu_fasta = extract_coords.out.lsu_fasta
+        cmsearch_out = CMSEARCH.out.cmsearch_out
+        cmsearch_deoverlap_out = CMSEARCH_DEOVERLAP.out.cmsearch_deoverlap_out
+        easel_out = EASEL.out.easel_coords
+        ssu_fasta = EXTRACT_COORDS.out.ssu_fasta
+        lsu_fasta = EXTRACT_COORDS.out.lsu_fasta
     
 }

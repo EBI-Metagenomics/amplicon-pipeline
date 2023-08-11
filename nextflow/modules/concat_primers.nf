@@ -1,5 +1,5 @@
 
-process concat_primers {
+process CONCAT_PRIMERS {
     // Concatenate result of both the std primer identification and auto primer identification
     // This is important in case for a run the fwd strand has a known std primer but the reverse
     // strand has an auto primer

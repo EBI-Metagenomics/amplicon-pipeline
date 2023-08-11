@@ -1,8 +1,8 @@
 
-include { fastp } from '../modules/fastp.nf'
-include { seqprep_merge } from '../modules/seqprep_merge.nf'
-include { trimmomatic_SE } from '../modules/trimmomatic_SE.nf'
-include { fastq_to_fasta } from '../modules/fastq_to_fasta.nf'
+include { FASTP } from '../modules/fastp.nf'
+include { SEQPREP_MERGE } from '../modules/seqprep_merge.nf'
+include { TRIMMOMATIC_SE } from '../modules/trimmomatic_SE.nf'
+include { FASTQ_TO_FASTA } from '../modules/fastq_to_fasta.nf'
 
 workflow QC {
 
@@ -15,15 +15,32 @@ workflow QC {
         outdir
 
     main:
-        fastp_input = project.combine(reads)
-        fastp(fastp_input, outdir)
-        seqprep_merge(fastp.out.cleaned_fastq, outdir)
-        trimmomatic_SE(seqprep_merge.out.merged_fastq, outdir)
-        fastq_to_fasta(trimmomatic_SE.out.trimmed_fastq, outdir)
+        fastp_input = project
+                      .combine(reads)
+        
+        FASTP(
+            fastp_input,
+            outdir
+        )
+
+        SEQPREP_MERGE(
+            FASTP.out.cleaned_fastq,
+            outdir
+        )
+
+        TRIMMOMATIC_SE(
+            SEQPREP_MERGE.out.merged_fastq, 
+            outdir
+        )
+
+        FASTQ_TO_FASTA(
+            TRIMMOMATIC_SE.out.trimmed_fastq,
+            outdir
+        )
     
     emit:
-        fastp_cleaned_fastq = fastp.out.cleaned_fastq
-        merged_reads = trimmomatic_SE.out.trimmed_fastq
-        merged_fasta = fastq_to_fasta.out.merged_fasta
+        fastp_cleaned_fastq = FASTP.out.cleaned_fastq
+        merged_reads = TRIMMOMATIC_SE.out.trimmed_fastq
+        merged_fasta = FASTQ_TO_FASTA.out.merged_fasta
     
 }

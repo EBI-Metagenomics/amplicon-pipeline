@@ -1,5 +1,5 @@
 
-process general_primer_flag {
+process GENERAL_PRIMER_FLAG {
     // Check for the presence of primers in general
     
     label 'light'

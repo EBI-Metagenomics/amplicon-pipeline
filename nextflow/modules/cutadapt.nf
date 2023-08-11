@@ -1,5 +1,5 @@
 
-process cutadapt {
+process CUTADAPT {
     // Trim the given primers using cutadapt for two paired-end read files
 
     label 'light'
