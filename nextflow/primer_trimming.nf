@@ -1,7 +1,9 @@
 nextflow.enable.dsl=2
 
 // nextflow run nextflow/primer_trimming.nf --path /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_datasets/ERP123542/raw --project ERP123542 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged
+// nextflow run nextflow/primer_trimming.nf --path /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_datasets/SRP350069/raw/ --project SRP350069 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged
 // nextflow run nextflow/primer_trimming.nf -profile lsf --path /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_datasets/ERP123542/raw --project ERP123542 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing
+
 
 
 include { CLASSIFY_VAR_REGIONS } from './modules/classify_var_regions.nf'
@@ -11,14 +13,29 @@ include { CONCAT_PRIMERS } from './modules/concat_primers.nf'
 
 include { QC } from './subworkflows/qc_swf.nf'
 include { CMSEARCH_SUBWF } from './subworkflows/cmsearch_swf.nf'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_SSU} from './subworkflows/mapseq_otu_krona_swf.nf'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_LSU} from './subworkflows/mapseq_otu_krona_swf.nf'
 include { PRIMER_IDENTIFICATION } from './subworkflows/primer_identification_swf.nf'
 include { AUTOMATIC_PRIMER_PREDICTION } from './subworkflows/automatic_primer_trimming.nf'
+
+
+ssu_db_fasta = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_ssu-20200130/SSU.fasta")
+ssu_db_tax = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_ssu-20200130/slv_ssu_filtered2.txt")
+ssu_db_otu = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_ssu-20200130/ssu2.otu")
+ssu_db_mscluster = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_ssu-20200130/SSU.fasta.mscluster")
+ssu_label = "SSU"
+
+lsu_db_fasta = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_lsu-20200130/LSU.fasta")
+lsu_db_tax = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_lsu-20200130/slv_lsu_filtered2.txt")
+lsu_db_otu = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_lsu-20200130/lsu2.otu")
+lsu_db_mscluster = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_lsu-20200130/LSU.fasta.mscluster")
+lsu_label = "LSU"
 
 params.path = null
 params.project = null
 params.outdir = null
 
-reads = Channel.fromFilePairs( "${params.path}/ERR4471746*_{1,2}.fastq.gz" )
+reads = Channel.fromFilePairs( "${params.path}/*_{1,2}.fastq.gz" )
 project = Channel.value( params.project )
 outdir = params.outdir
 
@@ -39,6 +56,21 @@ workflow {
         QC.out.merged_fasta,
         outdir
     )
+
+    ssu_mapseq_krona_tuple = tuple(ssu_db_fasta, ssu_db_tax, ssu_db_otu, ssu_db_mscluster, ssu_label)
+    lsu_mapseq_krona_tuple = tuple(lsu_db_fasta, lsu_db_tax, lsu_db_otu, lsu_db_mscluster, lsu_label)
+
+    MAPSEQ_OTU_KRONA_SSU(
+        CMSEARCH_SUBWF.out.ssu_fasta,
+        ssu_mapseq_krona_tuple,
+        outdir
+    )
+
+    MAPSEQ_OTU_KRONA_LSU(
+        CMSEARCH_SUBWF.out.lsu_fasta,
+        lsu_mapseq_krona_tuple,
+        outdir
+    )    
 
     // Classify amplified regions
     CLASSIFY_VAR_REGIONS(

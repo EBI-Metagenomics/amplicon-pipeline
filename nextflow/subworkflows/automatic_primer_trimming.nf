@@ -40,6 +40,7 @@ workflow AUTOMATIC_PRIMER_PREDICTION {
             assess_inf_input,
             outdir
         )
+
    emit:
         // Had to make even std runs go through this workflow (albeit just outputting empty files for every process) due to a join later being slow otherwise. 
         // wonder if there's a better way?
