@@ -19,6 +19,8 @@ include { PRIMER_IDENTIFICATION } from './subworkflows/primer_identification_swf
 include { AUTOMATIC_PRIMER_PREDICTION } from './subworkflows/automatic_primer_trimming.nf'
 
 
+// Silva databases
+// TODO: Move these to config
 ssu_db_fasta = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_ssu-20200130/SSU.fasta")
 ssu_db_tax = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_ssu-20200130/slv_ssu_filtered2.txt")
 ssu_db_otu = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_ssu-20200130/ssu2.otu")
