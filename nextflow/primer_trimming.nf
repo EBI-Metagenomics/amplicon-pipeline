@@ -1,7 +1,7 @@
 nextflow.enable.dsl=2
 
 // nextflow run nextflow/primer_trimming.nf --path /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_datasets/ERP123542/raw --project ERP123542 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged
-// nextflow run nextflow/primer_trimming.nf --path /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_datasets/SRP350069/raw/ --project SRP350069 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged
+// nextflow run nextflow/primer_trimming.nf --path /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_datasets/ERP122862_subset --project ERP122862 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged
 // nextflow run nextflow/primer_trimming.nf -profile lsf --path /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_datasets/ERP123542/raw --project ERP123542 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing
 
 
@@ -47,6 +47,9 @@ workflow {
 
     // Quality control
     // TODO: need to get this working for single-end reads
+    // TODO: need to change the 'project' id in the tuples to meta to work with nf-core
+    // TODO: organise the publishDirs in a sensible way
+
     QC(
         project,
         reads,
@@ -94,7 +97,7 @@ workflow {
 
     // Join flags with merged fastq files
     auto_trimming_input = PRIMER_IDENTIFICATION.out.conductor_out
-                          .join(QC.out.merged_reads)
+                          .join(QC.out.merged_reads, by: [0, 1])
 
 
     // Run subworkflow for automatic primer trimming
@@ -107,7 +110,7 @@ workflow {
     // Join auto flags to std flags and generated a concatenated fasta file containing primers to trim off
     // This can contain any valid combination of stranded std/auto primers 
     concat_input = PRIMER_IDENTIFICATION.out.std_primer_out
-                   .join(AUTOMATIC_PRIMER_PREDICTION.out.auto_primer_trimming_out)
+                   .join(AUTOMATIC_PRIMER_PREDICTION.out.auto_primer_trimming_out, by: [0, 1])
    
     CONCAT_PRIMERS(
         concat_input,
@@ -116,7 +119,7 @@ workflow {
 
     // Join concatenated primers to the fastp-cleaned paired reads files and run cutadapt on them
     cutadapt_input = CONCAT_PRIMERS.out.concat_primers_out
-                     .join(QC.out.fastp_cleaned_fastq)
+                     .join(QC.out.fastp_cleaned_fastq, by: [0, 1])
    
     CUTADAPT(
         cutadapt_input,

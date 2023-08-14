@@ -19,9 +19,10 @@ workflow AUTOMATIC_PRIMER_PREDICTION {
         // Use Most Common Prefix (MCP) method to generate curves of base conservation
         ASSESS_MCP_CONS(
             auto_trimming_input.map{ it[0] }, // project ID
-            auto_trimming_input.map{ it[1] }, // fwd_flag
-            auto_trimming_input.map{ it[2] }, // rev_flag
-            auto_trimming_input.map{ it[3] }, // fastq
+            auto_trimming_input.map{ it[1] }, // Sample ID
+            auto_trimming_input.map{ it[2] }, // fwd_flag
+            auto_trimming_input.map{ it[3] }, // rev_flag
+            auto_trimming_input.map{ it[4] }, // fastq
             outdir
         )
 
@@ -33,7 +34,7 @@ workflow AUTOMATIC_PRIMER_PREDICTION {
 
         // Join fastq channel and the inf_points channel
         assess_inf_input = FIND_MCP_INF_POINTS.out.inf_points_out 
-                           .join(auto_trimming_input.map{ it[0, 3] })
+                           .join(auto_trimming_input.map{ it[0, 1, 4] }, by: [0, 1])
         
         // Select inflection points most likely to be primer cutoff points
         ASSESS_MCP_INF_POINTS(

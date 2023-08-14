@@ -7,11 +7,11 @@ process GENERAL_PRIMER_FLAG {
     // container = '/hps/nobackup/rdf/metagenomics/singularity_cache_nextflow/quay.io-biocontainers-biopython-1.75.img'
 
     input:
-    tuple  val(project), path(fasta)
+    tuple  val(project), val(sampleId), path(fasta)
     val outdir
 
     output:
-    tuple val(project), path("*general_primer_out.txt"), emit: general_primer_out
+    tuple val(project), val(sampleId), path("*general_primer_out.txt"), emit: general_primer_out
     // path "*auto_primers.fasta", emit: auto_primer_seq
 
     """

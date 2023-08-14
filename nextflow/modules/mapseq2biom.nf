@@ -4,12 +4,12 @@ process MAPSEQ2BIOM {
     label 'light' // Will likely need to give this task more CPUs 
     
     input:
-    tuple val(project), path(mapseq_out)
+    tuple val(project), val(sampleId), path(mapseq_out)
     tuple path(db_fasta), path(db_tax), path(db_otu), path(db_mscluster), val(label)
     val outdir
 
     output:
-    tuple val(project), path("${mapseq_out.simpleName}.tsv"), path("${mapseq_out.simpleName}.txt"), path("*notaxid.tsv"), emit: mapseq2biom_out
+    tuple val(project), val(sampleId), path("${mapseq_out.simpleName}.tsv"), path("${mapseq_out.simpleName}.txt"), path("*notaxid.tsv"), emit: mapseq2biom_out
 
     """
     python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/mapseq2biom.py \

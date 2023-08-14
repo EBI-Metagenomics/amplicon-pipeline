@@ -4,7 +4,7 @@ process PARSE_VAR_CLASSIFICATION {
     label 'light'
 
     input:
-    tuple val(project), path(classify_var_out), path(classify_var_seqcount)
+    tuple val(project), val(sampleId), path(classify_var_out), path(classify_var_seqcount)
     path amplified_regions
     val outdir
 

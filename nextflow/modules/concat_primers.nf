@@ -8,11 +8,11 @@ process CONCAT_PRIMERS {
     publishDir "${outdir}/${project}", mode : "copy"
     
     input:
-    tuple val(project), path(std_primers), path(auto_primers)
+    tuple val(project), val(sampleId), path(std_primers), path(auto_primers)
     val outdir
 
     output:
-    tuple val(project), path("concat_primers.fasta") , optional: true, emit: concat_primers_out
+    tuple val(project), val(sampleId), path("concat_primers.fasta") , optional: true, emit: concat_primers_out
     
 
     // script:

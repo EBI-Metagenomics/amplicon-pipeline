@@ -6,13 +6,14 @@ process ASSESS_MCP_CONS {
 
     input:
     val project
+    val sampleId
     val fwd_flag
     val rev_flag
     path fastq
     val outdir
 
     output:
-    tuple val(project), path("*mcp_cons.tsv"), optional: true, emit: mcp_cons_out
+    tuple val(project), val(sampleId), path("*mcp_cons.tsv"), optional: true, emit: mcp_cons_out
 
     """
     if [[ ${fwd_flag} = "auto" ]] && [[ ${rev_flag} = "auto" ]]; then

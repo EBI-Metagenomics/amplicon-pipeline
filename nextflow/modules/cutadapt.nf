@@ -6,11 +6,11 @@ process CUTADAPT {
     publishDir "${outdir}/${project}", mode : "copy"
     
     input:
-    tuple val(project), path(concat_primers), val(sampleId), path(fastq_1), path(fastq_2)
+    tuple val(project), val(sampleId), path(concat_primers), path(fastq_1), path(fastq_2)
     val outdir
 
     output:
-    tuple val(project), path("*_1.cutadapt.fastq.gz"), path("*_2.cutadapt.fastq.gz"), optional: true, emit: cutadapt_out
+    tuple val(project), val(sampleId), path("*_1.cutadapt.fastq.gz"), path("*_2.cutadapt.fastq.gz"), optional: true, emit: cutadapt_out
         
     shell:
     '''

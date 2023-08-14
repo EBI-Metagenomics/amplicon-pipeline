@@ -25,7 +25,7 @@ workflow MAPSEQ_OTU_KRONA {
         )
 
         krona_input = MAPSEQ2BIOM.out.mapseq2biom_out
-                      .map( { tuple(it[0], it[2]) } )
+                      .map( { tuple(it[0], it[1], it[3]) } )
 
         KRONA(
             krona_input,

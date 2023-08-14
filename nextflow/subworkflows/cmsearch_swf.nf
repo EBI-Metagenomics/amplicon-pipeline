@@ -24,7 +24,7 @@ workflow CMSEARCH_SUBWF {
         )
 
         easel_input = fasta
-                      .join(CMSEARCH_DEOVERLAP.out.cmsearch_deoverlap_out)
+                      .join(CMSEARCH_DEOVERLAP.out.cmsearch_deoverlap_out, by: [0, 1])
         
         EASEL(
             easel_input,

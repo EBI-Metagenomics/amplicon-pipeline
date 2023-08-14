@@ -5,11 +5,11 @@ process FIND_MCP_INF_POINTS {
     label 'light'
 
     input:
-    tuple val(project), path(mcp_cons_out)
+    tuple val(project), val(sampleId), path(mcp_cons_out)
     val outdir
 
     output:
-    tuple val(project), path("*inf_points.tsv"), emit: inf_points_out
+    tuple val(project), val(sampleId), path("*inf_points.tsv"), emit: inf_points_out
 
     """
     if [[ -s ./$mcp_cons_out ]]; then

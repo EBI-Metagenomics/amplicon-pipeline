@@ -11,7 +11,7 @@ process SEQPREP_MERGE {
     val outdir
 
     output:
-    tuple  val(project), path("*_MERGED.fastq.gz"), emit: merged_fastq
+    tuple val(project), val(sampleId), path("*_MERGED.fastq.gz"), emit: merged_fastq
 
     """
     SeqPrep -f $fastq_1 -r $fastq_2 -1 1_unmerged.fastq.gz -2 2_unmerged.fastq.gz -s ${sampleId}_MERGED.fastq.gz
