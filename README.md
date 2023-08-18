@@ -17,6 +17,18 @@ The new subworkflows will consist of:
 
 ![V6 Schema](https://github.com/EBI-Metagenomics/asv-gen/assets/34323164/a6ef22eb-7967-4d1c-b635-0468eb11e174)
 
+## Completion
+
+The different subworkflow's levels of completion 
+
+- Quality Control (V5) :white_check_mark:
+- rRNA Prediction and SSU+LSU extraction (V5) :white_check_mark:
+- ITS extraction (V5) :x:
+- SSU+LSU+ITS taxonomic classification and visualisation (V5) :white_check_mark:
+- Amplified region inference ✅
+- Primer trimming :soon:
+- ASV generation, classification, and visualisation :soon:
+
 ## Requirements
 
 At the moment the prerequisites are Singularity and a micromamba environment located at:
