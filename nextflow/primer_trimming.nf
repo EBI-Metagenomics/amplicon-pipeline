@@ -83,11 +83,14 @@ workflow {
         outdir
     )
 
+    // TODO: what do we do about samples with more than one found amplified region
     PARSE_VAR_CLASSIFICATION(
         CLASSIFY_VAR_REGIONS.out.classify_var_summary,
         CLASSIFY_VAR_REGIONS.out.classify_var_regions,
         outdir
     )
+
+    PARSE_VAR_CLASSIFICATION.out.view()
 
     // Automatic primer identification
     PRIMER_IDENTIFICATION(

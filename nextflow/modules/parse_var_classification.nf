@@ -13,10 +13,12 @@ process PARSE_VAR_CLASSIFICATION {
     // tuple val(project), path("*.tsv"), path("*seq_count.txt"), emit: classify_var_summary
     // path "*.V*.txt", optional: true, emit: classify_var_regions
 
+
     """
     echo ${amplified_regions[0]}
     echo ${amplified_regions[1]}
-    cat $classify_var_out 
+    cat *.V*.txt > cat_amp_regions.txt
+    wc -l ./cat_amp_regions.txt
 
     """
     // amp_regions=\$(cut -f4-5 $classify_var_out | tail -n +2 | sed 's/\\t/;/g')
