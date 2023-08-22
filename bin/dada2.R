@@ -54,7 +54,6 @@ traced_remainder = length(final_f_map) - length(unmatched_asvs)
 total_dada2_reads = sum(seqtab.nochim)
 final_matched_perc = traced_remainder / total_dada2_reads * 100
 
-
 # Save map to file, with each line representing an ASV's read 
 fwrite(list(final_f_map), file = paste0("./", prefix, "_1_map.txt"))
 fwrite(list(final_r_map), file = paste0("./", prefix, "_2_map.txt"))
@@ -62,5 +61,11 @@ taxa = cbind(rownames(taxa), taxa)
 colnames(taxa) = c("ASV", colnames(taxa)[2:7])
 
 write.table(taxa, file = paste0("./", prefix, "_taxa.tsv"), sep = "\t", row.names=FALSE)
+
+# Write proportion of chimeric reads into a file
+seqtab_read_count = sum(seqtab)
+seqtab.nochim_read_count = sum(seqtab.nochim)
+proportion_chimeric = 1 - (seqtab.nochim_read_count / seqtab_read_count)
+write(proportion_chimeric, "./proportion_chimeric.txt")
 
 

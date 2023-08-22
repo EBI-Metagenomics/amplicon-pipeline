@@ -56,7 +56,6 @@ def parse_std_primers():
             key = ''
             for line in fr:
                 line = line.strip()
-                print(region)
                 if line[0] == '>':
                     if 'R' in line: # If a primer is a reverse primer
                         rev_flag = True

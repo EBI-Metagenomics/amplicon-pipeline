@@ -11,6 +11,8 @@ process STD_PRIMER_FLAG {
 
     output:
     tuple val(project), val(sampleId), path("*std_primers.fasta"), emit: std_primer_out
+    path "*std_primer_out.txt"
+
 
     """
     python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/standard_primer_agrep.py -i $fastq -s ${fastq.simpleName} -o ./
