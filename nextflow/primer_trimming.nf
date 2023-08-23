@@ -21,16 +21,16 @@ include { AUTOMATIC_PRIMER_PREDICTION } from './subworkflows/automatic_primer_tr
 
 // Silva databases
 // TODO: Move these to config
-ssu_db_fasta = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_ssu-20200130/SSU.fasta")
-ssu_db_tax = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_ssu-20200130/slv_ssu_filtered2.txt")
-ssu_db_otu = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_ssu-20200130/ssu2.otu")
-ssu_db_mscluster = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_ssu-20200130/SSU.fasta.mscluster")
+ssu_db_fasta = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_ssu-20200130/SSU.fasta")
+ssu_db_tax = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_ssu-20200130/slv_ssu_filtered2.txt")
+ssu_db_otu = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_ssu-20200130/ssu2.otu")
+ssu_db_mscluster = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_ssu-20200130/SSU.fasta.mscluster")
 ssu_label = "SSU"
 
-lsu_db_fasta = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_lsu-20200130/LSU.fasta")
-lsu_db_tax = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_lsu-20200130/slv_lsu_filtered2.txt")
-lsu_db_otu = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_lsu-20200130/lsu2.otu")
-lsu_db_mscluster = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_lsu-20200130/LSU.fasta.mscluster")
+lsu_db_fasta = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_lsu-20200130/LSU.fasta")
+lsu_db_tax = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_lsu-20200130/slv_lsu_filtered2.txt")
+lsu_db_otu = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_lsu-20200130/lsu2.otu")
+lsu_db_mscluster = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_lsu-20200130/LSU.fasta.mscluster")
 lsu_label = "LSU"
 
 params.path = null
@@ -90,8 +90,6 @@ workflow {
         outdir
     )
 
-    PARSE_VAR_CLASSIFICATION.out.view()
-
     // Automatic primer identification
     PRIMER_IDENTIFICATION(
         QC.out.merged_reads,
@@ -123,16 +121,16 @@ workflow {
     // Join concatenated primers to the fastp-cleaned paired reads files and run cutadapt on them
     cutadapt_input = CONCAT_PRIMERS.out.concat_primers_out
                      .join(QC.out.fastp_cleaned_fastq, by: [0, 1])
-   
     CUTADAPT(
         cutadapt_input,
         outdir
     )
 
-    // Just some logging for myself, will delete this eventually
-    // final_out = fastp.out.cleaned_fastq
-    // .join(CUTADAPT.out.cutadapt_out, remainder: true)
-    // .map( { if (it[4] == null) { tuple(it[0], it[1], it[2], it[3]) } else { tuple(it[0], it[1], it[4], it[5]) }} )
+    // Prepare DADA2 input (either fastp reads or cutadapt reads)
+    dada2_input = QC.out.fastp_cleaned_fastq
+    .join(CUTADAPT.out.cutadapt_out, by: [0, 1], remainder: true)
+    .map( { if (it[4] == null) { tuple(it[0], it[1], it[2], it[3]) } else { tuple(it[0], it[1], it[4], it[5]) }} )
 
+    
 
 }

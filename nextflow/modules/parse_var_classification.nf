@@ -19,7 +19,6 @@ process PARSE_VAR_CLASSIFICATION {
     echo ${amplified_regions[1]}
     cat *.V*.txt > cat_amp_regions.txt
     wc -l ./cat_amp_regions.txt
-
     """
     // amp_regions=\$(cut -f4-5 $classify_var_out | tail -n +2 | sed 's/\\t/;/g')
     // echo \$amp_regions

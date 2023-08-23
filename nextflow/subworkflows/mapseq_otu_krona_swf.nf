@@ -32,7 +32,5 @@ workflow MAPSEQ_OTU_KRONA {
             silva_tuple,
             outdir
         )
-
-        KRONA.out.krona_out.view()
     
 }
