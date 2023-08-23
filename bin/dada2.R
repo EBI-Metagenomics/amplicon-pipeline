@@ -34,7 +34,7 @@ seqtab = makeSequenceTable(merged)
 seqtab.nochim = removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
 
 # Assign taxonomy (using SILVA)
-taxa = assignTaxonomy(seqtab.nochim, "./data/silva_nr99_v138.1_train_set.fa.gz", multithread=TRUE)
+taxa = assignTaxonomy(seqtab.nochim, "./silva_nr99_v138.1_train_set.fa.gz", multithread=TRUE)
 
 chimera_ids = which(colnames(seqtab) %in% colnames(seqtab.nochim) == FALSE)
 
@@ -64,7 +64,6 @@ for (i in 1:length(final_f_map)){
   final_r_output[[i]] = paste(r_map_list, collapse = ",")
   
 }
-
 
 # The extremely vast majority of forwards+reverse pairs should be assigned the same ASV. This checks it
 traced_remainder = length(final_f_map) - length(unmatched_asvs)

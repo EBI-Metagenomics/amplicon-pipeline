@@ -10,6 +10,7 @@ include { CLASSIFY_VAR_REGIONS } from './modules/classify_var_regions.nf'
 include { PARSE_VAR_CLASSIFICATION } from './modules/parse_var_classification'
 include { CUTADAPT } from './modules/cutadapt.nf'
 include { CONCAT_PRIMERS } from './modules/concat_primers.nf'
+include { DADA2 } from './modules/dada2.nf'
 
 include { QC } from './subworkflows/qc_swf.nf'
 include { CMSEARCH_SUBWF } from './subworkflows/cmsearch_swf.nf'
@@ -19,8 +20,8 @@ include { PRIMER_IDENTIFICATION } from './subworkflows/primer_identification_swf
 include { AUTOMATIC_PRIMER_PREDICTION } from './subworkflows/automatic_primer_trimming.nf'
 
 
-// Silva databases
 // TODO: Move these to config
+// Silva databases
 ssu_db_fasta = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_ssu-20200130/SSU.fasta")
 ssu_db_tax = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_ssu-20200130/slv_ssu_filtered2.txt")
 ssu_db_otu = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_ssu-20200130/ssu2.otu")
@@ -32,6 +33,7 @@ lsu_db_tax = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/si
 lsu_db_otu = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_lsu-20200130/lsu2.otu")
 lsu_db_mscluster = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_lsu-20200130/LSU.fasta.mscluster")
 lsu_label = "LSU"
+silva_dada2_db = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_nr99_v138.1_train_set.fa.gz")
 
 params.path = null
 params.project = null
@@ -131,6 +133,11 @@ workflow {
     .join(CUTADAPT.out.cutadapt_out, by: [0, 1], remainder: true)
     .map( { if (it[4] == null) { tuple(it[0], it[1], it[2], it[3]) } else { tuple(it[0], it[1], it[4], it[5]) }} )
 
+    DADA2(
+        dada2_input,
+        silva_dada2_db,
+        outdir
+    )
     
 
 }
