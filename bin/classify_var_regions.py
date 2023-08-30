@@ -252,7 +252,7 @@ def print_stats(run_id, num_sequences, num_unsupported, num_inside_vr, run_resul
                                                      print_str))
 
 
-def print_to_table(tsv_out, results):
+def print_to_table(tsv_out, results, per_read_info):
     """Prints the variable regions to a tsv file.
     Args:
         tsv_out: The name of the tsv outfile.
@@ -266,25 +266,33 @@ def print_to_table(tsv_out, results):
     fw = open(f'{prefix}_regions.txt', 'w')
     # print the table header to file
     f.write('Run\tAssertionEvidence\tAssertionMethod\tMarker gene\tVariable region\n')
+    gene_hv_to_write = []
     for run, amplified_region_dict in results.items():
         records = set()
         records_regions = set()
         for domain, amplified_regions in amplified_region_dict.items():
+            marker_gene = determine_marker_gene(domain)
             for vr in amplified_regions.keys():
                 if not vr == '':
                     record = '{}\tECO_0000363\tautomatic assertion\t{}\t{}\n'.format(run, determine_marker_gene(domain),
                                                                                      vr)
                     records.add(record)
-                    records_regions.add(f'{determine_marker_gene(domain)};{vr}\n')
+                    records_regions.add(f'{marker_gene}.{vr}\n')
+                    gene_hv_to_write.append(f"{marker_gene}.{vr}")
         for record_to_print in records:
             f.write(record_to_print)
         
         for record_to_print in records_regions:
             fw.write(record_to_print)
 
+    for key in per_read_info.keys():
+        if key in gene_hv_to_write:
+            per_read_filename = '{}.{}.txt'.format(prefix, key)
+            with open(per_read_filename, 'w') as f_hv:
+                f_hv.write('\n'.join(per_read_info[key]))
+
     f.close()
     fw.close()
-
 
 def retrieve_regions(tblout_file_list, outfile_prefix, stats_out, condensed_out, missing_out, seq_count_out):
     file_counter = 0  # count how many files were analyzed
@@ -314,12 +322,14 @@ def retrieve_regions(tblout_file_list, outfile_prefix, stats_out, condensed_out,
             regions = determine_cm(read[2])
             sequence_counter_total += 1
             limits = list(map(int, read[4:6]))
+            domain = determine_domain(read[2])
+            marker_gene = determine_marker_gene(domain)
             if not regions == 'unsupported':
                 multiregion_matches.setdefault(read[2], []).append(get_multiregion(limits, regions))
                 if check_primer_position(limits, regions):
                     primer_inside_vr += 1
                 sequence_counter_useful += 1
-                per_read_info.setdefault(get_multiregion(limits, regions), []).append(read[0])
+                per_read_info.setdefault(marker_gene + "." + get_multiregion(limits, regions), []).append(read[0])
             else:
                 unsupported_matches += 1
 
@@ -388,17 +398,12 @@ def retrieve_regions(tblout_file_list, outfile_prefix, stats_out, condensed_out,
             for key, value in temp_seq_counter.items():
                 seq_per_variable_region_count.setdefault(key, 0)
                 seq_per_variable_region_count[key] += value
-            for key in per_read_info.keys():
-                if not key == '':
-                    per_read_filename = '{}.{}.txt'.format(outfile_prefix, key)
-                    with open(per_read_filename, 'w') as f:
-                        f.write('\n'.join(per_read_info[key]))
 
     json_outfile = '{}.json'.format(outfile_prefix)
     tsv_outfile = '{}.tsv'.format(outfile_prefix)
     with open(json_outfile, 'w') as f:
         json.dump(normalised_matches, f)
-    print_to_table(tsv_outfile, normalised_matches)
+    print_to_table(tsv_outfile, normalised_matches, per_read_info)
     condensed_out.write('\t'.join([
         'Total number of files failed',
         'Total number of files analyzed',
