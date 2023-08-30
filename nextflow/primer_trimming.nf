@@ -7,7 +7,8 @@ nextflow.enable.dsl=2
 
 
 include { CLASSIFY_VAR_REGIONS } from './modules/classify_var_regions.nf'
-include { PARSE_VAR_CLASSIFICATION } from './modules/parse_var_classification'
+include { PARSE_VAR_CLASSIFICATION } from './modules/parse_var_classification.nf'
+include { EXTRACT_VAR_REGIONS } from './modules/extract_var_regions.nf'
 include { CUTADAPT } from './modules/cutadapt.nf'
 include { CONCAT_PRIMERS } from './modules/concat_primers.nf'
 include { DADA2 } from './modules/dada2.nf'
@@ -85,14 +86,16 @@ workflow {
         outdir
     )
 
-    // TODO: what do we do about samples with more than one found amplified region
-    PARSE_VAR_CLASSIFICATION(
-        CLASSIFY_VAR_REGIONS.out.classify_var_summary,
-        CLASSIFY_VAR_REGIONS.out.classify_var_regions,
+    extract_var_input = CLASSIFY_VAR_REGIONS.out.classify_var_regions
+    .transpose()
+    .combine(QC.out.merged_reads, by: [0, 1])
+
+    EXTRACT_VAR_REGIONS(
+        extract_var_input,
         outdir
     )
 
-    // Automatic primer identification
+    // // Automatic primer identification
     PRIMER_IDENTIFICATION(
         QC.out.merged_reads,
         outdir
