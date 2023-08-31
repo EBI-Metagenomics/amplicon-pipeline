@@ -7,11 +7,11 @@ process TRIMMING_CONDUCTOR {
     publishDir "${outdir}/${project}", mode : "copy"
 
     input:
-    tuple val(project), val(sampleId), path(general_primer_flag), path(std_primer_flag)
+    tuple val(project), val(sampleId), val(var_region), path(general_primer_flag), path(std_primer_flag)
     val outdir
 
     output:
-    tuple val(project), val(sampleId), path("*trimming_conductor_out.txt"), emit: trimming_conductor_out
+    tuple val(project), val(sampleId), val(var_region), path("*trimming_conductor_out.txt"), emit: trimming_conductor_out
 
     shell:
 

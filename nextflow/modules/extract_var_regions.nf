@@ -11,7 +11,7 @@ process EXTRACT_VAR_REGIONS {
     tuple val(project), val(sampleId), val(var_region), path("*.fastq.gz"), emit: extracted_var_out
     
     script:
-    var_region = "${var_region_path.baseName.split('\\.')[1,2].join(';')}"
+    var_region = "${var_region_path.baseName.split('\\.')[1,2].join('-')}"
 
     """
     seqtk subseq $fastq $var_region_path > ${fastq.baseName}_extracted.fastq

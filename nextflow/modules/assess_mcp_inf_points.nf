@@ -6,11 +6,11 @@ process ASSESS_MCP_INF_POINTS {
     publishDir "${outdir}/${project}", mode : "copy"
 
     input:
-    tuple val(project), val(sampleId), path(inf_points_out), path(fastq)
+    tuple val(project), val(sampleId), val(var_region), path(inf_points_out), path(fastq)
     val outdir
 
     output:
-    tuple val(project), val(sampleId), path("*auto_primers.fasta"), emit: auto_primer_out
+    tuple val(project), val(sampleId), val(var_region), path("*auto_primers.fasta"), emit: auto_primer_out
 
     """
     if [[ -s ./$inf_points_out ]]; then

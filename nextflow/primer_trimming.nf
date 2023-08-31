@@ -11,6 +11,7 @@ include { PARSE_VAR_CLASSIFICATION } from './modules/parse_var_classification.nf
 include { EXTRACT_VAR_REGIONS } from './modules/extract_var_regions.nf'
 include { CUTADAPT } from './modules/cutadapt.nf'
 include { CONCAT_PRIMERS } from './modules/concat_primers.nf'
+include { FINAL_CONCAT_PRIMERS } from './modules/final_concat_primers.nf'
 include { DADA2 } from './modules/dada2.nf'
 
 include { QC } from './subworkflows/qc_swf.nf'
@@ -95,15 +96,16 @@ workflow {
         outdir
     )
 
-    // // Automatic primer identification
+
+    // Automatic primer identification
     PRIMER_IDENTIFICATION(
-        QC.out.merged_reads,
+        EXTRACT_VAR_REGIONS.out.extracted_var_out,
         outdir
     )
 
     // Join flags with merged fastq files
     auto_trimming_input = PRIMER_IDENTIFICATION.out.conductor_out
-                          .join(QC.out.merged_reads, by: [0, 1])
+                          .join(EXTRACT_VAR_REGIONS.out.extracted_var_out, by: [0, 1, 2])
 
 
     // Run subworkflow for automatic primer trimming
@@ -116,31 +118,42 @@ workflow {
     // Join auto flags to std flags and generated a concatenated fasta file containing primers to trim off
     // This can contain any valid combination of stranded std/auto primers 
     concat_input = PRIMER_IDENTIFICATION.out.std_primer_out
-                   .join(AUTOMATIC_PRIMER_PREDICTION.out.auto_primer_trimming_out, by: [0, 1])
+                   .join(AUTOMATIC_PRIMER_PREDICTION.out.auto_primer_trimming_out, by: [0, 1, 2])
    
     CONCAT_PRIMERS(
         concat_input,
         outdir
     )
 
+    final_concat_primers_input = CONCAT_PRIMERS.out.concat_primers_out
+    .groupTuple(by: [0, 1])
+
+
+    FINAL_CONCAT_PRIMERS(
+        final_concat_primers_input,
+        outdir
+    )
+
     // Join concatenated primers to the fastp-cleaned paired reads files and run cutadapt on them
-    cutadapt_input = CONCAT_PRIMERS.out.concat_primers_out
+    cutadapt_input = FINAL_CONCAT_PRIMERS.out.final_concat_primers_out
                      .join(QC.out.fastp_cleaned_fastq, by: [0, 1])
+
     CUTADAPT(
         cutadapt_input,
         outdir
     )
 
     // Prepare DADA2 input (either fastp reads or cutadapt reads)
-    dada2_input = QC.out.fastp_cleaned_fastq
-    .join(CUTADAPT.out.cutadapt_out, by: [0, 1], remainder: true)
-    .map( { if (it[4] == null) { tuple(it[0], it[1], it[2], it[3]) } else { tuple(it[0], it[1], it[4], it[5]) }} )
+
+    // TODO: maybe put back the remainder=true for this join?
+    dada2_input = CUTADAPT.out.cutadapt_out
+                  .join(QC.out.fastp_cleaned_fastq, by: [0, 1])
+                  .map( { if (it[2] != null && it[3] == null) { tuple(it[0], it[1], it[2], it[5], it[6]) } else { tuple(it[0], it[1], it[2], it[3], it[4]) }} )
 
     DADA2(
         dada2_input,
         silva_dada2_db,
         outdir
     )
-    
 
 }

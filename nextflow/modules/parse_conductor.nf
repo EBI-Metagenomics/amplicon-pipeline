@@ -8,11 +8,11 @@ process PARSE_CONDUCTOR {
     // publishDir "${outdir}/merged/${project}", mode : "copy"
 
     input:
-    tuple val(project), val(sampleId), path(trimming_conductor_out)
+    tuple val(project), val(sampleId), val(var_region), path(trimming_conductor_out)
     val outdir
 
     output:
-    tuple val(project), val(sampleId), env(fwd_flag), env(rev_flag), emit: conductor_out
+    tuple val(project), val(sampleId), val(var_region), env(fwd_flag), env(rev_flag), emit: conductor_out
 
     script:
     """

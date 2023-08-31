@@ -8,11 +8,11 @@ process CONCAT_PRIMERS {
     publishDir "${outdir}/${project}", mode : "copy"
     
     input:
-    tuple val(project), val(sampleId), path(std_primers), path(auto_primers)
+    tuple val(project), val(sampleId), val(var_region), path(std_primers), path(auto_primers)
     val outdir
 
     output:
-    tuple val(project), val(sampleId), path("concat_primers.fasta") , optional: true, emit: concat_primers_out
+    tuple val(project), val(sampleId), val(var_region), path("*concat_primers.fasta") , optional: true, emit: concat_primers_out
     
 
     // script:
@@ -22,11 +22,11 @@ process CONCAT_PRIMERS {
     shell:
     '''
     if [[ -s !{auto_primers} ]]; then
-        cat !{std_primers} > ./concat_primers.fasta
-        echo '\n' >> ./concat_primers.fasta
-        cat !{auto_primers} >>./concat_primers.fasta
+        cat !{std_primers} > ./!{var_region}_concat_primers.fasta
+        echo '\n' >> ./!{var_region}_concat_primers.fasta
+        cat !{auto_primers} >>./!{var_region}_concat_primers.fasta
     else
-        cat !{std_primers} > ./concat_primers.fasta
+        cat !{std_primers} > ./!{var_region}_concat_primers.fasta
     fi
     '''
 }
