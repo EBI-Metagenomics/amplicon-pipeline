@@ -9,6 +9,7 @@ process EXTRACT_VAR_REGIONS {
 
     output:
     tuple val(project), val(sampleId), val(var_region), path("*.fastq.gz"), emit: extracted_var_out
+    tuple val(project), val(sampleId), val(var_region), path(var_region_path), emit: extracted_var_path
     
     script:
     var_region = "${var_region_path.baseName.split('\\.')[1,2].join('-')}"

@@ -13,6 +13,9 @@ include { CUTADAPT } from './modules/cutadapt.nf'
 include { CONCAT_PRIMERS } from './modules/concat_primers.nf'
 include { FINAL_CONCAT_PRIMERS } from './modules/final_concat_primers.nf'
 include { DADA2 } from './modules/dada2.nf'
+include { MAKE_ASV_COUNT_TABLES } from './modules/make_asv_count_tables.nf'
+include { KRONA } from './modules/krona.nf'
+
 
 include { QC } from './subworkflows/qc_swf.nf'
 include { CMSEARCH_SUBWF } from './subworkflows/cmsearch_swf.nf'
@@ -53,6 +56,7 @@ workflow {
     // TODO: need to get this working for single-end reads
     // TODO: need to change the 'project' id in the tuples to meta to work with nf-core
     // TODO: organise the publishDirs in a sensible way
+    // TODO: rewrite arparse descriptions
 
     QC(
         project,
@@ -155,5 +159,25 @@ workflow {
         silva_dada2_db,
         outdir
     )
+
+    split_input = DADA2.out.dada2_out
+                  .transpose()
+                  .join(EXTRACT_VAR_REGIONS.out.extracted_var_path, by: [0, 1, 2])
+                  .combine(QC.out.fastp_cleaned_fastq, by: [0, 1])
+
+    MAKE_ASV_COUNT_TABLES(
+        split_input,
+        outdir
+    )
+
+    asv_krona_input = MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out
+                      .map( {it[0, 1, 3]} )
+
+    KRONA(
+        asv_krona_input,
+        ssu_mapseq_krona_tuple,
+        outdir
+    )
+    
 
 }

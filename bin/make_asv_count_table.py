@@ -3,38 +3,40 @@ import argparse
 from collections import defaultdict
 import pandas as pd
 
-_TAXA = "/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged/ERP122862/ERR4334396_taxa.tsv"
-_FWD = "/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged/ERP122862/ERR4334396_1_map.txt"
-_REV = "/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged/ERP122862/ERR4334396_2_map.txt"
-_AMP = "/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/nf-work/e7/caeed264657ef2ebdc6e9a86fa1ff5/ERR4334396_MERGED.V3-V4.txt"
-_HEADERS = "/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/ERR4334396_1_headers.txt"
-_SAMPLE = "ERR4334396"
+def parse_args():
 
-# def parse_args():
+    parser = argparse.ArgumentParser()
 
-#     parser = argparse.ArgumentParser()
+    parser.add_argument("-t", "--taxa", required=True, type=str, help="Path to merged FASTA to look for primers")
+    parser.add_argument("-f", "--fwd", required=True, type=str, help="Path to merged FASTA to look for primers")
+    parser.add_argument("-r", "--rev", required=True, type=str, help="Path to merged FASTA to look for primers")
+    parser.add_argument("-a", "--amp", required=True, type=str, help="Path to merged FASTA to look for primers")
+    parser.add_argument("-hd", "--headers", required=True, type=str, help="Path to merged FASTA to look for primers")
+    parser.add_argument("-s", "--sample", required=True, type=str, help="Sample ID")
 
-#     parser.add_argument("-t", "--taxa", required=True, type=str, help="Path to merged FASTA to look for primers")
-#     parser.add_argument("-s", "--sample", required=True, type=str, help="Sample ID")
-#     parser.add_argument("-o", "--output", required=True, type=str, help="Output path")
-#     args = parser.parse_args()
+    args = parser.parse_args()
   
-#     _INPUT = args.input
-#     _SAMPLE = args.sample
-#     _OUTPUT = args.output
+    _TAXA = args.taxa
+    _FWD = args.fwd
+    _REV = args.rev
+    _AMP = args.amp
+    _HEADERS = args.headers
+    _SAMPLE = args.sample
 
-#     return _INPUT, _SAMPLE, _OUTPUT
+    return _TAXA, _FWD, _REV, _AMP, _HEADERS, _SAMPLE
 
 
 def main():
+
+    _TAXA, _FWD, _REV, _AMP, _HEADERS, _SAMPLE = parse_args()
     
     taxa_df = pd.read_csv(_TAXA, sep="\t", dtype=str)
     taxa_df = taxa_df.fillna("0")
     taxa_df = taxa_df.sort_values(["Kingdom", "Phylum", "Class", "Order", "Genus"], ascending=True)
 
-    amp_reads = [ read.strip()for read in list(open(_AMP, "r")) ]
+    amp_reads = [ read.strip() for read in list(open(_AMP, "r")) ]
     headers = [ read.split(" ")[0][1:] for read in list(open(_HEADERS, "r")) ]
-    amp_region = _AMP.split(".")[1]
+    amp_region = ".".join(_AMP.split(".")[1:3])
 
     asv_dict = defaultdict(int)
 
@@ -116,65 +118,15 @@ def main():
                 tax_assignment += f"\tg__{g}"
             break
 
+        if tax_assignment == "":
+            continue
+
         tax_assignment_dict[tax_assignment] += asv_count
-
-
-
-    # for asv_ind, asv_count in asv_dict.items():
-
-    #     k = taxa_df.iloc[asv_ind, 1]
-    #     p = taxa_df.iloc[asv_ind, 2]
-    #     c = taxa_df.iloc[asv_ind, 3]
-    #     o = taxa_df.iloc[asv_ind, 4]
-    #     f = taxa_df.iloc[asv_ind, 5]
-    #     g = taxa_df.iloc[asv_ind, 6]        
-
-    #     tax_assignment = ""
-
-    #     while True:
-
-    #         if not pd.isna(k):
-    #             k = "_".join(k.split(" "))
-    #             if k != "Archaea" and k != "Bacteria":
-    #                 tax_assignment += f"sk__Eukaryota\tk__{k}"
-    #             else:
-    #                 tax_assignment += f"sk__{k}\tk__"
-    #         else:
-    #             break
-
-    #         if not pd.isna(p):
-    #             p = "_".join(p.split(" "))
-    #             tax_assignment += f"\tp__{p}"
-    #         else:
-    #             break
-    #         if not pd.isna(c):
-    #             c = "_".join(c.split(" "))
-    #             tax_assignment += f"\tc__{c}"
-    #         else:
-    #             break
-    #         if not pd.isna(o):
-    #             o = "_".join(o.split(" "))
-    #             tax_assignment += f"\to__{o}"
-    #         else:
-    #             break
-    #         if not pd.isna(f):
-    #             f = "_".join(f.split(" "))
-    #             tax_assignment += f"\tf__{f}"
-    #         else:
-    #             break
-    #         if not pd.isna(g):
-    #             g = "_".join(g.split(" "))
-    #             tax_assignment += f"\tg__{g}"
-    #         break
-
-    #     tax_assignment_dict[tax_assignment] += asv_count
 
     with open(f"./{_SAMPLE}_{amp_region}_asv_krona_counts.txt", "w") as fw:
         for tax_assignment, count in tax_assignment_dict.items():
             fw.write(f"{count}\t{tax_assignment}\n")
     
-        # print(taxa_df.iloc[asv_ind, 0])
-
 
 if __name__ == "__main__":
     main()

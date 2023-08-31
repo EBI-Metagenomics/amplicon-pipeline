@@ -13,7 +13,7 @@ process KRONA {
     tuple val(project), val(sampleId), path('*krona.html'), emit: krona_out
 
     """
-    ktImportText -o krona.html $otu_counts
+    ktImportText -o ${otu_counts.baseName}_krona.html $otu_counts
     """
 
 }
