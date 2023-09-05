@@ -33,6 +33,7 @@ workflow CMSEARCH_SUBWF {
 
         EXTRACT_COORDS(
             EASEL.out.easel_coords,
+            EASEL.out.matched_seqs_with_coords,
             outdir
         )
 
@@ -42,5 +43,6 @@ workflow CMSEARCH_SUBWF {
         easel_out = EASEL.out.easel_coords
         ssu_fasta = EXTRACT_COORDS.out.ssu_fasta
         lsu_fasta = EXTRACT_COORDS.out.lsu_fasta
+        concat_ssu_lsu_coords = EXTRACT_COORDS.out.concat_ssu_lsu_coords
     
 }

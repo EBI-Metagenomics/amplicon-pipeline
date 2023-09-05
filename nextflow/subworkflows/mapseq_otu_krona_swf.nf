@@ -32,5 +32,9 @@ workflow MAPSEQ_OTU_KRONA {
             silva_tuple,
             outdir
         )
+
+    emit:
+        krona_input = krona_input
+        krona_out = KRONA.out.krona_out
     
 }

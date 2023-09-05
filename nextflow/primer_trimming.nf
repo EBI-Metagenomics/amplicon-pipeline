@@ -19,8 +19,11 @@ include { KRONA } from './modules/krona.nf'
 
 include { QC } from './subworkflows/qc_swf.nf'
 include { CMSEARCH_SUBWF } from './subworkflows/cmsearch_swf.nf'
+include { ITS_SWF } from './subworkflows/its_swf.nf'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_SSU} from './subworkflows/mapseq_otu_krona_swf.nf'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_LSU} from './subworkflows/mapseq_otu_krona_swf.nf'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_UNITE} from './subworkflows/mapseq_otu_krona_swf.nf'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_ITSONEDB} from './subworkflows/mapseq_otu_krona_swf.nf'
 include { PRIMER_IDENTIFICATION } from './subworkflows/primer_identification_swf.nf'
 include { AUTOMATIC_PRIMER_PREDICTION } from './subworkflows/automatic_primer_trimming.nf'
 
@@ -39,6 +42,21 @@ lsu_db_otu = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/si
 lsu_db_mscluster = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_lsu-20200130/LSU.fasta.mscluster")
 lsu_label = "LSU"
 silva_dada2_db = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_nr99_v138.1_train_set.fa.gz")
+
+// UNITE database
+unite_db_fasta = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/UNITE-20200214/unite.fasta")
+unite_db_tax = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/UNITE-20200214/UNITE-tax.txt")
+unite_db_otu = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/UNITE-20200214/UNITE.otu")
+unite_db_mscluster = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/UNITE-20200214/unite.fasta.mscluster")
+unite_label = "UNITE"
+
+// ITSone database
+itsone_db_fasta = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/ITSoneDB-20200214/itsonedb.fasta")
+itsone_db_tax = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/ITSoneDB-20200214/ITSonedb-tax.txt")
+itsone_db_otu = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/ITSoneDB-20200214/ITSonedb.otu")
+itsone_db_mscluster = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/ITSoneDB-20200214/itsonedb.fasta.mscluster")
+itsone_label = "ITSonedb"
+
 
 params.path = null
 params.project = null
@@ -70,8 +88,17 @@ workflow {
         outdir
     )
 
+    ITS_SWF(
+        QC.out.merged_fasta,
+        CMSEARCH_SUBWF.out.concat_ssu_lsu_coords,
+        outdir
+    )
+
     ssu_mapseq_krona_tuple = tuple(ssu_db_fasta, ssu_db_tax, ssu_db_otu, ssu_db_mscluster, ssu_label)
     lsu_mapseq_krona_tuple = tuple(lsu_db_fasta, lsu_db_tax, lsu_db_otu, lsu_db_mscluster, lsu_label)
+    itsonedb_mapseq_krona_tuple = tuple(itsone_db_fasta, itsone_db_tax, itsone_db_otu, itsone_db_mscluster, itsone_label)
+    unite_mapseq_krona_tuple = tuple(unite_db_fasta, unite_db_tax, unite_db_otu, unite_db_mscluster, unite_label)
+    
 
     MAPSEQ_OTU_KRONA_SSU(
         CMSEARCH_SUBWF.out.ssu_fasta,
@@ -82,6 +109,18 @@ workflow {
     MAPSEQ_OTU_KRONA_LSU(
         CMSEARCH_SUBWF.out.lsu_fasta,
         lsu_mapseq_krona_tuple,
+        outdir
+    )    
+
+    MAPSEQ_OTU_KRONA_ITSONEDB(
+        ITS_SWF.out.its_masked_out,
+        itsonedb_mapseq_krona_tuple,
+        outdir
+    )    
+
+    MAPSEQ_OTU_KRONA_UNITE(
+        ITS_SWF.out.its_masked_out,
+        unite_mapseq_krona_tuple,
         outdir
     )    
 
@@ -189,5 +228,4 @@ workflow {
         outdir
     )
     
-
 }
