@@ -10,9 +10,15 @@ process CLASSIFY_VAR_REGIONS {
     output:
     tuple val(project), val(sampleId), path("*_regions.txt"), path("*seq_count.txt"), emit: classify_var_summary
     tuple val(project), val(sampleId), path ("*S.V*.txt"), optional: true, emit: classify_var_regions
-
+    tuple val(project), val(sampleId), val("concat"), path("*.concat.regions.txt"), optional: true, emit: concat_var_regions
+    
     """
     python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/classify_var_regions.py -d ./ -o ${cmsearch_deoverlap_out.simpleName} --statistics $cmsearch_deoverlap_out
+    
+    num_files="\$(ls *S.V*.txt | wc -l  )"
+    if [ \$num_files -gt 1 ]; then
+        cat *S.V*.txt > ${sampleId}.concat.regions.txt
+    fi
     """
 
 }

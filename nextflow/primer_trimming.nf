@@ -163,10 +163,20 @@ workflow {
     split_input = DADA2.out.dada2_out
                   .transpose()
                   .join(EXTRACT_VAR_REGIONS.out.extracted_var_path, by: [0, 1, 2])
-                  .combine(QC.out.fastp_cleaned_fastq, by: [0, 1])
+                  
 
+    multi_region_concats = split_input
+    .join(CLASSIFY_VAR_REGIONS.out.concat_var_regions, by: [0, 1])
+    .map( {tuple(it[0], it[1], "concat", it[3], it[4], it[5], it[6], it[7], it[10])} )
+    
+    
+    final_asv_count_table_input = split_input
+                                  .mix(multi_region_concats)
+                                  .combine(QC.out.fastp_cleaned_fastq, by: [0, 1])
+
+                                
     MAKE_ASV_COUNT_TABLES(
-        split_input,
+        final_asv_count_table_input,
         outdir
     )
 
