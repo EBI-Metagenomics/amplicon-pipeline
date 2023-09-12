@@ -5,10 +5,12 @@ nextflow.enable.dsl=2
 // nextflow run nextflow/primer_trimming.nf -profile lsf --path /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_datasets/ERP123542/raw --project ERP123542 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing
 
 
-
 include { CLASSIFY_VAR_REGIONS } from './modules/classify_var_regions.nf'
 include { PARSE_VAR_CLASSIFICATION } from './modules/parse_var_classification.nf'
 include { EXTRACT_VAR_REGIONS } from './modules/extract_var_regions.nf'
+include { PRIMER_VALIDATION_SEARCH } from './modules/primer_validation_search.nf'
+include { PRIMER_VALIDATION_DEOVERLAP } from './modules/primer_validation_deoverlap.nf'
+include { PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS } from './modules/primer_validation_classify_var_regions.nf'
 include { CUTADAPT } from './modules/cutadapt.nf'
 include { CONCAT_PRIMERS } from './modules/concat_primers.nf'
 include { FINAL_CONCAT_PRIMERS } from './modules/final_concat_primers.nf'
@@ -61,10 +63,26 @@ itsone_label = "ITSonedb"
 params.path = null
 params.project = null
 params.outdir = null
+params.mode = null
 
-reads = Channel.fromFilePairs( "${params.path}/*_{1,2}.fastq.gz" )
+
 project = Channel.value( params.project )
+reads = Channel.fromFilePairs( "${params.path}/*{1,2}.fastq.gz", size: 2)
+// single_reads = Channel.fromPath("${params.path}/*.fastq.gz")
 outdir = params.outdir
+
+// paired_read_paths = reads
+// .map { it[1] }
+// .collect()
+
+// paired_read_paths.view()
+
+// single_reads
+// .map{ it in paired_read_paths }
+// .view()
+// .join(paired_read_paths)
+// .view()
+
 
 workflow {
 
@@ -75,6 +93,7 @@ workflow {
     // TODO: need to change the 'project' id in the tuples to meta to work with nf-core
     // TODO: organise the publishDirs in a sensible way
     // TODO: rewrite arparse descriptions
+    // TODO: investigate primer val deoverlap script more
 
     QC(
         project,
@@ -228,4 +247,35 @@ workflow {
         outdir
     )
     
+    primer_validation_input =  FINAL_CONCAT_PRIMERS.out.final_concat_primers_out
+                               .map{ tuple(it[0], it[1], it[3]) }
+
+    // primer_validation_input.view()
+
+    PRIMER_VALIDATION_SEARCH(
+         primer_validation_input,
+         outdir
+    )
+
+    // PRIMER_VALIDATION.out.cmsearch_out.view()
+
+    PRIMER_VALIDATION_DEOVERLAP(
+        PRIMER_VALIDATION_SEARCH.out.cmsearch_out,
+        outdir
+    )
+
+    // PRIMER_VALIDATION_DEOVERLAP.out.cmsearch_deoverlap_out.view()
+
+    // CLASSIFY_VAR_REGIONS.out.cdch_out.view()
+
+    primer_validation_classify_var_regions_input = PRIMER_VALIDATION_DEOVERLAP.out.cmsearch_deoverlap_out
+                                                   .join(primer_validation_input, by: [0, 1])
+
+    PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS(
+        primer_validation_classify_var_regions_input,
+        outdir
+    )
+
+    PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS.out.primer_validation_out.view()
+
 }

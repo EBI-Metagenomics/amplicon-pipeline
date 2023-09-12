@@ -22,11 +22,11 @@ process CONCAT_PRIMERS {
     shell:
     '''
     if [[ -s !{auto_primers} ]]; then
-        cat !{std_primers} > ./!{var_region}_concat_primers.fasta
-        echo '\n' >> ./!{var_region}_concat_primers.fasta
-        cat !{auto_primers} >>./!{var_region}_concat_primers.fasta
+        cat !{std_primers} > ./!{sampleId}_!{var_region}_concat_primers.fasta
+        echo '\n' >> ./!{sampleId}_!{var_region}_concat_primers.fasta
+        cat !{auto_primers} >>./!{sampleId}_!{var_region}_concat_primers.fasta
     else
-        cat !{std_primers} > ./!{var_region}_concat_primers.fasta
+        cat !{std_primers} > ./!{sampleId}_!{var_region}_concat_primers.fasta
     fi
     '''
 }

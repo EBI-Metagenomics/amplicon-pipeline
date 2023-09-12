@@ -11,7 +11,7 @@ process TRIMMOMATIC_SE {
     tuple val(project), val(sampleId), path("*trimmed.fastq.gz"), emit: trimmed_fastq
 
     """
-    trimmomatic SE -phred33 $fastq ${fastq.simpleName}.trimmed.fastq.gz LEADING:3 TRAILING:3 MINLEN:100 SLIDINGWINDOW:4:15
+    trimmomatic SE -phred33 $fastq ${sampleId}.trimmed.fastq.gz LEADING:3 TRAILING:3 MINLEN:100 SLIDINGWINDOW:4:15
     """
 
 }

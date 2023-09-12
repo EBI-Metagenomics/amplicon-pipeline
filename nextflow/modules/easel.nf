@@ -13,9 +13,9 @@ process EASEL {
     path("*.matched_seqs_with_coords"), emit: matched_seqs_with_coords
 
     """
-    awk '{print \$1"-"\$3"/"\$8"-"\$9" "\$8" "\$9" "\$1}' $cmsearch_deoverlap_out > ${fasta.baseName}.matched_seqs_with_coords
+    awk '{print \$1"-"\$3"/"\$8"-"\$9" "\$8" "\$9" "\$1}' $cmsearch_deoverlap_out > ${sampleId}.matched_seqs_with_coords
     esl-sfetch --index $fasta
-    esl-sfetch -Cf $fasta ${fasta.baseName}.matched_seqs_with_coords > ${fasta.baseName}.easel_extracted.fasta
+    esl-sfetch -Cf $fasta ${sampleId}.matched_seqs_with_coords > ${sampleId}.easel_extracted.fasta
     """
 
 }

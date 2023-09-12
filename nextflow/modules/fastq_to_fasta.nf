@@ -13,7 +13,7 @@ process FASTQ_TO_FASTA {
     tuple val(project), val(sampleId), path("*.fasta"), emit: merged_fasta
 
     """
-    seqtk seq -a $fastq > ${fastq.simpleName}.fasta
+    seqtk seq -a $fastq > ${sampleId}.fasta
     """
 
 }
