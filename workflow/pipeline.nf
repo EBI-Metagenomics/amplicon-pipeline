@@ -1,22 +1,21 @@
-nextflow.enable.dsl=2
 
 // nextflow run nextflow/primer_trimming.nf --path /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_datasets/ERP123542/raw --project ERP123542 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged
 // nextflow run nextflow/primer_trimming.nf --path /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_datasets/ERP122862_subset --project ERP122862 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged
 // nextflow run nextflow/primer_trimming.nf -profile lsf --path /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_datasets/ERP123542/raw --project ERP123542 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing
 
-include { QC } from './subworkflows/qc_swf.nf'
-include { CMSEARCH_SUBWF } from './subworkflows/cmsearch_swf.nf'
-include { ITS_SWF } from './subworkflows/its_swf.nf'
-include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_SSU} from './subworkflows/mapseq_otu_krona_swf.nf'
-include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_LSU} from './subworkflows/mapseq_otu_krona_swf.nf'
-include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_UNITE} from './subworkflows/mapseq_otu_krona_swf.nf'
-include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_ITSONEDB} from './subworkflows/mapseq_otu_krona_swf.nf'
-include { AMP_REGION_INFERENCE } from './subworkflows/amp_region_inference_swf.nf'
-include { PRIMER_IDENTIFICATION } from './subworkflows/primer_identification_swf.nf'
-include { PRIMER_VALIDATION } from './subworkflows/primer_validation_swf.nf'
-include { AUTOMATIC_PRIMER_PREDICTION } from './subworkflows/automatic_primer_trimming.nf'
-include { CONCAT_PRIMER_CUTADAPT } from './subworkflows/concat_primer_cutadapt.nf'
-include { DADA2_KRONA } from './subworkflows/dada2_krona_swf.nf'
+include { QC } from '../subworkflows/qc_swf.nf'
+include { CMSEARCH_SUBWF } from '../subworkflows/cmsearch_swf.nf'
+include { ITS_SWF } from '../subworkflows/its_swf.nf'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_SSU} from '../subworkflows/mapseq_otu_krona_swf.nf'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_LSU} from '../subworkflows/mapseq_otu_krona_swf.nf'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_UNITE} from '../subworkflows/mapseq_otu_krona_swf.nf'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_ITSONEDB} from '../subworkflows/mapseq_otu_krona_swf.nf'
+include { AMP_REGION_INFERENCE } from '../subworkflows/amp_region_inference_swf.nf'
+include { PRIMER_IDENTIFICATION } from '../subworkflows/primer_identification_swf.nf'
+include { PRIMER_VALIDATION } from '../subworkflows/primer_validation_swf.nf'
+include { AUTOMATIC_PRIMER_PREDICTION } from '../subworkflows/automatic_primer_trimming.nf'
+include { CONCAT_PRIMER_CUTADAPT } from '../subworkflows/concat_primer_cutadapt.nf'
+include { DADA2_KRONA } from '../subworkflows/dada2_krona_swf.nf'
 
 ssu_mapseq_krona_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.ssu_label)
 lsu_mapseq_krona_tuple = tuple(file(params.lsu_db_fasta), file(params.lsu_db_tax), file(params.lsu_db_otu), file(params.lsu_db_mscluster), params.lsu_label)
@@ -49,7 +48,7 @@ outdir = params.outdir
 // .view()
 
 
-workflow {
+workflow AMPLICON_PIPELINE_V6 {
 
     // Workflow for running the primer-trimming survey on sequencing reads
 
