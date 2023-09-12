@@ -41,5 +41,5 @@ At the moment the prerequisites are Singularity and a micromamba environment loc
 
 You can run the current version of the pipeline like this:
 
-`nextflow run nextflow/primer_trimming.nf --path {directory/containing/fastq} --project {project_accession} --outdir {path/to/out}`
+`nextflow run main.nf --path {directory/containing/fastq} --project {project_accession} --outdir {path/to/out}`
 
