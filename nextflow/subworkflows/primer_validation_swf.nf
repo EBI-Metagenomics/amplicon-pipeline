@@ -21,7 +21,7 @@ workflow PRIMER_VALIDATION {
         )
 
         primer_validation_classify_var_regions_input = PRIMER_VALIDATION_DEOVERLAP.out.cmsearch_deoverlap_out
-                                                    .join(primer_validation_input, by: [0, 1])
+                                                       .join(primer_validation_input, by: [0, 1])
 
         PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS(
             primer_validation_classify_var_regions_input,

@@ -44,8 +44,6 @@ workflow AUTOMATIC_PRIMER_PREDICTION {
         )
 
    emit:
-        // Had to make even std runs go through this workflow (albeit just outputting empty files for every process) due to a join later being slow otherwise. 
-        // wonder if there's a better way?
         auto_primer_trimming_out = ASSESS_MCP_INF_POINTS.out
 
 }
