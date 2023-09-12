@@ -8,15 +8,9 @@ nextflow.enable.dsl=2
 include { CLASSIFY_VAR_REGIONS } from './modules/classify_var_regions.nf'
 include { PARSE_VAR_CLASSIFICATION } from './modules/parse_var_classification.nf'
 include { EXTRACT_VAR_REGIONS } from './modules/extract_var_regions.nf'
-include { PRIMER_VALIDATION_SEARCH } from './modules/primer_validation_search.nf'
-include { PRIMER_VALIDATION_DEOVERLAP } from './modules/primer_validation_deoverlap.nf'
-include { PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS } from './modules/primer_validation_classify_var_regions.nf'
 include { CUTADAPT } from './modules/cutadapt.nf'
 include { CONCAT_PRIMERS } from './modules/concat_primers.nf'
 include { FINAL_CONCAT_PRIMERS } from './modules/final_concat_primers.nf'
-include { DADA2 } from './modules/dada2.nf'
-include { MAKE_ASV_COUNT_TABLES } from './modules/make_asv_count_tables.nf'
-include { KRONA } from './modules/krona.nf'
 
 
 include { QC } from './subworkflows/qc_swf.nf'
@@ -27,38 +21,16 @@ include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_LSU} from './subworkflows/mapseq_
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_UNITE} from './subworkflows/mapseq_otu_krona_swf.nf'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_ITSONEDB} from './subworkflows/mapseq_otu_krona_swf.nf'
 include { PRIMER_IDENTIFICATION } from './subworkflows/primer_identification_swf.nf'
+include { PRIMER_VALIDATION } from './subworkflows/primer_validation_swf.nf'
 include { AUTOMATIC_PRIMER_PREDICTION } from './subworkflows/automatic_primer_trimming.nf'
+include { DADA2_KRONA } from './subworkflows/dada2_krona_swf.nf'
 
+ssu_mapseq_krona_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.ssu_label)
+lsu_mapseq_krona_tuple = tuple(file(params.lsu_db_fasta), file(params.lsu_db_tax), file(params.lsu_db_otu), file(params.lsu_db_mscluster), params.lsu_label)
+itsonedb_mapseq_krona_tuple = tuple(file(params.itsone_db_fasta), file(params.itsone_db_tax), file(params.itsone_db_otu), file(params.itsone_db_mscluster), params.itsone_label)
+unite_mapseq_krona_tuple = tuple(file(params.unite_db_fasta), file(params.unite_db_tax), file(params.unite_db_otu), file(params.unite_db_mscluster), params.unite_label)
 
-// TODO: Move these to config
-// Silva databases
-ssu_db_fasta = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_ssu-20200130/SSU.fasta")
-ssu_db_tax = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_ssu-20200130/slv_ssu_filtered2.txt")
-ssu_db_otu = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_ssu-20200130/ssu2.otu")
-ssu_db_mscluster = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_ssu-20200130/SSU.fasta.mscluster")
-ssu_label = "SSU"
-
-lsu_db_fasta = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_lsu-20200130/LSU.fasta")
-lsu_db_tax = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_lsu-20200130/slv_lsu_filtered2.txt")
-lsu_db_otu = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_lsu-20200130/lsu2.otu")
-lsu_db_mscluster = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/silva_lsu-20200130/LSU.fasta.mscluster")
-lsu_label = "LSU"
-silva_dada2_db = file("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/data/silva_nr99_v138.1_train_set.fa.gz")
-
-// UNITE database
-unite_db_fasta = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/UNITE-20200214/unite.fasta")
-unite_db_tax = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/UNITE-20200214/UNITE-tax.txt")
-unite_db_otu = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/UNITE-20200214/UNITE.otu")
-unite_db_mscluster = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/UNITE-20200214/unite.fasta.mscluster")
-unite_label = "UNITE"
-
-// ITSone database
-itsone_db_fasta = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/ITSoneDB-20200214/itsonedb.fasta")
-itsone_db_tax = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/ITSoneDB-20200214/ITSonedb-tax.txt")
-itsone_db_otu = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/ITSoneDB-20200214/ITSonedb.otu")
-itsone_db_mscluster = file("/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/ITSoneDB-20200214/itsonedb.fasta.mscluster")
-itsone_label = "ITSonedb"
-
+silva_dada2_db = file(params.silva_dada2_db)
 
 params.path = null
 params.project = null
@@ -94,6 +66,7 @@ workflow {
     // TODO: organise the publishDirs in a sensible way
     // TODO: rewrite arparse descriptions
     // TODO: investigate primer val deoverlap script more
+    
 
     QC(
         project,
@@ -112,12 +85,6 @@ workflow {
         CMSEARCH_SUBWF.out.concat_ssu_lsu_coords,
         outdir
     )
-
-    ssu_mapseq_krona_tuple = tuple(ssu_db_fasta, ssu_db_tax, ssu_db_otu, ssu_db_mscluster, ssu_label)
-    lsu_mapseq_krona_tuple = tuple(lsu_db_fasta, lsu_db_tax, lsu_db_otu, lsu_db_mscluster, lsu_label)
-    itsonedb_mapseq_krona_tuple = tuple(itsone_db_fasta, itsone_db_tax, itsone_db_otu, itsone_db_mscluster, itsone_label)
-    unite_mapseq_krona_tuple = tuple(unite_db_fasta, unite_db_tax, unite_db_otu, unite_db_mscluster, unite_label)
-    
 
     MAPSEQ_OTU_KRONA_SSU(
         CMSEARCH_SUBWF.out.ssu_fasta,
@@ -212,70 +179,24 @@ workflow {
                   .join(QC.out.fastp_cleaned_fastq, by: [0, 1])
                   .map( { if (it[2] != null && it[3] == null) { tuple(it[0], it[1], it[2], it[5], it[6]) } else { tuple(it[0], it[1], it[2], it[3], it[4]) }} )
 
-    DADA2(
+    DADA2_KRONA(
         dada2_input,
+        CLASSIFY_VAR_REGIONS.out.concat_var_regions,
+        EXTRACT_VAR_REGIONS.out.extracted_var_path,
+        QC.out.fastp_cleaned_fastq,
         silva_dada2_db,
-        outdir
-    )
-
-    split_input = DADA2.out.dada2_out
-                  .transpose()
-                  .join(EXTRACT_VAR_REGIONS.out.extracted_var_path, by: [0, 1, 2])
-                  
-
-    multi_region_concats = split_input
-    .join(CLASSIFY_VAR_REGIONS.out.concat_var_regions, by: [0, 1])
-    .map( {tuple(it[0], it[1], "concat", it[3], it[4], it[5], it[6], it[7], it[10])} )
-    
-    
-    final_asv_count_table_input = split_input
-                                  .mix(multi_region_concats)
-                                  .combine(QC.out.fastp_cleaned_fastq, by: [0, 1])
-
-                                
-    MAKE_ASV_COUNT_TABLES(
-        final_asv_count_table_input,
-        outdir
-    )
-
-    asv_krona_input = MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out
-                      .map( {it[0, 1, 3]} )
-
-    KRONA(
-        asv_krona_input,
         ssu_mapseq_krona_tuple,
         outdir
     )
-    
+
+    DADA2_KRONA.out.asv_krona_input.view()
+
     primer_validation_input =  FINAL_CONCAT_PRIMERS.out.final_concat_primers_out
                                .map{ tuple(it[0], it[1], it[3]) }
 
-    // primer_validation_input.view()
-
-    PRIMER_VALIDATION_SEARCH(
-         primer_validation_input,
-         outdir
-    )
-
-    // PRIMER_VALIDATION.out.cmsearch_out.view()
-
-    PRIMER_VALIDATION_DEOVERLAP(
-        PRIMER_VALIDATION_SEARCH.out.cmsearch_out,
+    PRIMER_VALIDATION(
+        primer_validation_input,
         outdir
     )
-
-    // PRIMER_VALIDATION_DEOVERLAP.out.cmsearch_deoverlap_out.view()
-
-    // CLASSIFY_VAR_REGIONS.out.cdch_out.view()
-
-    primer_validation_classify_var_regions_input = PRIMER_VALIDATION_DEOVERLAP.out.cmsearch_deoverlap_out
-                                                   .join(primer_validation_input, by: [0, 1])
-
-    PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS(
-        primer_validation_classify_var_regions_input,
-        outdir
-    )
-
-    PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS.out.primer_validation_out.view()
 
 }
