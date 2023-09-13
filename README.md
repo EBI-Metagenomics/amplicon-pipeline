@@ -1,6 +1,6 @@
 # asv-gen
 
-This repository contains the extremely-in-progress Nextflow rework of the V5 MGnify amplicon annotation pipeline, which will include the addition of Amplicon Sequence Variant annotation as a new major feature.
+This repository contains the in-progress Nextflow rework of the V5 MGnify amplicon annotation pipeline, which will include the addition of Amplicon Sequence Variant (ASV) annotation as a new major feature.
 
 The reworked pipeline can be divided into seven different subworkflows, four of which already exist in the current V5 amplicon pipeline:
 
@@ -9,7 +9,7 @@ The reworked pipeline can be divided into seven different subworkflows, four of 
 * ITS extraction (V5)
 * SSU+LSU+ITS taxonomic classification and visualisation (V5)
 
-The new subworkflows will consist of:
+The new subworkflows consist of:
 
 * Amplified region inference
 * Primer trimming
@@ -19,15 +19,16 @@ The new subworkflows will consist of:
 
 ## Completion
 
-The different subworkflow's levels of completion 
+The different subworkflows' levels of completion:
 
 - Quality Control (V5) :white_check_mark:
 - rRNA Prediction and SSU+LSU extraction (V5) :white_check_mark:
-- ITS extraction (V5) :x:
+- ITS extraction (V5) :white_check_mark:
 - SSU+LSU+ITS taxonomic classification and visualisation (V5) :white_check_mark:
-- Amplified region inference ✅
-- Primer trimming :soon:
-- ASV generation, classification, and visualisation :soon:
+- Amplified region inference :white_check_mark:
+- Primer trimming :white_check_mark:
+- ASV generation, classification, and visualisation :white_check_mark:
+
 
 ## Requirements
 
@@ -35,9 +36,10 @@ At the moment the prerequisites are Singularity and a micromamba environment loc
 
 `/hps/software/users/rdf/metagenomics/service-team/software/micromamba/envs/asv-test`
 
+
 ## How to run
 
-At the moment you can run the current version of the pipeline like this:
+You can run the current version of the pipeline like this:
 
-`nextflow run nextflow/primer_trimming.nf --path {directory/containing/fastq} --project {project_accession} --outdir {path/to/out}`
+`nextflow run main.nf --path {directory/containing/fastq} --project {project_accession} --outdir {path/to/out}`
 
