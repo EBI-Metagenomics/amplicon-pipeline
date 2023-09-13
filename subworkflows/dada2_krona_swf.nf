@@ -1,4 +1,5 @@
 
+include { REMOVE_AMBIGUOUS_READS } from '../modules/remove_ambiguous_reads.nf'
 include { DADA2 } from '../modules/dada2.nf'
 include { MAKE_ASV_COUNT_TABLES } from '../modules/make_asv_count_tables.nf'
 include { KRONA } from '../modules/krona.nf'
@@ -15,8 +16,14 @@ workflow DADA2_KRONA {
         outdir
 
     main:
-        DADA2(
+
+        REMOVE_AMBIGUOUS_READS(
             dada2_input,
+            outdir
+        )
+
+        DADA2(
+            REMOVE_AMBIGUOUS_READS.out.noambig_out,
             silva_dada2_db,
             outdir
         )
