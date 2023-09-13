@@ -2,7 +2,7 @@
 process MAKE_ASV_COUNT_TABLES {
 
     label 'light'
-    // publishDir "${outdir}/${project}", mode : "copy"
+    publishDir "${outdir}/${project}/${sampleId}/asv-gen/${var_region}", mode : "copy" 
 
     input:
     tuple val(project), val(sampleId), val(var_region), path(map_1), path(map_2), path(chimeric_prop), path(matched_prop), path(taxa), path(extracted_var_path), path(fastq_1), path(fastq_2)

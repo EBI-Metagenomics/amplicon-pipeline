@@ -3,7 +3,7 @@ process CUTADAPT {
     // Trim the given primers using cutadapt for two paired-end read files
 
     label 'light'
-    publishDir "${outdir}/${project}", mode : "copy"
+    publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
     
     input:
     tuple val(project), val(sampleId), val(var_region), path(concat_primers), path(fastq_1), path(fastq_2)

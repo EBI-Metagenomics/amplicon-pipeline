@@ -21,6 +21,7 @@ itsonedb_mapseq_krona_tuple = tuple(file(params.itsone_db_fasta), file(params.it
 unite_mapseq_krona_tuple = tuple(file(params.unite_db_fasta), file(params.unite_db_tax), file(params.unite_db_otu), file(params.unite_db_mscluster), params.unite_label)
 
 silva_dada2_db = file(params.silva_dada2_db)
+dada2_krona_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.dada2_silva_label)
 
 params.path = null
 params.project = null
@@ -149,7 +150,7 @@ workflow AMPLICON_PIPELINE_V6 {
         AMP_REGION_INFERENCE.out.extracted_var_path,
         QC.out.fastp_cleaned_fastq,
         silva_dada2_db,
-        ssu_mapseq_krona_tuple,
+        dada2_krona_tuple,
         outdir
     )
 

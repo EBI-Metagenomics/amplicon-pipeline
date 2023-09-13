@@ -2,6 +2,7 @@
 process TRIMMOMATIC_SE {
     
     label 'light'
+    publishDir "${outdir}/${project}/${sampleId}/QC/", mode : "copy"
 
     input:
     tuple val(project), val(sampleId), path(fastq)

@@ -2,6 +2,7 @@
 process EXTRACT_COORDS {
 
     label 'light'
+    publishDir "${outdir}/${project}/${sampleId}", pattern : "sequence-categorisation/*SU.fasta", mode : "copy"
 
     input:
     tuple val(project), val(sampleId), path(fasta)

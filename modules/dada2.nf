@@ -3,7 +3,10 @@ process DADA2 {
     // Run DADA2 pipeline including read-tracking
 
     label 'light'
-    publishDir "${outdir}/${project}", mode : "copy"
+    publishDir "${outdir}/${project}/${sampleId}/asv-gen", pattern : "*.tsv" , mode : "copy" 
+    publishDir "${outdir}/${project}/${sampleId}/asv-gen", pattern : "*chimeric.txt" , mode : "copy" 
+    publishDir "${outdir}/${project}/${sampleId}/asv-gen", pattern : "*matched.txt" , mode : "copy" 
+
 
     input:
     tuple val(project), val(sampleId), val(var_region), path(fastq_1), path(fastq_2)

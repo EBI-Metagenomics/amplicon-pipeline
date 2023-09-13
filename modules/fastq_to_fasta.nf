@@ -2,7 +2,7 @@
 process FASTQ_TO_FASTA {
     
     label 'light'
-    // publishDir "${outdir}/merged/${project}", mode : "copy"
+    publishDir "${outdir}/${project}/${sampleId}/QC/", mode : "copy"
     container = '/hps/nobackup/rdf/metagenomics/singularity_cache/quay.io_biocontainers_seqtk:1.3.sif'
 
     input:

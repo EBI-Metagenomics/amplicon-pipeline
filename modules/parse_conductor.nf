@@ -5,7 +5,6 @@ process PARSE_CONDUCTOR {
     // the flags into environment variables 
 
     label 'light'
-    // publishDir "${outdir}/merged/${project}", mode : "copy"
 
     input:
     tuple val(project), val(sampleId), val(var_region), path(trimming_conductor_out)

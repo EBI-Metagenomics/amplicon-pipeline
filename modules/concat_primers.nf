@@ -5,7 +5,6 @@ process CONCAT_PRIMERS {
     // strand has an auto primer
 
     label 'light'
-    publishDir "${outdir}/${project}", mode : "copy"
     
     input:
     tuple val(project), val(sampleId), val(var_region), path(std_primers), path(auto_primers)
@@ -13,12 +12,7 @@ process CONCAT_PRIMERS {
 
     output:
     tuple val(project), val(sampleId), val(var_region), path("*concat_primers.fasta") , optional: true, emit: concat_primers_out
-    
 
-    // script:
-    // def auto_filter = auto_primers.name != "NO_FILE" ? "$auto_primers" : ''
-    
-    // TODO fix the cat
     shell:
     '''
     if [[ -s !{auto_primers} ]]; then

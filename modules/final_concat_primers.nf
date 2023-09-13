@@ -2,7 +2,7 @@
 process FINAL_CONCAT_PRIMERS {
 
     label 'light'
-    publishDir "${outdir}/${project}", mode : "copy"
+    publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
     
     input:
     tuple val(project), val(sampleId), val(var_region), path(cat_primers)

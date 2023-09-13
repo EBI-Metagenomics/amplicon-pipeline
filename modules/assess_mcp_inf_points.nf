@@ -3,7 +3,7 @@ process ASSESS_MCP_INF_POINTS {
     // Select inflection points most likely to be primer cutoff points
 
     label 'light'
-    publishDir "${outdir}/${project}", mode : "copy"
+    publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
 
     input:
     tuple val(project), val(sampleId), val(var_region), path(inf_points_out), path(fastq)
@@ -14,9 +14,9 @@ process ASSESS_MCP_INF_POINTS {
 
     """
     if [[ -s ./$inf_points_out ]]; then
-        python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/assess_inflection_point_mcp_MERGED.py -i $fastq -p $inf_points_out -s ${fastq.simpleName} -o ./
+        python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/assess_inflection_point_mcp_MERGED.py -i $fastq -p $inf_points_out -s ${fastq.simpleName}_${var_region} -o ./
     else
-        touch ${fastq.simpleName}_auto_primers.fasta
+        touch ${fastq.simpleName}_${var_region}_auto_primers.fasta
     fi
     """
 

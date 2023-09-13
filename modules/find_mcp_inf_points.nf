@@ -13,9 +13,9 @@ process FIND_MCP_INF_POINTS {
 
     """
     if [[ -s ./$mcp_cons_out ]]; then
-        python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/find_mcp_inflection_points_MERGED.py -i $mcp_cons_out -s res -o ./
+        python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/find_mcp_inflection_points_MERGED.py -i $mcp_cons_out -s ${sampleId}_${var_region} -o ./
     else
-        touch res_inf_points.tsv
+        touch ${sampleId}_${var_region}_inf_points.tsv
     fi
     """
 

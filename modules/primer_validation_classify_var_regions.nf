@@ -2,6 +2,7 @@
 process PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS {
 
     label 'light' 
+    publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
 
     input:
     tuple val(project), val(sampleId), path(cmsearch_deoverlap_out), path(concat_primers_fasta)

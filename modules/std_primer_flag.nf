@@ -3,7 +3,7 @@ process STD_PRIMER_FLAG {
     // Check for presence of standard library of primers (stored in ./data/standard_primers)
 
     label 'light'
-    publishDir "${outdir}/${project}", mode : "copy" 
+    publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
     // TODO need to give a different name to output files for cases with more than 1 var region. Maybe just add the var region as a prefix
 
 
@@ -16,7 +16,7 @@ process STD_PRIMER_FLAG {
     path "*std_primer_out.txt"
 
     """
-    python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/standard_primer_agrep.py -i $fastq -s ${fastq.simpleName} -o ./
+    python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/standard_primer_agrep.py -i $fastq -s ${fastq.simpleName}_${var_region} -o ./
     """
 
 }

@@ -1,7 +1,9 @@
 
 process MAPSEQ2BIOM {
 
-    label 'light' // Will likely need to give this task more CPUs 
+    label 'light' // Will likely need to give this task more CPUs
+    publishDir "${outdir}/${project}/${sampleId}/taxonomy-summary/${label}", mode : "copy"
+ 
     
     input:
     tuple val(project), val(sampleId), path(mapseq_out)
