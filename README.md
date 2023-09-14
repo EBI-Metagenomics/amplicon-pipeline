@@ -43,3 +43,52 @@ You can run the current version of the pipeline like this:
 
 `nextflow run main.nf --path {directory/containing/fastq} --project {project_accession} --outdir {path/to/out}`
 
+## Output Directory Structure
+
+Example output directory structure for one run:
+
+```
+.
+├── amplified-region-inference
+│   ├── ERR4334351.trimmed.fastq_16S-V3-V4_extracted.fastq.gz
+│   └── ERR4334351.tsv
+├── asv-gen
+│   ├── 16S-V3-V4
+│   │   └── ERR4334351_16S.V3-V4_asv_krona_counts.txt
+│   ├── ERR4334351_proportion_chimeric.txt
+│   ├── ERR4334351_proportion_matched.txt
+│   └── ERR4334351_taxa.tsv
+├── primer-identification
+│   ├── ERR4334351_16S-V3-V4_auto_primers.fasta
+│   ├── ERR4334351_16S-V3-V4_std_primer_out.txt
+│   ├── ERR4334351_16S-V3-V4_std_primers.fasta
+│   ├── ERR4334351_1.cutadapt.fastq.gz
+│   ├── ERR4334351_2.cutadapt.fastq.gz
+│   ├── ERR4334351_final_concat_primers.fasta
+│   ├── ERR4334351_primer_validation.tsv
+│   └── ERR4334351_trimming_conductor_out_16S-V3-V4.txt
+├── QC
+│   ├── ERR4334351.fasta
+│   └── ERR4334351.trimmed.fastq.gz
+├── sequence-categorisation
+│   ├── ERR4334351.cmsearch_matches.tbl.deoverlapped
+│   └── ERR4334351_SSU.fasta
+└── taxonomy-summary
+    ├── DADA2-SILVA
+    │   └── ERR4334351_16S.V3-V4_asv_krona_counts_krona.html
+    ├── ITSonedb
+    │   ├── ERR4334351_ITS_masked_krona.html
+    │   ├── ERR4334351_ITS_masked.notaxid.tsv
+    │   ├── ERR4334351_ITS_masked.tsv
+    │   └── ERR4334351_ITS_masked.txt
+    ├── SSU
+    │   ├── ERR4334351_SSU_krona.html
+    │   ├── ERR4334351_SSU.notaxid.tsv
+    │   ├── ERR4334351_SSU.tsv
+    │   └── ERR4334351_SSU.txt
+    └── UNITE
+        ├── ERR4334351_ITS_masked_krona.html
+        ├── ERR4334351_ITS_masked.notaxid.tsv
+        ├── ERR4334351_ITS_masked.tsv
+        └── ERR4334351_ITS_masked.txt
+```
