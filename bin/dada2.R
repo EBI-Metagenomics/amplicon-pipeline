@@ -11,6 +11,7 @@ args = commandArgs(trailingOnly=TRUE) # Expects thre arguments, one fastq for ea
 path_f = args[1] # Forward fastq
 path_r = args[2] # Reverse fastq
 prefix = args[3] # Prefix
+ref_db = args[4]  # Reference DB
 
 # Learn error model
 err_f = learnErrors(path_f, multithread=TRUE)
@@ -34,7 +35,7 @@ seqtab = makeSequenceTable(merged)
 seqtab.nochim = removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
 
 # Assign taxonomy (using SILVA)
-taxa = assignTaxonomy(seqtab.nochim, "./silva_nr99_v138.1_train_set.fa.gz", multithread=TRUE)
+taxa = assignTaxonomy(seqtab.nochim, ref_db, multithread=TRUE)
 
 chimera_ids = which(colnames(seqtab) %in% colnames(seqtab.nochim) == FALSE)
 
