@@ -136,6 +136,16 @@ workflow AMPLICON_PIPELINE_V6 {
         outdir
     )
 
+    primer_validation_input = CONCAT_PRIMER_CUTADAPT.out.final_concat_primers_out
+                              .map{ tuple(it[0], it[1], it[3]) }
+
+    // Verify that any identified primers (both std+auto) actually match to regions of the SSU gene (for Bacteria/Archaea/Eukaryotes)
+    // Output of this (a .tsv file) will go to CDCH
+    PRIMER_VALIDATION(
+        primer_validation_input,
+        outdir
+    )
+
     // Prepare DADA2 input (either fastp reads if no primer trimming was done, or cutadapt output if primers were trimmed)
     dada2_input = CONCAT_PRIMER_CUTADAPT.out.cutadapt_out
                   .join(QC.out.fastp_cleaned_fastq, by: [0, 1])
@@ -149,16 +159,6 @@ workflow AMPLICON_PIPELINE_V6 {
         QC.out.fastp_cleaned_fastq,
         silva_dada2_db,
         dada2_krona_tuple,
-        outdir
-    )
-
-    primer_validation_input = CONCAT_PRIMER_CUTADAPT.out.final_concat_primers_out
-                              .map{ tuple(it[0], it[1], it[3]) }
-
-    // Verify that any identified primers (both std+auto) actually match to regions of the SSU gene (for Bacteria/Archaea/Eukaryotes)
-    // Output of this (a .tsv file) will go to CDCH
-    PRIMER_VALIDATION(
-        primer_validation_input,
         outdir
     )
 

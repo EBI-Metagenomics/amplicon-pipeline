@@ -12,7 +12,6 @@ process MAKE_ASV_COUNT_TABLES {
     tuple val(project), val(sampleId), val(var_region), path("*asv_krona_counts.txt"), emit: asv_count_tables_out
 
     """
-    echo "helloz"
     zcat $fastq_1 | sed -n "1~4p" > headers.txt
     python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/make_asv_count_table.py -t $taxa -f $map_1 -r $map_2 -a $extracted_var_path -hd ./headers.txt  -s $sampleId
     """
