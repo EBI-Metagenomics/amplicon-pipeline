@@ -6,16 +6,12 @@ import gzip
 
 from Bio import SeqIO, bgzf
 
-_INPUT1 = "/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/nf-work/f8/570e8803fa29a407fa1786206f5ca2/SRR17062740_1.cutadapt.fastq.gz"
-_INPUT2 = "/hps/nobackup/rdf/metagenomics/service-team/users/chrisata/nf-work/f8/570e8803fa29a407fa1786206f5ca2/SRR17062740_2.cutadapt.fastq.gz"
-
-
 def parse_args():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-f", "--fwd", required=True, type=str, help="Path to fastq file to check for primers")
-    parser.add_argument("-r", "--rev", required=True, type=str, help="Fasta")
+    parser.add_argument("-f", "--fwd", required=True, type=str, help="Path to forward fastq file")
+    parser.add_argument("-r", "--rev", required=True, type=str, help="Path to reverse fastq file")
     parser.add_argument("-s", "--sample", required=True, type=str, help="Sample ID")
     args = parser.parse_args()
     

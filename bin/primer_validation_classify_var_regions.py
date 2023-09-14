@@ -51,8 +51,8 @@ def parse_args():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-i", "--input", required=True, type=str, help="Path to fastq file to check for primers")
-    parser.add_argument("-f", "--fasta", required=True, type=str, help="Fasta")
+    parser.add_argument("-i", "--input", required=True, type=str, help="Path to cmsearch_deoverlap_tblout file")
+    parser.add_argument("-f", "--fasta", required=True, type=str, help="Path to concatenated primers fasta file")
     parser.add_argument("-s", "--sample", required=True, type=str, help="Sample ID")
     args = parser.parse_args()
     

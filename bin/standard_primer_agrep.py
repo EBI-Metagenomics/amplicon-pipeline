@@ -15,7 +15,7 @@ def parse_args():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-i", "--input", required=True, type=str, help="Path to merged FASTA to look for primers")
+    parser.add_argument("-i", "--input", required=True, type=str, help="Path to merged FASTQ to look for primers")
     parser.add_argument("-s", "--sample", required=True, type=str, help="Sample ID")
     parser.add_argument("-o", "--output", required=True, type=str, help="Output path")
     args = parser.parse_args()

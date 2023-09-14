@@ -16,7 +16,6 @@ workflow DADA2_KRONA {
         outdir
 
     main:
-
         REMOVE_AMBIGUOUS_READS(
             dada2_input,
             outdir
