@@ -86,14 +86,18 @@ def main():
 
             if k != "0":
                 k = "_".join(k.split(" "))
-                if k != "Archaea" and k != "Bacteria":
-                    tax_assignment += f"sk__Eukaryota\tk__{k}"
+                if k == "Archaea" or k == "Bacteria":
+                    tax_assignment += f"sk__{k}"
+                elif k == "Eukaryota":
+                    tax_assignment += f"sk__Eukaryota"
                 else:
-                    tax_assignment += f"sk__{k}\tk__"
+                    tax_assignment += f"sk__Eukaryota\tk__{k}"
             else:
                 break
 
             if p != "0":
+                if k == "Archaea" or k == "Bacteria":
+                    tax_assignment += f"\tk__"
                 p = "_".join(p.split(" "))
                 tax_assignment += f"\tp__{p}"
             else:
