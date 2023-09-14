@@ -4,8 +4,6 @@ process STD_PRIMER_FLAG {
 
     label 'light'
     publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
-    // TODO need to give a different name to output files for cases with more than 1 var region. Maybe just add the var region as a prefix
-
 
     input:
     tuple  val(project), val(sampleId), val(var_region), path(fastq)

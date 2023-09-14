@@ -1,5 +1,6 @@
 
 process TRIMMOMATIC_SE {
+    // Run Trimmomatic on merged/single-end reads
     
     label 'light'
     publishDir "${outdir}/${project}/${sampleId}/QC/", mode : "copy"

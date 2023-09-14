@@ -1,5 +1,6 @@
 
 process FASTQ_TO_FASTA {
+    // Convert fastq to fasta
     
     label 'light'
     publishDir "${outdir}/${project}/${sampleId}/QC/", mode : "copy"
