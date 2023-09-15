@@ -1,0 +1,48 @@
+{
+  "name": "nf-core/ampliconpipeline",
+  "homePage": "https://github.com/nf-core/ampliconpipeline",
+  "repos": {
+    "git@github.com:EBI-Metagenomics/nf-modules.git": {
+      "modules": {
+        "ebi-metagenomics": {
+          "cmsearchtbloutdeoverlap": {
+            "branch": "main",
+            "git_sha": "f46c82bbdaa9ea8396c6a50c016a1eac64e3fabd",
+            "installed_by": ["modules"]
+          },
+          "infernal/cmsearch": {
+            "branch": "main",
+            "git_sha": "94f05084eaa29d81245cc8da6380ebfb87856c86",
+            "installed_by": ["modules"]
+          }
+        }
+      }
+    },
+    "https://github.com/nf-core/modules.git": {
+      "modules": {
+        "nf-core": {
+          "custom/dumpsoftwareversions": {
+            "branch": "master",
+            "git_sha": "76cc4938c1f6ea5c7d83fed1eeffc146787f9543",
+            "installed_by": ["modules"]
+          },
+          "fastp": {
+            "branch": "master",
+            "git_sha": "d497a4868ace3302016ea8ed4b395072d5e833cd",
+            "installed_by": ["modules"]
+          },
+          "fastqc": {
+            "branch": "master",
+            "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+            "installed_by": ["modules"]
+          },
+          "multiqc": {
+            "branch": "master",
+            "git_sha": "f2d63bd5b68925f98f572eed70993d205cc694b7",
+            "installed_by": ["modules"]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/yaml-schema.json
+name: "cmsearchtbloutdeoverlap"
+description: Perl script to remove lower scoring overlaps from cmsearch --tblout files.
+keywords:
+  - covariance models
+  - RNA
+  - processing
+tools:
+  - "cmsearchtbloutdeoverlap":
+      description: "cmsearch-deoverlap.pl: remove lower scoring overlaps from cmsearch"
+      homepage: "https://github.com/nawrockie/cmsearch_tblout_deoverlap/"
+      documentation: "https://github.com/nawrockie/cmsearch_tblout_deoverlap/wiki"
+      tool_dev_url: "https://github.com/nawrockie/cmsearch_tblout_deoverlap/"
+      licence: "['Public Domain']"
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'test', single_end:false ]`
+
+  - cmsearch_tblout:
+      type: file
+      description: Sorted BAM/CRAM/SAM file
+      pattern: "*.tblout"
+
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'test', single_end:false ]`
+
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+
+  - cmsearch_tblout_deoverlapped:
+      type: file
+      description: Sorted BAM/CRAM/SAM file
+      pattern: "*.tblout.deoverlapped"
+
+authors:
+  - "@mberacochea"

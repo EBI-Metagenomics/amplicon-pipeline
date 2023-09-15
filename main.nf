@@ -2,7 +2,7 @@
 
 nextflow.enable.dsl = 2
 
-include { AMPLICON_PIPELINE_V6 } from './workflow/pipeline.nf'
+include { AMPLICON_PIPELINE_V6 } from './workflows/pipeline.nf'
 
 workflow {
     AMPLICON_PIPELINE_V6()
