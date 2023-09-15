@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/yaml-schema.json
+name: "infernal_cmsearch"
+description: RNA secondary structure/sequence profiles for homology search and alignment
+keywords:
+  - covariance models
+  - RNA
+  - fasta
+tools:
+  - "infernal":
+      description: "Infernal is for searching DNA sequence databases for RNA structure and sequence similarities."
+      homepage: "http://eddylab.org/infernal/"
+      documentation: "http://eddylab.org/infernal/Userguide.pdf"
+      tool_dev_url: "https://github.com/EddyRivasLab/infernal"
+      doi: "10.1093/bioinformatics/btt509"
+      licence: "['BSD-3-clause']"
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'test', single_end:false ]`
+  - seqdb:
+      type: file
+      description: Database of sequences in FASTA format
+      pattern: "*.{fasta,fna,fasta.gz,fna.gz}"
+
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'test', single_end:false ]`
+
+  - bam:
+      type: file
+      description: Tabular (space-delimited) file summarizing the hits found, with one data line per hit.
+      pattern: "*.tbl"
+
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+
+authors:
+  - "@mberacochea"
