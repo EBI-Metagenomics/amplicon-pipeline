@@ -4,14 +4,13 @@ process TRIMMING_CONDUCTOR {
     // flags into "trimming_conductor_out.txt"
 
     label 'light'
-    publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
+    // publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
 
     input:
-    tuple val(project), val(sampleId), val(var_region), path(general_primer_flag), path(std_primer_flag)
-    val outdir
+    tuple val(meta), val(var_region), path(general_primer_flag), path(std_primer_flag)
 
     output:
-    tuple val(project), val(sampleId), val(var_region), path("*trimming_conductor_out*"), emit: trimming_conductor_out
+    tuple val(meta), val(var_region), path("*trimming_conductor_out*"), emit: trimming_conductor_out
 
     shell:
 
@@ -49,7 +48,7 @@ process TRIMMING_CONDUCTOR {
         fi
     fi
 
-    echo "${fwd_trim_flag}\n${rev_trim_flag}" > !{sampleId}_trimming_conductor_out_!{var_region}.txt
+    echo "${fwd_trim_flag}\n${rev_trim_flag}" > !{meta.id}_trimming_conductor_out_!{var_region}.txt
     '''
 
 }
