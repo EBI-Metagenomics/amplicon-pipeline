@@ -5,17 +5,21 @@ process EASEL {
     container = '/hps/nobackup/rdf/metagenomics/singularity_cache_nextflow/quay.io-biocontainers-easel-0.48--hec16e2b_1.img'
 
     input:
-    tuple val(project), val(sampleId), path(fasta), path(cmsearch_deoverlap_out)
-    val outdir
+    tuple val(meta), path(reads_fasta), path(cmsearch_deoverlap_out)
 
     output:
-    tuple val(project), val(sampleId), path("*.easel_extracted.fasta"), emit: easel_coords
-    path("*.matched_seqs_with_coords"), emit: matched_seqs_with_coords
+    tuple val(meta), path("*.easel_extracted.fasta"), emit: easel_coords
+    tuple val(meta), path("*.matched_seqs_with_coords"), emit: matched_seqs_with_coords
+
+    script:
+    def fasta_unzipped = reads_fasta.name.replace(".gz", "")
+
 
     """
-    awk '{print \$1"-"\$3"/"\$8"-"\$9" "\$8" "\$9" "\$1}' $cmsearch_deoverlap_out > ${sampleId}.matched_seqs_with_coords
-    esl-sfetch --index $fasta
-    esl-sfetch -Cf $fasta ${sampleId}.matched_seqs_with_coords > ${sampleId}.easel_extracted.fasta
+    gzip -c -d $reads_fasta > $fasta_unzipped
+    awk '{print \$1"-"\$3"/"\$8"-"\$9" "\$8" "\$9" "\$1}' $cmsearch_deoverlap_out > ${meta.id}.matched_seqs_with_coords
+    esl-sfetch --index $fasta_unzipped
+    esl-sfetch -Cf $fasta_unzipped ${meta.id}.matched_seqs_with_coords > ${meta.id}.easel_extracted.fasta
     """
 
 }

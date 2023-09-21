@@ -3,15 +3,14 @@ process CUTADAPT {
     // Trim the given primers using cutadapt for two paired-end read files
 
     label 'light'
-    publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
+    // publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
     
     input:
-    tuple val(project), val(sampleId), val(var_region), path(concat_primers), path(fastq_1), path(fastq_2)
-    val outdir
+    tuple val(meta), val(var_region), path(concat_primers), path(reads)
 
     output:
-    tuple val(project), val(sampleId), val(var_region), path("*_1.cutadapt.fastq.gz"), path("*_2.cutadapt.fastq.gz"), optional: true, emit: cutadapt_out
-        
+    tuple val(meta), val(var_region), path("*.cutadapt.fastq.gz"), optional: true, emit: cutadapt_out
+
     shell:
     '''
     fwd_primer=''
@@ -42,14 +41,28 @@ process CUTADAPT {
             rev_primer="$(sed '2q;d' ./rev_primer.fasta)"
         fi
 
-        if [[ ! -z $fwd_primer ]] && [[ ! -z $rev_primer ]]; then
-            cutadapt -g file:fwd_primer.fasta -G file:rev_primer.fasta -o "!{sampleId}"_1.cutadapt.fastq.gz -p "!{sampleId}"_2.cutadapt.fastq.gz "!{fastq_1}" "!{fastq_2}"
+        if [[ !{meta.single_end} ]]; then
 
-        elif [[ ! -z $fwd_primer ]]; then
-            cutadapt -g file:fwd_primer.fasta -o "!{sampleId}"_1.cutadapt.fastq.gz -p "!{sampleId}"_2.cutadapt.fastq.gz "!{fastq_1}" "!{fastq_2}"
-        
-        elif [[ ! -z $rev_primer ]]; then
-            cutadapt -G file:rev_primer.fasta -o "!{sampleId}"_1.cutadapt.fastq.gz -p "!{sampleId}"_2.cutadapt.fastq.gz "!{fastq_1}" "!{fastq_2}"
+            if [[ ! -z $fwd_primer ]] && [[ ! -z $rev_primer ]]; then
+                cutadapt --rc -a file:fwd_primer.fasta -g file:rev_primer.fasta -o "!{meta.id}".cutadapt.fastq.gz "!{reads}"
+
+            elif [[ ! -z $fwd_primer ]]; then
+                cutadapt --rc -a file:fwd_primer.fasta -o "!{meta.id}".cutadapt.fastq.gz "!{reads}"
+            
+            elif [[ ! -z $rev_primer ]]; then
+                cutadapt --rc -g file:rev_primer.fasta -o "!{meta.id}".cutadapt.fastq.gz "!{reads}"
+            fi
+
+        else
+            if [[ ! -z $fwd_primer ]] && [[ ! -z $rev_primer ]]; then
+                cutadapt -g file:fwd_primer.fasta -G file:rev_primer.fasta -o "!{meta.id}"_1.cutadapt.fastq.gz -p "!{meta.id}"_2.cutadapt.fastq.gz "!{reads[0]}" "!{reads[1]}"
+
+            elif [[ ! -z $fwd_primer ]]; then
+                cutadapt -g file:fwd_primer.fasta -o "!{meta.id}"_1.cutadapt.fastq.gz -p "!{meta.id}"_2.cutadapt.fastq.gz "!{reads[0]}" "!{reads[1]}"
+            
+            elif [[ ! -z $rev_primer ]]; then
+                cutadapt -G file:rev_primer.fasta -o "!{meta.id}"_1.cutadapt.fastq.gz -p "!{meta.id}"_2.cutadapt.fastq.gz "!{reads[0]}" "!{reads[1]}"
+            fi
         fi
 
     fi

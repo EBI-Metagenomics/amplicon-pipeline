@@ -1,45 +1,42 @@
 
-include { CMSEARCH } from '../modules/cmsearch.nf'
-include { CMSEARCH_DEOVERLAP } from '../modules/cmsearch_deoverlap.nf'
-include { EASEL } from '../modules/easel.nf'
-include { EXTRACT_COORDS } from '../modules/extract_coords.nf'
+include { INFERNAL_CMSEARCH } from '../../modules/ebi-metagenomics/infernal/cmsearch/main.nf'
+include { CMSEARCHTBLOUTDEOVERLAP } from '../../modules/ebi-metagenomics/cmsearchtbloutdeoverlap/main.nf'
+include { EASEL } from '../../modules/local/easel.nf'
+include { EXTRACT_COORDS } from '../../modules/local/extract_coords.nf'
 
 workflow CMSEARCH_SUBWF {
 
     // Subworkflow that runs cmsearch to find matches in RFAM in fasta files
     
     take:
-        fasta
-        outdir
-
+        reads_fasta
     main:
-        CMSEARCH(
-            fasta, 
-            outdir
+
+        INFERNAL_CMSEARCH(
+            reads_fasta,
+            file(params.rfam)
         )
 
-        CMSEARCH_DEOVERLAP(
-            CMSEARCH.out.cmsearch_out,
-            outdir
+        CMSEARCHTBLOUTDEOVERLAP(
+            INFERNAL_CMSEARCH.out.cmsearch_tbl,
+            file(params.rfam_clan)
         )
-
-        easel_input = fasta
-                      .join(CMSEARCH_DEOVERLAP.out.cmsearch_deoverlap_out, by: [0, 1])
         
+        ch_easel_input = reads_fasta
+                         .join(CMSEARCHTBLOUTDEOVERLAP.out.cmsearch_tblout_deoverlapped)
+
         EASEL(
-            easel_input,
-            outdir
+            ch_easel_input,
         )
 
         EXTRACT_COORDS(
             EASEL.out.easel_coords,
             EASEL.out.matched_seqs_with_coords,
-            outdir
         )
 
     emit:
-        cmsearch_out = CMSEARCH.out.cmsearch_out
-        cmsearch_deoverlap_out = CMSEARCH_DEOVERLAP.out.cmsearch_deoverlap_out
+        cmsearch_out = INFERNAL_CMSEARCH.out.cmsearch_tbl
+        cmsearch_deoverlap_out = CMSEARCHTBLOUTDEOVERLAP.out.cmsearch_tblout_deoverlapped
         easel_out = EASEL.out.easel_coords
         ssu_fasta = EXTRACT_COORDS.out.ssu_fasta
         lsu_fasta = EXTRACT_COORDS.out.lsu_fasta

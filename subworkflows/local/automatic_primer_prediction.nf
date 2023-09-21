@@ -1,7 +1,7 @@
 
-include { ASSESS_MCP_CONS } from '../modules/assess_mcp_cons.nf'
-include { FIND_MCP_INF_POINTS } from '../modules/find_mcp_inf_points.nf'
-include { ASSESS_MCP_INF_POINTS } from '../modules/assess_mcp_inf_points.nf'
+include { ASSESS_MCP_CONS } from '../../modules/local/assess_mcp_cons.nf'
+include { FIND_MCP_INF_POINTS } from '../../modules/local/find_mcp_inf_points.nf'
+include { ASSESS_MCP_INF_POINTS } from '../../modules/local/assess_mcp_inf_points.nf'
 
 workflow AUTOMATIC_PRIMER_PREDICTION {
 
@@ -14,33 +14,24 @@ workflow AUTOMATIC_PRIMER_PREDICTION {
     
     take:
         auto_trimming_input
-        outdir
     main:
         // Use Most Common Prefix (MCP) method to generate curves of base conservation
         ASSESS_MCP_CONS(
-            auto_trimming_input.map{ it[0] }, // project ID
-            auto_trimming_input.map{ it[1] }, // Sample ID
-            auto_trimming_input.map{ it[2] }, // var_region
-            auto_trimming_input.map{ it[3] }, // fwd_flag
-            auto_trimming_input.map{ it[4] }, // rev_flag
-            auto_trimming_input.map{ it[5] }, // fastq
-            outdir
+            auto_trimming_input
         )
 
         // Find inflection points in conservation curves
         FIND_MCP_INF_POINTS(
-            ASSESS_MCP_CONS.out.mcp_cons_out,
-            outdir
-        ) 
+            ASSESS_MCP_CONS.out.mcp_cons_out
+        )
 
         // Join fastq channel and the inf_points channel
         assess_inf_input = FIND_MCP_INF_POINTS.out.inf_points_out 
-                           .join(auto_trimming_input.map{ it[0, 1, 2, 5] }, by: [0, 1, 2])
+                           .join(auto_trimming_input.map{ it[0, 1, 4] }, by: [0, 1])
         
         // Select inflection points most likely to be primer cutoff points
         ASSESS_MCP_INF_POINTS(
-            assess_inf_input,
-            outdir
+            assess_inf_input
         )
 
    emit:

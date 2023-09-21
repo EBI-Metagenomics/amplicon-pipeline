@@ -1,28 +1,23 @@
 
-include { FORMAT_BEDFILE } from '../modules/format_bedfile.nf'
-include { BEDTOOLS } from '../modules/bedtools.nf'
+include { FORMAT_BEDFILE } from '../../modules/local/format_bedfile.nf'
+include { BEDTOOLS } from '../../modules/local/bedtools.nf'
 
 workflow ITS_SWF {
     
     take:
-        fasta
+        reads_fasta
         concat_ssu_lsu_coords
-        outdir
-
     main:
 
         FORMAT_BEDFILE(
             concat_ssu_lsu_coords,
-            outdir
         )
 
-        bedtools_input = fasta
-                         .join(FORMAT_BEDFILE.out.format_bedfile_out, by: [0, 1])
-
+        bedtools_input = reads_fasta
+                         .join(FORMAT_BEDFILE.out.format_bedfile_out)
 
         BEDTOOLS(
             bedtools_input,
-            outdir
         )
 
     emit:
