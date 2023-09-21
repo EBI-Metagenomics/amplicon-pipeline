@@ -1,8 +1,9 @@
 
 // nextflow run -resume main.nf --path /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_datasets/ERP122862_subset --project ERP122862 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged
+// nextflow run -resume main.nf --path samplesheet.csv --project ERP122862 --outdir /hps/nobackup/rdf/metagenomics/service
 
 include { INPUT_CHECK } from '../subworkflows/local/input_check.nf'
-include { QC } from '../subworkflows/local/qc_swf.nf'
+include { READS_QC } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 // include { CMSEARCH_SUBWF } from '../subworkflows/local/cmsearch_swf.nf'
 // include { ITS_SWF } from '../subworkflows/local/its_swf.nf'
 // include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_SSU} from '../subworkflows/local/mapseq_otu_krona_swf.nf'
@@ -63,11 +64,12 @@ workflow AMPLICON_PIPELINE_V6 {
     INPUT_CHECK(samplesheet)
 
     // Quality control
-    QC(
-        project,
-        INPUT_CHECK.out.reads,
-        outdir
+
+    READS_QC(
+        INPUT_CHECK.out.reads
     )
+    
+    READS_QC.out.reads_se_and_merged.view()
 
     // // Cmsearch subworkflow to find rRNA reads for SSU+LSU
     // CMSEARCH_SUBWF(
