@@ -14,7 +14,7 @@ include { AMP_REGION_INFERENCE } from '../subworkflows/local/amp_region_inferenc
 include { PRIMER_IDENTIFICATION } from '../subworkflows/local/primer_identification_swf.nf'
 include { AUTOMATIC_PRIMER_PREDICTION } from '../subworkflows/local/automatic_primer_prediction.nf'
 include { CONCAT_PRIMER_CUTADAPT } from '../subworkflows/local/concat_primer_cutadapt.nf'
-// include { PRIMER_VALIDATION } from '../subworkflows/local/primer_validation_swf.nf'
+include { PRIMER_VALIDATION } from '../subworkflows/local/primer_validation_swf.nf'
 // include { DADA2_KRONA } from '../subworkflows/local/dada2_krona_swf.nf'
 
 // Initialise different database inputs for MapSeq+Krona
@@ -133,17 +133,16 @@ workflow AMPLICON_PIPELINE_V6 {
         READS_QC.out.reads
     )
 
-    CONCAT_PRIMER_CUTADAPT.out.cutadapt_out.view()
+    primer_validation_input = CONCAT_PRIMER_CUTADAPT.out.final_concat_primers_out
+                              .map{ tuple(it[0], it[2]) }
 
-    // primer_validation_input = CONCAT_PRIMER_CUTADAPT.out.final_concat_primers_out
-    //                           .map{ tuple(it[0], it[1], it[3]) }
+    // Verify that any identified primers (both std+auto) actually match to regions of the SSU gene (for Bacteria/Archaea/Eukaryotes)
+    // Output of this (a .tsv file) will go to CDCH
+    PRIMER_VALIDATION(
+        primer_validation_input
+    )
 
-    // // Verify that any identified primers (both std+auto) actually match to regions of the SSU gene (for Bacteria/Archaea/Eukaryotes)
-    // // Output of this (a .tsv file) will go to CDCH
-    // PRIMER_VALIDATION(
-    //     primer_validation_input,
-    //     outdir
-    // )
+    PRIMER_VALIDATION.out.primer_validation_out.view()
 
     // // Prepare DADA2 input (either fastp reads if no primer trimming was done, or cutadapt output if primers were trimmed)
     // dada2_input = CONCAT_PRIMER_CUTADAPT.out.cutadapt_out
