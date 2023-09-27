@@ -15,7 +15,7 @@ The new subworkflows consist of:
 * Primer trimming
 * ASV generation, classification, and visualisation
 
-![V6 Schema](https://github.com/EBI-Metagenomics/asv-gen/assets/34323164/a6ef22eb-7967-4d1c-b635-0468eb11e174)
+![V6 Schema](https://github.com/EBI-Metagenomics/asv-gen/assets/34323164/4b42b6c0-dfd2-4fd7-a04f-942a1f3904fa)
 
 ## Completion
 
