@@ -103,10 +103,6 @@ def main():
             beg = float(line_lst[5])
             end = float(line_lst[6])
 
-            res_dict["Run"].append(_SAMPLE)
-            res_dict["AssertionEvidence"].append("ECO_0000363")
-            res_dict["AssertionMethod"].append("automatic assertion")
-
             if rfam == 'RF00177':
                 gene = "16S"
                 model = regions_16S_bacteria
@@ -116,6 +112,12 @@ def main():
             elif rfam == 'RF01960':
                 gene = "18S"
                 model = regions_18S
+            else: 
+                continue
+
+            res_dict["Run"].append(_SAMPLE)
+            res_dict["AssertionEvidence"].append("ECO_0000363")
+            res_dict["AssertionMethod"].append("automatic assertion")
 
             strand = ""
 
