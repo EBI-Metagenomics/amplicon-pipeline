@@ -5,14 +5,18 @@ process REMOVE_AMBIGUOUS_READS {
     label 'light'
 
     input:
-    tuple val(project), val(sampleId), val(var_region), path(fastq_1), path(fastq_2)
-    val outdir
+    tuple val(meta), val(var_region), path(reads)
 
     output:
-    tuple val(project), val(sampleId), val(var_region), path("*noambig_1.fastq.gz"), path("*noambig_2.fastq.gz"), emit: noambig_out
+    tuple val(meta), val(var_region), path("*noambig*fastq.gz"), emit: noambig_out
 
     """
-    python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/remove_ambiguous_reads.py -f $fastq_1 -r $fastq_2 -s $sampleId
+    if [[ ${meta.single_end} ]]; then
+        python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/remove_ambiguous_reads.py -f $reads -s ${meta.id}
+    else 
+        python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/remove_ambiguous_reads.py -f ${reads[0]} -r ${reads[1]} -s ${meta.id}
+    fi
+    
     """
 
 }

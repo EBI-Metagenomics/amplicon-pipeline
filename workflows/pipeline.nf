@@ -15,7 +15,7 @@ include { PRIMER_IDENTIFICATION } from '../subworkflows/local/primer_identificat
 include { AUTOMATIC_PRIMER_PREDICTION } from '../subworkflows/local/automatic_primer_prediction.nf'
 include { CONCAT_PRIMER_CUTADAPT } from '../subworkflows/local/concat_primer_cutadapt.nf'
 include { PRIMER_VALIDATION } from '../subworkflows/local/primer_validation_swf.nf'
-// include { DADA2_KRONA } from '../subworkflows/local/dada2_krona_swf.nf'
+include { DADA2_KRONA } from '../subworkflows/local/dada2_krona_swf.nf'
 
 // Initialise different database inputs for MapSeq+Krona
 ssu_mapseq_krona_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.ssu_label)
@@ -142,22 +142,19 @@ workflow AMPLICON_PIPELINE_V6 {
         primer_validation_input
     )
 
-    PRIMER_VALIDATION.out.primer_validation_out.view()
+    // Prepare DADA2 input (either fastp reads if no primer trimming was done, or cutadapt output if primers were trimmed)
+    dada2_input = CONCAT_PRIMER_CUTADAPT.out.cutadapt_out
+                  .join(INPUT_CHECK.out.reads, by: 0)
+                  .map( { if (it[1] != null && it[2] == null) { tuple(it[0], it[1], it[3]) } else { tuple(it[0], it[1], it[2]) }} )
 
-    // // Prepare DADA2 input (either fastp reads if no primer trimming was done, or cutadapt output if primers were trimmed)
-    // dada2_input = CONCAT_PRIMER_CUTADAPT.out.cutadapt_out
-    //               .join(QC.out.fastp_cleaned_fastq, by: [0, 1])
-    //               .map( { if (it[2] != null && it[3] == null) { tuple(it[0], it[1], it[2], it[5], it[6]) } else { tuple(it[0], it[1], it[2], it[3], it[4]) }} )
-
-    // // Run DADA2 ASV generation + generate Krona plots for each run+amp_region 
-    // DADA2_KRONA(
-    //     dada2_input,
-    //     AMP_REGION_INFERENCE.out.concat_var_regions,
-    //     AMP_REGION_INFERENCE.out.extracted_var_path,
-    //     QC.out.fastp_cleaned_fastq,
-    //     silva_dada2_db,
-    //     dada2_krona_tuple,
-    //     outdir
-    // )
+    // Run DADA2 ASV generation + generate Krona plots for each run+amp_region 
+    DADA2_KRONA(
+        dada2_input,
+        AMP_REGION_INFERENCE.out.concat_var_regions,
+        AMP_REGION_INFERENCE.out.extracted_var_path,
+        READS_QC.out.reads,
+        silva_dada2_db,
+        dada2_krona_tuple,
+    )
 
 }
