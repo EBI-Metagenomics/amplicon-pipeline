@@ -11,7 +11,7 @@ args = commandArgs(trailingOnly=TRUE) # Expects thre arguments, one fastq for ea
 path_f = args[1] # Forward fastq
 path_r = args[2] # Reverse fastq
 prefix = args[3] # Prefix
-ref_db = args[4]  # Reference DB
+ref_db = args[4] # Reference DB
 
 # Learn error model
 err_f = learnErrors(path_f, multithread=TRUE)
