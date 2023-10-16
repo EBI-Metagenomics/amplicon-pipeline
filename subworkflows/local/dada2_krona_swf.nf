@@ -20,30 +20,30 @@ workflow DADA2_KRONA {
             dada2_input
         )
 
-        REMOVE_AMBIGUOUS_READS.out.noambig_out.view()
+        DADA2(
+            REMOVE_AMBIGUOUS_READS.out.noambig_out,
+            silva_dada2_db
+        )
 
-    //     DADA2(
-    //         REMOVE_AMBIGUOUS_READS.out.noambig_out,
-    //         silva_dada2_db,
-    //         outdir
-    //     )
-
-    //     split_input = DADA2.out.dada2_out
-    //                   .transpose()
-    //                   .join(extracted_var_path, by: [0, 1, 2])
+        split_input = DADA2.out.dada2_out
+                      .transpose()
+                      .join(extracted_var_path, by: [0, 1])
                     
 
-    //     multi_region_concats = split_input
-    //                            .join(concat_var_regions, by: [0, 1])
-    //                            .map( {tuple(it[0], it[1], "concat", it[3], it[4], it[5], it[6], it[7], it[10])} )
+        multi_region_concats = split_input
+                               .join(concat_var_regions, by: 0)
+                               .map( {tuple(it[0], "concat", it[2], it[3], it[4], it[5], it[9])} )
         
-    //     final_asv_count_table_input = split_input
-    //                                   .mix(multi_region_concats)
-    //                                   .combine(fastp_cleaned_fastq, by: [0, 1])
+
+        final_asv_count_table_input = split_input
+                                      .mix(multi_region_concats)
+                                      .combine(fastp_cleaned_fastq, by: 0)
                                     
+
+        final_asv_count_table_input.view()
+
     //     MAKE_ASV_COUNT_TABLES(
-    //         final_asv_count_table_input,
-    //         outdir
+    //         final_asv_count_table_input
     //     )
 
     //     asv_krona_input = MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out

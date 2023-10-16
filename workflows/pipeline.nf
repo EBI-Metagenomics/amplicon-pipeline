@@ -38,20 +38,7 @@ project = Channel.value( params.project )
 
 samplesheet = file( params.path )
 // reads = Channel.fromFilePairs( "${params.path}/*{1,2}.fastq.gz", size: 2)
-// single_reads = Channel.fromPath("${params.path}/*.fastq.gz")
 outdir = params.outdir
-
-// paired_read_paths = reads
-// .map { it[1] }
-// .collect()
-
-// paired_read_paths.view()
-
-// single_reads
-// .map{ it in paired_read_paths }
-// .view()
-// .join(paired_read_paths)
-// .view()
 
 
 workflow AMPLICON_PIPELINE_V6 {
@@ -144,7 +131,7 @@ workflow AMPLICON_PIPELINE_V6 {
 
     // Prepare DADA2 input (either fastp reads if no primer trimming was done, or cutadapt output if primers were trimmed)
     dada2_input = CONCAT_PRIMER_CUTADAPT.out.cutadapt_out
-                  .join(INPUT_CHECK.out.reads, by: 0)
+                  .join(READS_QC.out.reads, by: 0)
                   .map( { if (it[1] != null && it[2] == null) { tuple(it[0], it[1], it[3]) } else { tuple(it[0], it[1], it[2]) }} )
 
     // Run DADA2 ASV generation + generate Krona plots for each run+amp_region 
