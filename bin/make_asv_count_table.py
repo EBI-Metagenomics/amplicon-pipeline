@@ -9,7 +9,7 @@ def parse_args():
 
     parser.add_argument("-t", "--taxa", required=True, type=str, help="Path to DADA2 taxa file")
     parser.add_argument("-f", "--fwd", required=True, type=str, help="Path to DADA2 forward map file")
-    parser.add_argument("-r", "--rev", required=True, type=str, help="Path to DADA2 reverse map file")
+    parser.add_argument("-r", "--rev", required=False, type=str, help="Path to DADA2 reverse map file")
     parser.add_argument("-a", "--amp", required=True, type=str, help="Path to extracted amp_region reads from inference subworkflow")
     parser.add_argument("-hd", "--headers", required=True, type=str, help="Path to fastq headers")
     parser.add_argument("-s", "--sample", required=True, type=str, help="Sample ID")
@@ -30,6 +30,15 @@ def main():
 
     _TAXA, _FWD, _REV, _AMP, _HEADERS, _SAMPLE = parse_args()
     
+    fwd_fr = open(_FWD, "r")
+    paired_end = True
+
+    if _REV == None:
+        paired_end = False
+        rev_fr = [True]
+    else:
+        rev_fr = open(_REV, "r")
+
     taxa_df = pd.read_csv(_TAXA, sep="\t", dtype=str)
     taxa_df = taxa_df.fillna("0")
     taxa_df = taxa_df.sort_values(["Kingdom", "Phylum", "Class", "Order", "Genus"], ascending=True)
@@ -40,18 +49,16 @@ def main():
 
     asv_dict = defaultdict(int)
 
-    with open(_FWD, "r") as fwd_fr, open(_REV, "r") as rev_fr:
+    counter = -1
+    for line_fwd in fwd_fr:
 
-        counter = -1
-        for line_fwd, line_rev in zip(fwd_fr, rev_fr):
+        counter += 1
+        line_fwd = line_fwd.strip()
+        fwd_asvs = line_fwd.split(",")
 
-            counter += 1
-            line_fwd = line_fwd.strip()
-            line_rev = line_rev.strip()
-
-            fwd_asvs = line_fwd.split(",")
-            rev_asvs = line_rev.split(",")
-
+        if paired_end:
+            line_rev = next(rev_fr).strip()
+            rev_asvs = line_rev.split(",")        
             asv_intersection = list(set(fwd_asvs).intersection(rev_asvs))
             
             if len(asv_intersection) == 0:
@@ -59,10 +66,16 @@ def main():
             
             if len(asv_intersection) == 1 and asv_intersection[0] == "0":
                 continue
-            
-            if headers[counter] in amp_reads:
-                asv_dict[int(asv_intersection[0]) - 1] += 1
+        else:
+            asv_intersection = fwd_asvs
+
+        if headers[counter] in amp_reads:
+            asv_dict[int(asv_intersection[0]) - 1] += 1
     
+    fwd_fr.close()
+    if paired_end:
+        rev_fr.close()
+
     tax_assignment_dict = defaultdict(int)
 
     for i in range(len(taxa_df)):
