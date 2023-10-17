@@ -39,23 +39,19 @@ workflow DADA2_KRONA {
                                       .mix(multi_region_concats)
                                       .combine(fastp_cleaned_fastq, by: 0)
                                     
+        MAKE_ASV_COUNT_TABLES(
+            final_asv_count_table_input
+        )
 
-        final_asv_count_table_input.view()
+        asv_krona_input = MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out
+                          .map( {it[0, 2]} )
+        KRONA(
+            asv_krona_input,
+            ssu_mapseq_krona_tuple,
+        )
 
-    //     MAKE_ASV_COUNT_TABLES(
-    //         final_asv_count_table_input
-    //     )
-
-    //     asv_krona_input = MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out
-    //                       .map( {it[0, 1, 3]} )
-    //     KRONA(
-    //         asv_krona_input,
-    //         ssu_mapseq_krona_tuple,
-    //         outdir
-    //     )
-
-    // emit:
-    //     asv_krona_input = asv_krona_input
-    //     krona_out = KRONA.out.krona_out
+    emit:
+        asv_krona_input = asv_krona_input
+        krona_out = KRONA.out.krona_out
     
 }
