@@ -3,7 +3,7 @@ process SEQPREP_MERGE {
     // Merge paired-end reads with seqprep
 
     label 'light'
-    container = '/hps/nobackup/rdf/metagenomics/singularity_cache_nextflow/quay.io-biocontainers-seqprep-1.3.2--hed695b0_4.img'
+    container = '/hps/nobackup/rdf/metagenomics/service-team/singularity-cache/quay.io-biocontainers-seqprep-1.3.2--hed695b0_4.img'
 
     input:
     tuple val(project), val(sampleId), path(fastq_1), path(fastq_2)

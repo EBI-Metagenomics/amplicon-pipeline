@@ -2,8 +2,8 @@
 
 process PRIMER_VALIDATION_SEARCH {
 
-    label 'light' // Will likely need to give this task more CPUs 
-    container = '/hps/nobackup/rdf/metagenomics/singularity_cache_nextflow/quay.io-biocontainers-infernal-1.1.4--pl5321hec16e2b_1.img'
+    label 'heavy' // Will likely need to give this task more CPUs 
+    container = '/hps/nobackup/rdf/metagenomics/service-team/singularity-cache/quay.io-biocontainers-infernal-1.1.4--pl5321hec16e2b_1.img'
 
     input:
     tuple val(meta), path(primer_fasta)
