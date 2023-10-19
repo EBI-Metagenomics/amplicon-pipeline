@@ -41,16 +41,15 @@ process CUTADAPT {
             rev_primer="$(sed '2q;d' ./rev_primer.fasta)"
         fi
 
-        if [[ !{meta.single_end} ]]; then
-
+        if [[ !{meta.single_end} = true ]]; then
             if [[ ! -z $fwd_primer ]] && [[ ! -z $rev_primer ]]; then
-                cutadapt --rc -a file:fwd_primer.fasta -g file:rev_primer.fasta -o "!{meta.id}".cutadapt.fastq.gz "!{reads}"
+                cutadapt -g file:fwd_primer.fasta -a file:rev_primer.fasta -o "!{meta.id}".cutadapt.fastq.gz "!{reads}"
 
             elif [[ ! -z $fwd_primer ]]; then
-                cutadapt --rc -a file:fwd_primer.fasta -o "!{meta.id}".cutadapt.fastq.gz "!{reads}"
+                cutadapt -g file:fwd_primer.fasta -o "!{meta.id}".cutadapt.fastq.gz "!{reads}"
             
             elif [[ ! -z $rev_primer ]]; then
-                cutadapt --rc -g file:rev_primer.fasta -o "!{meta.id}".cutadapt.fastq.gz "!{reads}"
+                cutadapt -a file:rev_primer.fasta -o "!{meta.id}".cutadapt.fastq.gz "!{reads}"
             fi
 
         else
