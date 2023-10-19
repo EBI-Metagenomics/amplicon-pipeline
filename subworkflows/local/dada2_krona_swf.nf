@@ -27,6 +27,7 @@ workflow DADA2_KRONA {
 
         split_input = DADA2.out.dada2_out
                       .transpose()
+                      .groupTuple(by:[0, 1, 3, 4, 5])
                       .join(extracted_var_path, by: [0, 1])
                     
 
@@ -38,7 +39,7 @@ workflow DADA2_KRONA {
         final_asv_count_table_input = split_input
                                       .mix(multi_region_concats)
                                       .combine(fastp_cleaned_fastq, by: 0)
-                                    
+
         MAKE_ASV_COUNT_TABLES(
             final_asv_count_table_input
         )
