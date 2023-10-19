@@ -6,12 +6,13 @@ workflow  READS_QC {
 
     take:
     ch_reads // channel: [ val(meta), [ fastq ] ]
+    save_merged
 
     main:
 
     ch_versions = Channel.empty()
 
-    FASTP ( ch_reads, params.save_trimmed_fail, params.save_merged )
+    FASTP ( ch_reads, params.save_trimmed_fail, save_merged )
     ch_versions = ch_versions.mix(FASTP.out.versions.first())
 
     ch_se_fastp_reads = FASTP
