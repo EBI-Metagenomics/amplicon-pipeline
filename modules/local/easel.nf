@@ -2,7 +2,7 @@
 process EASEL {
 
     label 'light'
-    container = '/hps/nobackup/rdf/metagenomics/singularity_cache_nextflow/quay.io-biocontainers-easel-0.48--hec16e2b_1.img'
+    container = '/hps/nobackup/rdf/metagenomics/service-team/singularity-cache/quay.io-biocontainers-easel-0.48--hec16e2b_1.img'
 
     input:
     tuple val(meta), path(reads_fasta), path(cmsearch_deoverlap_out)

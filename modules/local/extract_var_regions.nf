@@ -2,7 +2,7 @@ process EXTRACT_VAR_REGIONS {
 
     label 'light'
     // publishDir "${outdir}/${project}/${sampleId}/amplified-region-inference", pattern : "*.fastq.gz" , mode : "copy"
-    container = '/hps/nobackup/rdf/metagenomics/singularity_cache/quay.io_biocontainers_seqtk:1.3.sif'
+    container = '/hps/nobackup/rdf/metagenomics/service-team/singularity-cache/quay.io_biocontainers_seqtk:1.3.sif'
 
     input:
     tuple val(meta), path(var_region_path), path(reads_merged)

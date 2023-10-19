@@ -2,7 +2,7 @@
 process MAPSEQ {
 
     label 'light' // Will likely need to give this task more CPUs 
-    container = '/hps/nobackup/rdf/metagenomics/singularity_cache_nextflow/quay.io-biocontainers-mapseq-2.1.1--ha34dc8c_0.img'
+    container = '/hps/nobackup/rdf/metagenomics/service-team/singularity-cache/quay.io-biocontainers-mapseq-2.1.1--ha34dc8c_0.img'
 
     input:
     tuple val(meta), path(subunit_fasta)

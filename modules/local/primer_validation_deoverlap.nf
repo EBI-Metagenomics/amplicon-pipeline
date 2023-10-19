@@ -2,7 +2,7 @@
 process PRIMER_VALIDATION_DEOVERLAP {
 
     label 'light' 
-    container = '/hps/nobackup/rdf/metagenomics/singularity_cache_nextflow/quay.io-biocontainers-perl-5.22.2.1.img'
+    container = '/hps/nobackup/rdf/metagenomics/service-team/singularity-cache/quay.io-biocontainers-perl-5.22.2.1.img'
 
     input:
     tuple val(meta), path(cmsearch_out)
