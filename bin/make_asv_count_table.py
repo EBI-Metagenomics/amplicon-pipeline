@@ -41,7 +41,7 @@ def main():
 
     taxa_df = pd.read_csv(_TAXA, sep="\t", dtype=str)
     taxa_df = taxa_df.fillna("0")
-    taxa_df = taxa_df.sort_values(["Kingdom", "Phylum", "Class", "Order", "Genus"], ascending=True)
+    taxa_df = taxa_df.sort_values(["Kingdom", "Phylum", "Class", "Order", "Family", "Genus"], ascending=True)
 
     amp_reads = [ read.strip() for read in list(open(_AMP, "r")) ]
     headers = [ read.split(" ")[0][1:] for read in list(open(_HEADERS, "r")) ]
