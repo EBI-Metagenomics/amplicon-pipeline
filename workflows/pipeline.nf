@@ -4,6 +4,7 @@
 
 include { INPUT_CHECK } from '../subworkflows/local/input_check.nf'
 include { READS_QC } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
+include { READS_QC as READS_QC_MERGE } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { CMSEARCH_SUBWF } from '../subworkflows/local/cmsearch_swf.nf'
 include { ITS_SWF } from '../subworkflows/local/its_swf.nf'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_SSU} from '../subworkflows/local/mapseq_otu_krona_swf.nf'
@@ -43,28 +44,28 @@ outdir = params.outdir
 
 workflow AMPLICON_PIPELINE_V6 {
 
-    // TODO: need to get this working for single-end reads
-    // TODO: need to change the 'project' id in the tuples to meta to work with nf-core
     // TODO: investigate primer val deoverlap script more
-
 
     INPUT_CHECK(samplesheet)
 
     // Quality control
-
-    READS_QC(
-        INPUT_CHECK.out.reads
+    READS_QC_MERGE(
+        INPUT_CHECK.out.reads,
+        true
     )
-    
-    // Cmsearch subworkflow to find rRNA reads for SSU+LSU
+    READS_QC(
+        INPUT_CHECK.out.reads,
+        false
+    )
 
+    // Cmsearch subworkflow to find rRNA reads for SSU+LSU
     CMSEARCH_SUBWF(
-        READS_QC.out.reads_fasta
+        READS_QC_MERGE.out.reads_fasta
     )
 
     // Masking subworkflow to find rRNA reads for ITS
     ITS_SWF(
-        READS_QC.out.reads_fasta,
+        READS_QC_MERGE.out.reads_fasta,
         CMSEARCH_SUBWF.out.concat_ssu_lsu_coords
     )
 
@@ -87,12 +88,14 @@ workflow AMPLICON_PIPELINE_V6 {
     MAPSEQ_OTU_KRONA_UNITE(
         ITS_SWF.out.its_masked_out,
         unite_mapseq_krona_tuple
-    )    
+    )
+
+    // MAPSEQ_OTU_KRONA_SSU.out.krona_input.view()    
 
     // Infer amplified variable regions for SSU, extract reads for each amplified region if there are more than one
     AMP_REGION_INFERENCE(
         CMSEARCH_SUBWF.out.cmsearch_deoverlap_out,
-        READS_QC.out.reads_se_and_merged
+        READS_QC_MERGE.out.reads_se_and_merged
     )
 
     // Identify whether primers exist or not in reads, separated by different amplified regions if more than one exists in a run
@@ -131,9 +134,14 @@ workflow AMPLICON_PIPELINE_V6 {
 
     // Prepare DADA2 input (either fastp reads if no primer trimming was done, or cutadapt output if primers were trimmed)
     dada2_input = CONCAT_PRIMER_CUTADAPT.out.cutadapt_out
-                  .join(READS_QC.out.reads, by: 0)
-                  .map( { if (it[1] != null && it[2] == null) { tuple(it[0], it[1], it[3]) } else { tuple(it[0], it[1], it[2]) }} )
+                  .join(READS_QC.out.reads, by: 0, remainder:true)
+                //   .map( { if (it[1] != null && it[2] == null) { tuple(it[0], it[1], it[3]) } else { tuple(it[0], it[1], it[2]) }} )
 
+    dada2_input = concat_input
+                  .join(CONCAT_PRIMER_CUTADAPT.out.cutadapt_out, by: 0, remainder: true)
+                  .join(READS_QC.out.reads, by: 0, remainder:true)
+                  .map{ tuple(it[0], it[1], it[5]) }
+    
     // Run DADA2 ASV generation + generate Krona plots for each run+amp_region 
     DADA2_KRONA(
         dada2_input,
