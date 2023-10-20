@@ -26,15 +26,13 @@ workflow DADA2_KRONA {
         )
 
         split_input = DADA2.out.dada2_out
-                      .transpose()
-                      .groupTuple(by:[0, 1, 3, 4, 5])
+                      .transpose(by: 1)
                       .join(extracted_var_path, by: [0, 1])
+                    //   .groupTuple(by:[0, 1, 3, 4, 5])
                     
-
         multi_region_concats = split_input
                                .join(concat_var_regions, by: 0)
-                               .map( {tuple(it[0], "concat", it[2], it[3], it[4], it[5], it[9])} )
-        
+                               .map( {tuple(it[0], "concat", it[2], it[3], it[4], it[5], it[8])} )
 
         final_asv_count_table_input = split_input
                                       .mix(multi_region_concats)
