@@ -11,8 +11,8 @@
             "installed_by": ["modules"]
           },
           "fastp": {
-            "branch": "swf/qc",
-            "git_sha": "57e2508343e03808ae8aa1455c478ce5fcfa986f",
+            "branch": "main",
+            "git_sha": "d4edb49a9072e8dcfd0fd4bfb85be6c005f86409",
             "installed_by": ["reads_qc"]
           },
           "infernal/cmsearch": {
@@ -21,8 +21,8 @@
             "installed_by": ["modules"]
           },
           "seqtk/seq": {
-            "branch": "swf/qc",
-            "git_sha": "57e2508343e03808ae8aa1455c478ce5fcfa986f",
+            "branch": "main",
+            "git_sha": "d4edb49a9072e8dcfd0fd4bfb85be6c005f86409",
             "installed_by": ["reads_qc"]
           }
         }
@@ -30,8 +30,8 @@
       "subworkflows": {
         "ebi-metagenomics": {
           "reads_qc": {
-            "branch": "swf/qc",
-            "git_sha": "5671f457fbd6fb68c09d423fcbeaa450be436200",
+            "branch": "main",
+            "git_sha": "d294e744cf7244b7313980a64604ccbf9f565bbc",
             "installed_by": ["subworkflows"]
           }
         }

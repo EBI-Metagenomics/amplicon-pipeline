@@ -16,7 +16,8 @@ include { PRIMER_IDENTIFICATION } from '../subworkflows/local/primer_identificat
 include { AUTOMATIC_PRIMER_PREDICTION } from '../subworkflows/local/automatic_primer_prediction.nf'
 include { CONCAT_PRIMER_CUTADAPT } from '../subworkflows/local/concat_primer_cutadapt.nf'
 include { PRIMER_VALIDATION } from '../subworkflows/local/primer_validation_swf.nf'
-include { DADA2_KRONA } from '../subworkflows/local/dada2_krona_swf.nf'
+include { DADA2_KRONA as DADA2_KRONA_SILVA} from '../subworkflows/local/dada2_krona_swf.nf'
+include { DADA2_KRONA as DADA2_KRONA_PR2} from '../subworkflows/local/dada2_krona_swf.nf'
 
 // Initialise different database inputs for MapSeq+Krona
 ssu_mapseq_krona_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.ssu_label)
@@ -26,7 +27,11 @@ unite_mapseq_krona_tuple = tuple(file(params.unite_db_fasta), file(params.unite_
 
 // Initialise database inputs for DADA2+Krona
 silva_dada2_db = file(params.silva_dada2_db)
-dada2_krona_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.dada2_silva_label)
+dada2_krona_silva_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.dada2_silva_label)
+
+pr2_dada2_db = file(params.pr2_dada2_db)
+dada2_krona_pr2_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.dada2_pr2_label)
+
 
 params.path = null
 params.project = null
@@ -139,13 +144,23 @@ workflow AMPLICON_PIPELINE_V6 {
                   .map( { if (it[3] != null) { tuple(it[0], it[1], it[4]) } else { tuple(it[0], it[1], it[2]) }} )
 
     // Run DADA2 ASV generation + generate Krona plots for each run+amp_region 
-    DADA2_KRONA(
+    // DADA2_KRONA_SILVA(
+    //     dada2_input,
+    //     AMP_REGION_INFERENCE.out.concat_var_regions,
+    //     AMP_REGION_INFERENCE.out.extracted_var_path,
+    //     READS_QC.out.reads,
+    //     silva_dada2_db,
+    //     dada2_krona_silva_tuple,
+    // )
+
+
+    DADA2_KRONA_PR2(
         dada2_input,
         AMP_REGION_INFERENCE.out.concat_var_regions,
         AMP_REGION_INFERENCE.out.extracted_var_path,
         READS_QC.out.reads,
-        silva_dada2_db,
-        dada2_krona_tuple,
+        pr2_dada2_db,
+        dada2_krona_pr2_tuple,
     )
 
 }

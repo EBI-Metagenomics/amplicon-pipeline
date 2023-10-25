@@ -17,8 +17,7 @@ process MAKE_ASV_COUNT_TABLES {
     else
         zcat ${reads[0]} | sed -n "1~4p" > headers.txt
         python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/make_asv_count_table.py -t $taxa -f ${maps[0]} -r ${maps[1]} -a $extracted_var_path -hd ./headers.txt  -s ${meta.id}
-    fi
-    
+    fi    
     """
 
 }
