@@ -11,8 +11,8 @@ workflow DADA2_KRONA {
         concat_var_regions
         extracted_var_path
         fastp_cleaned_fastq
-        silva_dada2_db
-        ssu_mapseq_krona_tuple
+        dada2_db
+        krona_tuple
 
     main:
 
@@ -22,13 +22,13 @@ workflow DADA2_KRONA {
 
         DADA2(
             REMOVE_AMBIGUOUS_READS.out.noambig_out,
-            silva_dada2_db
+            dada2_db,
+            krona_tuple[4] // db_label
         )
 
         split_input = DADA2.out.dada2_out
                       .transpose(by: 1)
                       .join(extracted_var_path, by: [0, 1])
-                    //   .groupTuple(by:[0, 1, 3, 4, 5])
                     
         multi_region_concats = split_input
                                .join(concat_var_regions, by: 0)
@@ -37,17 +37,20 @@ workflow DADA2_KRONA {
         final_asv_count_table_input = split_input
                                       .mix(multi_region_concats)
                                       .combine(fastp_cleaned_fastq, by: 0)
-
+        
         MAKE_ASV_COUNT_TABLES(
             final_asv_count_table_input
         )
 
         asv_krona_input = MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out
                           .map( {it[0, 2]} )
+
         KRONA(
             asv_krona_input,
-            ssu_mapseq_krona_tuple,
+            krona_tuple,
         )
+
+        KRONA.out.krona_out.view()
 
     emit:
         asv_krona_input = asv_krona_input
