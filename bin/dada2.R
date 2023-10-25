@@ -8,11 +8,11 @@ source("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen
 
 args = commandArgs(trailingOnly=TRUE) # Expects thre arguments, one fastq for each strand (F and R), and a prefix
 
-
 prefix = args[1] # Prefix
-ref_db = args[2] # Reference DB
-path_f = args[3] # Forward fastq
-path_r = args[4] # Reverse fastq
+ref_label = args[2] # Reference DB name
+ref_db = args[3] # Reference DB
+path_f = args[4] # Forward fastq
+path_r = args[5] # Reverse fastq
 
 # Learn error model
 err_f = learnErrors(path_f, multithread=TRUE)
@@ -50,7 +50,11 @@ if (length(merged$sequence) == 0){
   seqtab.nochim = removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
 
   # Assign taxonomy (using SILVA)
-  taxa = assignTaxonomy(seqtab.nochim, ref_db, multithread=TRUE)
+  if (ref_label == "DADA2-SILVA"){
+    taxa = assignTaxonomy(seqtab.nochim, ref_db, multithread=TRUE)
+  } else if (ref_label == "DADA2-PR2"){
+    taxa = assignTaxonomy(seqtab.nochim, ref_db, multithread=TRUE, taxLevels = c("Domain","Supergroup","Division","Subdivision","Class","Order","Family","Genus","Species"))
+  }
 
   chimera_ids = which(colnames(seqtab) %in% colnames(seqtab.nochim) == FALSE)
 
@@ -104,7 +108,11 @@ if (length(merged$sequence) == 0){
   }
   # Save taxa annotation to file
   taxa = cbind(rownames(taxa), taxa)
-  colnames(taxa) = c("ASV", colnames(taxa)[2:7])
+  if (ref_label == "DADA2-SILVA"){
+    colnames(taxa) = c("ASV", colnames(taxa)[2:7])
+  } else if (ref_label == "DADA2-PR2"){
+    colnames(taxa) = c("ASV", colnames(taxa)[2:10])
+  }
   write.table(taxa, file = paste0("./", prefix, "_taxa.tsv"), sep = "\t", row.names=FALSE)
 
   # Write proportion of chimeric reads into a file
