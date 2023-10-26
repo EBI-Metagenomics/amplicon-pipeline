@@ -21,8 +21,7 @@ workflow MAPSEQ_OTU_KRONA {
         )
 
         KRONA(
-            MAPSEQ2BIOM.out.mapseq2biom_krona_out,
-            db_tuple
+            MAPSEQ2BIOM.out.mapseq2biom_krona_out
         )
 
     emit:

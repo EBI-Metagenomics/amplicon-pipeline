@@ -7,13 +7,15 @@ process KRONA {
 
     input:
     tuple val(meta), path(otu_counts)
-    tuple path(db_fasta), path(db_tax), path(db_otu), path(db_mscluster), val(label)
 
     output:
     tuple val(meta), path('*krona.html'), emit: krona_out
+    
+    script:
+    prefix = otu_counts.baseName
 
     """
-    ktImportText -o ${meta.id}_krona.html $otu_counts
+    ktImportText -o ${prefix}_krona.html $otu_counts
     """
 
 }
