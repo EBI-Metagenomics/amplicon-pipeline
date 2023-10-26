@@ -46,11 +46,8 @@ workflow DADA2_KRONA {
                           .map( {it[0, 2]} )
 
         KRONA(
-            asv_krona_input,
-            krona_tuple,
+            asv_krona_input
         )
-
-        KRONA.out.krona_out.view()
 
     emit:
         asv_krona_input = asv_krona_input
