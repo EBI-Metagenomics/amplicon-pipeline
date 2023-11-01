@@ -1,5 +1,5 @@
 
-include { FORMAT_BEDFILE } from '../../modules/local/format_bedfile.nf'
+include { FORMAT_BEDFILE } from '../../modules/local/format_bedfile/main.nf'
 include { BEDTOOLS } from '../../modules/local/bedtools.nf'
 
 workflow ITS_SWF {

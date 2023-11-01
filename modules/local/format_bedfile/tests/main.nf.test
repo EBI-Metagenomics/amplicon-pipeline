@@ -1,0 +1,36 @@
+nextflow_process {
+
+    name "Test Process FORMAT_BEDFILE"
+    script "../main.nf"
+    process "FORMAT_BEDFILE"
+    tag "modules"
+    tag "format_bedfile"
+
+    test("Should take ssu+lsu coordinates and return a formatted .bed file for masking them with bedtools") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file('${projectDir}/modules/local/format_bedfile/tests/data/test_coords', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.format_bedfile_out).match() },
+                { assert path(process.out.format_bedfile_out.get(0).get(1)).md5 == "c4995d75a92f483fbecf983670ece17f" }
+            )
+            
+        }
+
+    }
+
+}
