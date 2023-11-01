@@ -1,6 +1,6 @@
 
 // nextflow run -resume main.nf --path /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_datasets/ERP122862_subset --project ERP122862 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged
-// nextflow run -resume main.nf --path samplesheet.csv --project ERP122862 --outdir /hps/nobackup/rdf/metagenomics/service
+// nextflow run -resume main.nf --path samplesheet.csv --project ERP122862 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged
 
 include { INPUT_CHECK } from '../subworkflows/local/input_check.nf'
 include { READS_QC } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'

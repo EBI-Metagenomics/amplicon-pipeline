@@ -1,0 +1,16 @@
+{
+    "Should run without failures": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test_maskfile.bed:md5,c4995d75a92f483fbecf983670ece17f"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-01T16:36:54.441064735"
+    }
+}
