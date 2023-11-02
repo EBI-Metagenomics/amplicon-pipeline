@@ -1,0 +1,39 @@
+nextflow_process {
+
+    name "Test Process EASEL"
+    script "../main.nf"
+    process "EASEL"
+    tag "modules"
+    tag "easel"
+
+    test("Should take a fasta file and a cmsearch tblout.deoverlapped file and generate two coordinate files for subunit extraction") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file('${projectDir}/modules/local/easel/tests/data/test.fasta.gz', checkIfExists: true),
+                    file('${projectDir}/modules/local/easel/tests/data/test.tblout.deoverlapped', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.easel_coords).match("easel_coords") },
+                { assert snapshot(process.out.matched_seqs_with_coords).match("matched_seqs_with_coords") }
+                // { assert path(process.out.easel_coords.get(0).get(1)).md5 == "fb23f13526672a300845b767dbc5fd44" },
+                // { assert path(process.out.matched_seqs_with_coords.get(0).get(1)).md5 == "401222d263116bb145c1a67e6acc4709" }
+            )
+
+        }
+
+    }
+
+}
