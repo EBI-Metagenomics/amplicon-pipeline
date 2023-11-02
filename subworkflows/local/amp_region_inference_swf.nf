@@ -21,11 +21,9 @@ workflow AMP_REGION_INFERENCE {
             extract_var_input,
         )
 
-        EXTRACT_VAR_REGIONS.out.extracted_var_out.view()
-
-    // emit:
-    //     concat_var_regions = CLASSIFY_VAR_REGIONS.out.concat_var_regions
-    //     extracted_var_out = EXTRACT_VAR_REGIONS.out.extracted_var_out
-    //     extracted_var_path = EXTRACT_VAR_REGIONS.out.extracted_var_path
+    emit:
+        concat_var_regions = CLASSIFY_VAR_REGIONS.out.concat_var_regions
+        extracted_var_out = EXTRACT_VAR_REGIONS.out.extracted_var_out
+        extracted_var_path = EXTRACT_VAR_REGIONS.out.extracted_var_path
     
 }
