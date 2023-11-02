@@ -1,6 +1,6 @@
 
 include { CLASSIFY_VAR_REGIONS } from '../../modules/local/classify_var_regions/main.nf'
-include { EXTRACT_VAR_REGIONS } from '../../modules/local/extract_var_regions.nf'
+include { SEQTK_SUBSEQ as EXTRACT_VAR_REGIONS } from '../../modules/nf-core/seqtk/subseq/main.nf'
 
 workflow AMP_REGION_INFERENCE {
     
@@ -21,9 +21,11 @@ workflow AMP_REGION_INFERENCE {
             extract_var_input,
         )
 
-    emit:
-        concat_var_regions = CLASSIFY_VAR_REGIONS.out.concat_var_regions
-        extracted_var_out = EXTRACT_VAR_REGIONS.out.extracted_var_out
-        extracted_var_path = EXTRACT_VAR_REGIONS.out.extracted_var_path
+        EXTRACT_VAR_REGIONS.out.extracted_var_out.view()
+
+    // emit:
+    //     concat_var_regions = CLASSIFY_VAR_REGIONS.out.concat_var_regions
+    //     extracted_var_out = EXTRACT_VAR_REGIONS.out.extracted_var_out
+    //     extracted_var_path = EXTRACT_VAR_REGIONS.out.extracted_var_path
     
 }

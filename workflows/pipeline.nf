@@ -94,8 +94,6 @@ workflow AMPLICON_PIPELINE_V6 {
     //     unite_mapseq_krona_tuple
     // )
 
-    CMSEARCH_SUBWF.out.cmsearch_deoverlap_out.view()
-
     // Infer amplified variable regions for SSU, extract reads for each amplified region if there are more than one
     AMP_REGION_INFERENCE(
         CMSEARCH_SUBWF.out.cmsearch_deoverlap_out,
