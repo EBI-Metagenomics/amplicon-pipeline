@@ -65,6 +65,12 @@
             "branch": "master",
             "git_sha": "f2d63bd5b68925f98f572eed70993d205cc694b7",
             "installed_by": ["modules"]
+          },
+          "seqtk/subseq": {
+            "branch": "master",
+            "git_sha": "8fc1d24c710ebe1d5de0f2447ec9439fd3d9d66a",
+            "installed_by": ["modules"],
+            "patch": "modules/nf-core/seqtk/subseq/seqtk-subseq.diff"
           }
         }
       }
