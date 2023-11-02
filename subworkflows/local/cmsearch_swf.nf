@@ -2,7 +2,7 @@
 include { INFERNAL_CMSEARCH } from '../../modules/ebi-metagenomics/infernal/cmsearch/main.nf'
 include { CMSEARCHTBLOUTDEOVERLAP } from '../../modules/ebi-metagenomics/cmsearchtbloutdeoverlap/main.nf'
 include { EASEL } from '../../modules/local/easel/main.nf'
-include { EXTRACT_COORDS } from '../../modules/local/extract_coords.nf'
+include { EXTRACT_COORDS } from '../../modules/local/extract_coords/main.nf'
 
 workflow CMSEARCH_SUBWF {
 

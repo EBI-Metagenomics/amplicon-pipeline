@@ -1,0 +1,2 @@
+format_bedfile:
+  - modules/local/classify_var_regions/**

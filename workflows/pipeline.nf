@@ -68,12 +68,12 @@ workflow AMPLICON_PIPELINE_V6 {
     )
 
     // Masking subworkflow to find rRNA reads for ITS
-    // ITS_SWF(
-    //     READS_QC_MERGE.out.reads_fasta,
-    //     CMSEARCH_SUBWF.out.concat_ssu_lsu_coords
-    // )
+    ITS_SWF(
+        READS_QC_MERGE.out.reads_fasta,
+        CMSEARCH_SUBWF.out.concat_ssu_lsu_coords
+    )
 
-    // // Next four subworkflow calls are MapSeq annotation + Krona generation for SSU+LSU+ITS
+    // Next four subworkflow calls are MapSeq annotation + Krona generation for SSU+LSU+ITS
     // MAPSEQ_OTU_KRONA_SSU(
     //     CMSEARCH_SUBWF.out.ssu_fasta,
     //     ssu_mapseq_krona_tuple
@@ -94,11 +94,13 @@ workflow AMPLICON_PIPELINE_V6 {
     //     unite_mapseq_krona_tuple
     // )
 
-    // // Infer amplified variable regions for SSU, extract reads for each amplified region if there are more than one
-    // AMP_REGION_INFERENCE(
-    //     CMSEARCH_SUBWF.out.cmsearch_deoverlap_out,
-    //     READS_QC_MERGE.out.reads_se_and_merged
-    // )
+    CMSEARCH_SUBWF.out.cmsearch_deoverlap_out.view()
+
+    // Infer amplified variable regions for SSU, extract reads for each amplified region if there are more than one
+    AMP_REGION_INFERENCE(
+        CMSEARCH_SUBWF.out.cmsearch_deoverlap_out,
+        READS_QC_MERGE.out.reads_se_and_merged
+    )
 
     // // Identify whether primers exist or not in reads, separated by different amplified regions if more than one exists in a run
     // PRIMER_IDENTIFICATION(
