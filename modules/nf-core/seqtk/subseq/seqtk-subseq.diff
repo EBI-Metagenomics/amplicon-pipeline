@@ -1,0 +1,45 @@
+Changes in module 'nf-core/seqtk/subseq'
+--- modules/nf-core/seqtk/subseq/main.nf
++++ modules/nf-core/seqtk/subseq/main.nf
+@@ -8,11 +8,11 @@
+         'biocontainers/seqtk:1.3--h5bf99c6_3' }"
+ 
+     input:
+-    path sequences
+-    path filter_list
++    tuple val(meta), path(filter_list), path(sequences)
+ 
+     output:
+-    path "*.gz"         , emit: sequences
++    tuple val(meta), val(var_region), path("*.gz"), emit: extracted_var_out
++    tuple val(meta), val(var_region), path(filter_list), emit: extracted_var_path
+     path "versions.yml" , emit: versions
+ 
+     when:
+@@ -20,18 +20,20 @@
+ 
+     script:
+     def args   = task.ext.args   ?: ''
+-    def prefix = task.ext.prefix ?: ''
+-    def ext = "fa"
++    def prefix = task.ext.prefix ?: "${meta.id}"
++    def ext = "fasta"
++    var_region = "${filter_list.baseName.split('\\.')[1,2].join('-')}"
+     if ("$sequences" ==~ /.+\.fq|.+\.fq.gz|.+\.fastq|.+\.fastq.gz/) {
+-        ext = "fq"
++        ext = "fastq"
+     }
++    
+     """
+     seqtk \\
+         subseq \\
+         $args \\
+         $sequences \\
+         $filter_list | \\
+-        gzip --no-name > ${sequences}${prefix}.${ext}.gz
++        gzip --no-name > ${prefix}_${var_region}_extracted.${ext}.gz
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+
+************************************************************
