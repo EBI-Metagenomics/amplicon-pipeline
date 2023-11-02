@@ -14,7 +14,6 @@ process EASEL {
     script:
     def fasta_unzipped = reads_fasta.name.replace(".gz", "")
 
-
     """
     gzip -c -d $reads_fasta > $fasta_unzipped
     awk '{print \$1"-"\$3"/"\$8"-"\$9" "\$8" "\$9" "\$1}' $cmsearch_deoverlap_out > ${meta.id}.matched_seqs_with_coords
