@@ -68,10 +68,10 @@ workflow AMPLICON_PIPELINE_V6 {
     )
 
     // Masking subworkflow to find rRNA reads for ITS
-    ITS_SWF(
-        READS_QC_MERGE.out.reads_fasta,
-        CMSEARCH_SUBWF.out.concat_ssu_lsu_coords
-    )
+    // ITS_SWF(
+    //     READS_QC_MERGE.out.reads_fasta,
+    //     CMSEARCH_SUBWF.out.concat_ssu_lsu_coords
+    // )
 
     // // Next four subworkflow calls are MapSeq annotation + Krona generation for SSU+LSU+ITS
     // MAPSEQ_OTU_KRONA_SSU(
@@ -84,15 +84,15 @@ workflow AMPLICON_PIPELINE_V6 {
     //     lsu_mapseq_krona_tuple
     // )    
 
-    MAPSEQ_OTU_KRONA_ITSONEDB(
-        ITS_SWF.out.its_masked_out,
-        itsonedb_mapseq_krona_tuple
-    )    
+    // MAPSEQ_OTU_KRONA_ITSONEDB(
+    //     ITS_SWF.out.its_masked_out,
+    //     itsonedb_mapseq_krona_tuple
+    // )    
 
-    MAPSEQ_OTU_KRONA_UNITE(
-        ITS_SWF.out.its_masked_out,
-        unite_mapseq_krona_tuple
-    )
+    // MAPSEQ_OTU_KRONA_UNITE(
+    //     ITS_SWF.out.its_masked_out,
+    //     unite_mapseq_krona_tuple
+    // )
 
     // // Infer amplified variable regions for SSU, extract reads for each amplified region if there are more than one
     // AMP_REGION_INFERENCE(
