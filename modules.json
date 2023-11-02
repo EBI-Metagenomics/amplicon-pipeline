@@ -40,6 +40,12 @@
     "https://github.com/nf-core/modules.git": {
       "modules": {
         "nf-core": {
+          "bedtools/maskfasta": {
+            "branch": "master",
+            "git_sha": "8fc1d24c710ebe1d5de0f2447ec9439fd3d9d66a",
+            "installed_by": ["modules"],
+            "patch": "modules/nf-core/bedtools/maskfasta/bedtools-maskfasta.diff"
+          },
           "custom/dumpsoftwareversions": {
             "branch": "master",
             "git_sha": "76cc4938c1f6ea5c7d83fed1eeffc146787f9543",
