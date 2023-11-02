@@ -1,0 +1,89 @@
+{
+    "classify_var_regions_concat": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.tsv:md5,601bd9e9445563f88c0c79bedbd0adaf"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-02T15:29:29.664627391"
+    },
+    "cdch_out_success_double": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.tsv:md5,601bd9e9445563f88c0c79bedbd0adaf"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-02T15:29:29.632535805"
+    },
+    "classify_var_regions_single": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.16S.V3-V4.txt:md5,26b4cbbafdcfba30abb7ac561be0a40e"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-02T15:29:23.77496875"
+    },
+    "cdch_out_failed": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.tsv:md5,f0abe32d6c212b764bc9b04ba3f69dab"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-02T15:24:16.083280822"
+    },
+    "cdch_out_success_single": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test.tsv:md5,aba8ff1cc6df1ce076633dd844b95d28"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-02T15:29:23.824989759"
+    },
+    "classify_var_regions_double": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    [
+                        "test.16S.V3-V4.txt:md5,26b4cbbafdcfba30abb7ac561be0a40e",
+                        "test.18S.V9.txt:md5,eaf0569f6d4841da453b733f820bff6b"
+                    ]
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-02T15:29:29.595918999"
+    }
+}

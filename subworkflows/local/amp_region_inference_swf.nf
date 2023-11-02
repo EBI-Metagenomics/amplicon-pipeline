@@ -1,5 +1,5 @@
 
-include { CLASSIFY_VAR_REGIONS } from '../../modules/local/classify_var_regions.nf'
+include { CLASSIFY_VAR_REGIONS } from '../../modules/local/classify_var_regions/main.nf'
 include { EXTRACT_VAR_REGIONS } from '../../modules/local/extract_var_regions.nf'
 
 workflow AMP_REGION_INFERENCE {
@@ -14,8 +14,8 @@ workflow AMP_REGION_INFERENCE {
         )
 
         extract_var_input = CLASSIFY_VAR_REGIONS.out.classify_var_regions
-        .transpose()
-        .combine(reads_merged, by: 0)
+                            .transpose()
+                            .combine(reads_merged, by: 0)
 
         EXTRACT_VAR_REGIONS(
             extract_var_input,

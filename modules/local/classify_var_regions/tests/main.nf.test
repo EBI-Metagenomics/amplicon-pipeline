@@ -1,0 +1,90 @@
+nextflow_process {
+
+    name "Test Process CLASSIFY_VAR_REGIONS"
+    script "../main.nf"
+    process "CLASSIFY_VAR_REGIONS"
+    tag "modules"
+    name "classify_var_regions"
+
+    test("Should take a .tblout.deoverlapped file and generate a tsv file for submitting metadata to CDCH, except it will only have the header line due to insufficient read count") {
+        tag "classify_var_regions_failed"
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file('${projectDir}/modules/local/classify_var_regions/tests/data/test_insufficient_reads.tblout.deoverlapped', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.cdch_out).match("cdch_out_failed") }
+            )
+        }
+
+    }
+
+    test("Should take a .tblout.deoverlapped file and generate two output files - a tsv file with actual data, and a file containing read headers for the identified var_region") {
+        tag "classify_var_regions_success_single"
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file('${projectDir}/modules/local/classify_var_regions/tests/data/test_success_single.tblout.deoverlapped', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.classify_var_regions).match("classify_var_regions_single") },
+                { assert snapshot(process.out.cdch_out).match("cdch_out_success_single") }
+            )
+        }
+
+    }
+
+    test("Should take a .tblout.deoverlapped file and generate three output files - a tsv file with actual data, a list of files containing read headers for the identified var_regions, and a final concatenated read header file") {
+        tag "classify_var_regions_success_double"
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file('${projectDir}/modules/local/classify_var_regions/tests/data/test_success_double.tblout.deoverlapped', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.classify_var_regions).match("classify_var_regions_double") },
+                { assert snapshot(process.out.cdch_out).match("cdch_out_success_double") },
+                { assert snapshot(process.out.cdch_out).match("classify_var_regions_concat") }
+
+            )
+        }
+
+    }
+
+}
