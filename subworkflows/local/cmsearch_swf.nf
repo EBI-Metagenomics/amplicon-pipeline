@@ -25,23 +25,22 @@ workflow CMSEARCH_SUBWF {
         ch_easel_input = reads_fasta
                          .join(CMSEARCHTBLOUTDEOVERLAP.out.cmsearch_tblout_deoverlapped)
 
-        ch_easel_input.view()
 
-    //     EASEL(
-    //         ch_easel_input,
-    //     )
+        EASEL(
+            ch_easel_input,
+        )
 
-    //     EXTRACT_COORDS(
-    //         EASEL.out.easel_coords,
-    //         EASEL.out.matched_seqs_with_coords,
-    //     )
+        EXTRACT_COORDS(
+            EASEL.out.easel_coords,
+            EASEL.out.matched_seqs_with_coords,
+        )
 
-    // emit:
-    //     cmsearch_out = INFERNAL_CMSEARCH.out.cmsearch_tbl
-    //     cmsearch_deoverlap_out = CMSEARCHTBLOUTDEOVERLAP.out.cmsearch_tblout_deoverlapped
-    //     easel_out = EASEL.out.easel_coords
-    //     ssu_fasta = EXTRACT_COORDS.out.ssu_fasta
-    //     lsu_fasta = EXTRACT_COORDS.out.lsu_fasta
-    //     concat_ssu_lsu_coords = EXTRACT_COORDS.out.concat_ssu_lsu_coords
+    emit:
+        cmsearch_out = INFERNAL_CMSEARCH.out.cmsearch_tbl
+        cmsearch_deoverlap_out = CMSEARCHTBLOUTDEOVERLAP.out.cmsearch_tblout_deoverlapped
+        easel_out = EASEL.out.easel_coords
+        ssu_fasta = EXTRACT_COORDS.out.ssu_fasta
+        lsu_fasta = EXTRACT_COORDS.out.lsu_fasta
+        concat_ssu_lsu_coords = EXTRACT_COORDS.out.concat_ssu_lsu_coords
     
 }
