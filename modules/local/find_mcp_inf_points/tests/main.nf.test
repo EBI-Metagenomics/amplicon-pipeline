@@ -1,0 +1,35 @@
+nextflow_process {
+
+    name "Test Process FIND_MCP_INF_POINTS"
+    script "../main.nf"
+    process "FIND_MCP_INF_POINTS"
+    tag "modules"
+    tag "find_mcp_inf_points"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    "16S-V3-V4",
+                    file('${projectDir}/modules/local/find_mcp_inf_points/tests/data/test_mcp_cons.tsv', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.inf_points_out).match("inf_points_out") }
+            )
+        }
+
+    }
+
+}
