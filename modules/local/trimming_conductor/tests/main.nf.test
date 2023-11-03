@@ -1,0 +1,36 @@
+nextflow_process {
+
+    name "Test Process TRIMMING_CONDUCTOR"
+    script "../main.nf"
+    process "TRIMMING_CONDUCTOR"
+    tag "modules"
+    tag "trimming_conductor"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    "16S-V3-V4",
+                    file('${projectDir}/modules/local/trimming_conductor/tests/data/test_general_primer_out.txt', checkIfExists: true),
+                    file('${projectDir}/modules/local/trimming_conductor/tests/data/test_std_primers.fasta', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.trimming_conductor_out).match("trimming_conductor_out") }
+            )
+        }
+
+    }
+
+}
