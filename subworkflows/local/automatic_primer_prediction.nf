@@ -1,7 +1,7 @@
 
-include { ASSESS_MCP_CONS } from '../../modules/local/assess_mcp_cons.nf'
-include { FIND_MCP_INF_POINTS } from '../../modules/local/find_mcp_inf_points.nf'
-include { ASSESS_MCP_INF_POINTS } from '../../modules/local/assess_mcp_inf_points.nf'
+include { ASSESS_MCP_CONS } from '../../modules/local/assess_mcp_cons/main.nf'
+include { FIND_MCP_INF_POINTS } from '../../modules/local/find_mcp_inf_points/main.nf'
+include { ASSESS_MCP_INF_POINTS } from '../../modules/local/assess_mcp_inf_points/main.nf'
 
 workflow AUTOMATIC_PRIMER_PREDICTION {
 
