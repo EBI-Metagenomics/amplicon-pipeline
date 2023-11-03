@@ -1,0 +1,18 @@
+{
+    "conductor_out": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "16S-V3-V4",
+                    "std",
+                    "std"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-03T14:00:19.924220199"
+    }
+}
