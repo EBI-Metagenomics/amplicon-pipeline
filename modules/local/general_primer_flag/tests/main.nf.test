@@ -1,12 +1,12 @@
 nextflow_process {
 
-    name "Test Process STD_PRIMER_FLAG"
+    name "Test Process GENERAL_PRIMER_FLAG"
     script "../main.nf"
-    process "STD_PRIMER_FLAG"
+    process "GENERAL_PRIMER_FLAG"
     tag "modules"
-    tag "std_primer_flag"
+    tag "general_primer_flag"
 
-    test("Should take a fastq.gz file and search for any hits to a list of standard primers, returning a fasta file with identified primers") {
+    test("Should take a fastq.gz file and try to identify whether primers exist in general, outputting a .txt file containing true/false values for both directions") {
 
         when {
             params {
@@ -26,9 +26,8 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out.std_primer_out).match("std_primer_out") }
+                { assert snapshot(process.out.general_primer_out).match("general_primer_out") }
             )
-            
         }
 
     }
