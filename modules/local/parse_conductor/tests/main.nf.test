@@ -1,0 +1,35 @@
+nextflow_process {
+
+    name "Test Process PARSE_CONDUCTOR"
+    script "../main.nf"
+    process "PARSE_CONDUCTOR"
+    tag "modules"
+    tag "parse_conductor"
+
+    test("Should read the flag file from trimming_conductor and turn the decisions into environment variables") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    "16S-V3-V4",
+                    file('${projectDir}/modules/local/parse_conductor/tests/data/test_trimming_conductor_out.txt', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.conductor_out).match("conductor_out") }
+            )
+        }
+
+    }
+
+}
