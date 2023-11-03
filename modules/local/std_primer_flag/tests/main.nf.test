@@ -1,0 +1,33 @@
+nextflow_process {
+
+    name "Test Process STD_PRIMER_FLAG"
+    script "modules/local/std_primer_flag/main.nf"
+    process "STD_PRIMER_FLAG"
+    tag "modules"
+    tag "std_primer_flag"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    "16S-V3-V4",
+                    file('${projectDir}/modules/local/std_primer_flag/tests/data/test.fastq.gz', checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assert snapshot(process.out.std_primer_out).match("std_primer_out")
+        }
+
+    }
+
+}

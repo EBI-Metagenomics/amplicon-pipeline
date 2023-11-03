@@ -1,5 +1,5 @@
 
-include { STD_PRIMER_FLAG } from '../../modules/local/std_primer_flag.nf'
+include { STD_PRIMER_FLAG } from '../../modules/local/std_primer_flag/main.nf'
 include { GENERAL_PRIMER_FLAG } from '../../modules/local/general_primer_flag.nf'
 include { TRIMMING_CONDUCTOR } from '../../modules/local/trimming_conductor.nf'
 include { PARSE_CONDUCTOR } from '../../modules/local/parse_conductor.nf'
