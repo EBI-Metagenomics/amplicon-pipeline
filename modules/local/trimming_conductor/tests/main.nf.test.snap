@@ -1,0 +1,17 @@
+{
+    "trimming_conductor_out": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "16S-V3-V4",
+                    "test_trimming_conductor_out_16S-V3-V4.txt:md5,04efd337d1242cb69b780f744b73cb97"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-03T13:44:36.708347748"
+    }
+}
