@@ -1,0 +1,17 @@
+{
+    "mcp_cons_out": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "16S-V3-V4",
+                    "test_16S-V3-V4_mcp_cons.tsv:md5,875c712aadf9b21bd535e555dbb4b7e1"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-03T15:32:35.813379194"
+    }
+}
