@@ -6,7 +6,7 @@ nextflow_process {
     tag "modules"
     tag "trimming_conductor"
 
-    test("Should run without failures") {
+    test("Should take results of both general and std primer flagging processes and output a decision about if/where/how to trim primers, generating an output file containing the decision for each direction") {
 
         when {
             params {
