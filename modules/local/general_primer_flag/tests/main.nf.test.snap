@@ -1,0 +1,17 @@
+{
+    "general_primer_out": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "16S-V3-V4",
+                    "test_16S-V3-V4_general_primer_out.txt:md5,f2160c8ffedf48068f2e1137e0a3a7e7"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-03T13:24:19.093484741"
+    }
+}
