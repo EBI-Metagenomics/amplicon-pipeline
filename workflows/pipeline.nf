@@ -100,10 +100,10 @@ workflow AMPLICON_PIPELINE_V6 {
         READS_QC_MERGE.out.reads_se_and_merged
     )
 
-    // // Identify whether primers exist or not in reads, separated by different amplified regions if more than one exists in a run
-    // PRIMER_IDENTIFICATION(
-    //     AMP_REGION_INFERENCE.out.extracted_var_out
-    // )
+    // Identify whether primers exist or not in reads, separated by different amplified regions if more than one exists in a run
+    PRIMER_IDENTIFICATION(
+        AMP_REGION_INFERENCE.out.extracted_var_out
+    )
 
     // // Join primer identification flags with reads belonging to each run+amp_region
     // auto_trimming_input = PRIMER_IDENTIFICATION.out.conductor_out
