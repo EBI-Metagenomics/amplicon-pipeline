@@ -1,0 +1,17 @@
+{
+    "auto_primer_out": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "16S-V3-V4",
+                    "test_16S-V3-V4_auto_primers.fasta:md5,c36ff305d6aec14df3b7a61cb702101e"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-03T16:07:18.506597572"
+    }
+}

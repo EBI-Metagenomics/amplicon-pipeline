@@ -1,0 +1,36 @@
+nextflow_process {
+
+    name "Test Process ASSESS_MCP_INF_POINTS"
+    script "../main.nf"
+    process "ASSESS_MCP_INF_POINTS"
+    tag "modules"
+    tag "assess_mcp_inf_points"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    "16S-V3-V4",
+                    file('${projectDir}/modules/local/assess_mcp_inf_points/tests/data/test_inf_points.tsv', checkIfExists: true),
+                    file('${projectDir}/modules/local/assess_mcp_inf_points/tests/data/test.fastq.gz', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.auto_primer_out).match("auto_primer_out") }
+            )
+        }
+
+    }
+
+}
