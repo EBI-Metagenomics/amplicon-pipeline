@@ -1,7 +1,7 @@
 
 include { PRIMER_VALIDATION_SEARCH } from '../../modules/local/primer_validation_search.nf'
 include { PRIMER_VALIDATION_DEOVERLAP } from '../../modules/local/primer_validation_deoverlap.nf'
-include { PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS } from '../../modules/local/primer_validation_classify_var_regions.nf'
+include { PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS } from '../../modules/local/primer_validation_classify_var_regions/main.nf'
 
 workflow PRIMER_VALIDATION {
     
@@ -21,6 +21,8 @@ workflow PRIMER_VALIDATION {
         primer_validation_classify_var_regions_input = PRIMER_VALIDATION_DEOVERLAP.out.cmsearch_deoverlap_out
                                                        .join(primer_validation_input, by: 0)
 
+        primer_validation_classify_var_regions_input.view()
+        
         PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS(
             primer_validation_classify_var_regions_input
         )

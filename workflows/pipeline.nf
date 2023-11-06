@@ -125,14 +125,14 @@ workflow AMPLICON_PIPELINE_V6 {
         READS_QC.out.reads
     )
 
-    // primer_validation_input = CONCAT_PRIMER_CUTADAPT.out.final_concat_primers_out
-    //                           .map{ tuple(it[0], it[2]) }
+    primer_validation_input = CONCAT_PRIMER_CUTADAPT.out.final_concat_primers_out
+                              .map{ tuple(it[0], it[2]) }
 
-    // // Verify that any identified primers (both std+auto) actually match to regions of the SSU gene (for Bacteria/Archaea/Eukaryotes)
-    // // Output of this (a .tsv file) will go to CDCH
-    // PRIMER_VALIDATION(
-    //     primer_validation_input
-    // )
+    // Verify that any identified primers (both std+auto) actually match to regions of the SSU gene (for Bacteria/Archaea/Eukaryotes)
+    // Output of this (a .tsv file) will go to CDCH
+    PRIMER_VALIDATION(
+        primer_validation_input
+    )
 
     // dada2_input = concat_input
     //               .map { tuple(it[0], it[1])}

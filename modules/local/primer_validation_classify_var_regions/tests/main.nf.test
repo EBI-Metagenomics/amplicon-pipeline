@@ -1,0 +1,35 @@
+nextflow_process {
+
+    name "Test Process PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS"
+    script "../main.nf"
+    process "PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS"
+    tag "modules"
+    tag "primer_validation_classify_var_regions"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file('${projectDir}/modules/local/primer_validation_classify_var_regions/tests/data/test_cmsearch_matches.tbl.deoverlapped', checkIfExists: true),
+                    file('${projectDir}/modules/local/primer_validation_classify_var_regions/tests/data/test_final_concat_primers.fasta', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.primer_validation_out).match("primer_validation_out") }
+            )
+        }
+
+    }
+
+}
