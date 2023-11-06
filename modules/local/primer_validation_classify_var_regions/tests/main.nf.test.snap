@@ -1,0 +1,16 @@
+{
+    "primer_validation_out": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "test_primer_validation.tsv:md5,fd47f5e2f6e69cc0445e6d055e38af9e"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-06T17:51:33.316663898"
+    }
+}

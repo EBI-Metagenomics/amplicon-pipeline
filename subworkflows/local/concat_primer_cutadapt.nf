@@ -22,22 +22,20 @@ workflow CONCAT_PRIMER_CUTADAPT {
             final_concat_primers_input
         )
 
-        FINAL_CONCAT_PRIMERS.out.final_concat_primers_out.view()
+        REV_COMP_SE_PRIMERS(
+            FINAL_CONCAT_PRIMERS.out.final_concat_primers_out
+        )
 
-    //     REV_COMP_SE_PRIMERS(
-    //         FINAL_CONCAT_PRIMERS.out.final_concat_primers_out
-    //     )
+        // Join concatenated primers to the fastp-cleaned paired reads files and run cutadapt on them
+        cutadapt_input = REV_COMP_SE_PRIMERS.out.rev_comp_se_primers_out
+                        .join(reads, by: [0])
 
-    //     // Join concatenated primers to the fastp-cleaned paired reads files and run cutadapt on them
-    //     cutadapt_input = REV_COMP_SE_PRIMERS.out.rev_comp_se_primers_out
-    //                     .join(reads, by: [0])
+        CUTADAPT(
+            cutadapt_input
+        )
 
-    //     CUTADAPT(
-    //         cutadapt_input
-    //     )
-
-    // emit:
-    //     final_concat_primers_out = FINAL_CONCAT_PRIMERS.out.final_concat_primers_out
-    //     cutadapt_out = CUTADAPT.out.cutadapt_out
+    emit:
+        final_concat_primers_out = FINAL_CONCAT_PRIMERS.out.final_concat_primers_out
+        cutadapt_out = CUTADAPT.out.cutadapt_out
     
 }
