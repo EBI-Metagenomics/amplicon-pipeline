@@ -1,0 +1,36 @@
+nextflow_process {
+
+    name "Test Process CONCAT_PRIMERS"
+    script "../main.nf"
+    process "CONCAT_PRIMERS"
+    tag "modules"
+    tag "concat_primers"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    "16S-V3-V4",
+                    file('${projectDir}/modules/local/concat_primers/tests/data/test_std_primers.fasta', checkIfExists: true),
+                    file('${projectDir}/modules/local/concat_primers/tests/data/test_auto_primers.fasta', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.concat_primers_out).match("concat_primers_out") }
+            )
+        }
+
+    }
+
+}

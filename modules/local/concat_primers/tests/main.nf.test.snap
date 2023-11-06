@@ -1,0 +1,17 @@
+{
+    "concat_primers_out": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "16S-V3-V4",
+                    "test_16S-V3-V4_concat_primers.fasta:md5,f26cdc22a5231d2dbd0831f1f1983dc6"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-06T13:40:59.182179511"
+    }
+}
