@@ -1,0 +1,20 @@
+{
+    "noambig_out": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "16S-V3-V4",
+                    [
+                        "test_noambig_1.fastq.gz:md5,34834a5a828a6feb102330d4d1e2e135",
+                        "test_noambig_2.fastq.gz:md5,ff8ed43509b9278821dd47e6cf17fbd4"
+                    ]
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-06T18:19:51.786528168"
+    }
+}
