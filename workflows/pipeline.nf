@@ -105,25 +105,25 @@ workflow AMPLICON_PIPELINE_V6 {
         AMP_REGION_INFERENCE.out.extracted_var_out
     )
 
-    // // Join primer identification flags with reads belonging to each run+amp_region
-    // auto_trimming_input = PRIMER_IDENTIFICATION.out.conductor_out
-    //                       .join(AMP_REGION_INFERENCE.out.extracted_var_out, by: [0, 1])
+    // Join primer identification flags with reads belonging to each run+amp_region
+    auto_trimming_input = PRIMER_IDENTIFICATION.out.conductor_out
+                          .join(AMP_REGION_INFERENCE.out.extracted_var_out, by: [0, 1])
 
-    // // Run subworkflow for automatic primer prediction
-    // // Outputs empty fasta file if no primers, or fasta file containing predicted primers
-    // AUTOMATIC_PRIMER_PREDICTION(
-    //     auto_trimming_input
-    // )
+    // Run subworkflow for automatic primer prediction
+    // Outputs empty fasta file if no primers, or fasta file containing predicted primers
+    AUTOMATIC_PRIMER_PREDICTION(
+        auto_trimming_input
+    )
 
-    // // Concatenate the different combinations of stranded std/auto primers for each run+amp_region
-    // concat_input = PRIMER_IDENTIFICATION.out.std_primer_out
-    //                .join(AUTOMATIC_PRIMER_PREDICTION.out.auto_primer_trimming_out, by: [0, 1])
+    // Concatenate the different combinations of stranded std/auto primers for each run+amp_region
+    concat_input = PRIMER_IDENTIFICATION.out.std_primer_out
+                   .join(AUTOMATIC_PRIMER_PREDICTION.out.auto_primer_trimming_out, by: [0, 1])
 
-    // // Concatenate all primers for for a run, send them to cutadapt with original QCd reads for primer trimming
-    // CONCAT_PRIMER_CUTADAPT(
-    //     concat_input,
-    //     READS_QC.out.reads
-    // )
+    // Concatenate all primers for for a run, send them to cutadapt with original QCd reads for primer trimming
+    CONCAT_PRIMER_CUTADAPT(
+        concat_input,
+        READS_QC.out.reads
+    )
 
     // primer_validation_input = CONCAT_PRIMER_CUTADAPT.out.final_concat_primers_out
     //                           .map{ tuple(it[0], it[2]) }
