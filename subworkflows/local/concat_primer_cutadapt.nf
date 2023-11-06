@@ -1,7 +1,7 @@
 
 include { CONCAT_PRIMERS } from '../../modules/local/concat_primers/main.nf'
 include { FINAL_CONCAT_PRIMERS } from '../../modules/local/final_concat_primers/main.nf'
-include { REV_COMP_SE_PRIMERS } from '../../modules/local/rev_comp_se_primers.nf'
+include { REV_COMP_SE_PRIMERS } from '../../modules/local/rev_comp_se_primers/main.nf'
 include { CUTADAPT } from '../../modules/local/cutadapt.nf'
 
 workflow CONCAT_PRIMER_CUTADAPT {
@@ -15,15 +15,14 @@ workflow CONCAT_PRIMER_CUTADAPT {
             concat_input
         )
 
-
         final_concat_primers_input = CONCAT_PRIMERS.out.concat_primers_out
         .groupTuple(by: 0)
 
-        final_concat_primers_input.view()
+        FINAL_CONCAT_PRIMERS(
+            final_concat_primers_input
+        )
 
-    //     FINAL_CONCAT_PRIMERS(
-    //         final_concat_primers_input
-    //     )
+        FINAL_CONCAT_PRIMERS.out.final_concat_primers_out.view()
 
     //     REV_COMP_SE_PRIMERS(
     //         FINAL_CONCAT_PRIMERS.out.final_concat_primers_out
