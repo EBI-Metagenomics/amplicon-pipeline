@@ -1,6 +1,6 @@
 
 include { CONCAT_PRIMERS } from '../../modules/local/concat_primers/main.nf'
-include { FINAL_CONCAT_PRIMERS } from '../../modules/local/final_concat_primers.nf'
+include { FINAL_CONCAT_PRIMERS } from '../../modules/local/final_concat_primers/main.nf'
 include { REV_COMP_SE_PRIMERS } from '../../modules/local/rev_comp_se_primers.nf'
 include { CUTADAPT } from '../../modules/local/cutadapt.nf'
 
