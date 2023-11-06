@@ -1,0 +1,38 @@
+nextflow_process {
+
+    name "Test Process REMOVE_AMBIGUOUS_READS"
+    script "../main.nf"
+    process "REMOVE_AMBIGUOUS_READS"
+    tag "modules"
+    tag "remove_ambiguous_reads"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    "16S-V3-V4",
+                    [ 
+                        file('${projectDir}/modules/local/remove_ambiguous_reads/tests/data/test_1.cutadapt.fastq.gz', checkIfExists: true),
+                        file('${projectDir}/modules/local/remove_ambiguous_reads/tests/data/test_2.cutadapt.fastq.gz', checkIfExists: true) 
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out.noambig_out).match("noambig_out") }
+            )
+        }
+
+    }
+
+}

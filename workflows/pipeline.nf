@@ -134,22 +134,22 @@ workflow AMPLICON_PIPELINE_V6 {
         primer_validation_input
     )
 
-    // dada2_input = concat_input
-    //               .map { tuple(it[0], it[1])}
-    //               .groupTuple(by: 0)
-    //               .join(READS_QC.out.reads, by: 0, remainder: true)
-    //               .join(CONCAT_PRIMER_CUTADAPT.out.cutadapt_out, by: 0, remainder:true)
-    //               .map( { if (it[3] != null) { tuple(it[0], it[1], it[4]) } else { tuple(it[0], it[1], it[2]) }} )
+    dada2_input = concat_input
+                  .map { tuple(it[0], it[1])}
+                  .groupTuple(by: 0)
+                  .join(READS_QC.out.reads, by: 0, remainder: true)
+                  .join(CONCAT_PRIMER_CUTADAPT.out.cutadapt_out, by: 0, remainder:true)
+                  .map( { if (it[3] != null) { tuple(it[0], it[1], it[4]) } else { tuple(it[0], it[1], it[2]) }} )
 
     // Run DADA2 ASV generation + generate Krona plots for each run+amp_region 
-    // DADA2_KRONA_SILVA(
-    //     dada2_input,
-    //     AMP_REGION_INFERENCE.out.concat_var_regions,
-    //     AMP_REGION_INFERENCE.out.extracted_var_path,
-    //     READS_QC.out.reads,
-    //     silva_dada2_db,
-    //     dada2_krona_silva_tuple,
-    // )
+    DADA2_KRONA_SILVA(
+        dada2_input,
+        AMP_REGION_INFERENCE.out.concat_var_regions,
+        AMP_REGION_INFERENCE.out.extracted_var_path,
+        READS_QC.out.reads,
+        silva_dada2_db,
+        dada2_krona_silva_tuple,
+    )
 
 
     // DADA2_KRONA_PR2(
