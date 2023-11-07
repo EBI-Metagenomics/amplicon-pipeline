@@ -1,0 +1,17 @@
+{
+    "Should run without failures": {
+        "content": [
+            [
+                "test_1_map.txt:md5,7217dc4dd450c263b5504607573a4d42",
+                "test_2_map.txt:md5,062143a67f75c43ab99ce071aaeecbb5"
+            ]
+        ],
+        "timestamp": "2023-11-07T09:41:27.936806924"
+    },
+    "taxa_tsv_length_eq_20": {
+        "content": [
+            true
+        ],
+        "timestamp": "2023-11-07T09:44:27.663766005"
+    }
+}
