@@ -1,0 +1,41 @@
+nextflow_process {
+
+    name "Test Process DADA2"
+    script "modules/local/dada2/main.nf"
+    process "DADA2"
+    tag "modules"
+    tag "dada2"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    "16S-V3-V4",
+                    [ 
+                        file('${projectDir}/modules/local/dada2/tests/data/test_noambig_1.fastq.gz', checkIfExists: true),
+                        file('${projectDir}/modules/local/dada2/tests/data/test_noambig_2.fastq.gz', checkIfExists: true) 
+                    ]
+                ]
+                input[1] = file('${projectDir}/modules/local/dada2/tests/data/silva_trimmed.fa.gz', checkIfExists: true)
+                input[2] = "DADA2-SILVA"
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(path(process.out.dada2_out.get(0).get(5)).readLines().size() == 20).match("taxa_tsv_length_eq_20") },
+                { assert snapshot(process.out.dada2_out.get(0).get(2)).match() }
+            )
+        }
+
+    }
+
+}
