@@ -100,6 +100,8 @@ def make_tax_assignment_dict_silva(taxa_df, asv_dict):
             continue
 
         tax_assignment_dict[tax_assignment] += asv_count
+    
+    return tax_assignment_dict
 
 def make_tax_assignment_dict_pr2(taxa_df, asv_dict):
 

@@ -1,7 +1,7 @@
 
 include { REMOVE_AMBIGUOUS_READS } from '../../modules/local/remove_ambiguous_reads/main.nf'
 include { DADA2 } from '../../modules/local/dada2/main.nf'
-include { MAKE_ASV_COUNT_TABLES } from '../../modules/local/make_asv_count_tables.nf'
+include { MAKE_ASV_COUNT_TABLES } from '../../modules/local/make_asv_count_tables/main.nf'
 include { KRONA } from '../../modules/local/krona.nf'
 
 workflow DADA2_KRONA {
