@@ -1,0 +1,17 @@
+{
+    "asv_count_tables_out": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "16S-V3-V4",
+                    "test_16S.V3-V4_asv_krona_counts.txt:md5,d9bad313abd84329ac187ced4b92857e"
+                ]
+            ]
+        ],
+        "timestamp": "2023-11-08T11:27:57.725803699"
+    }
+}
