@@ -40,19 +40,19 @@ workflow DADA2_KRONA {
 
         final_asv_count_table_input.view()
         
-    //     MAKE_ASV_COUNT_TABLES(
-    //         final_asv_count_table_input
-    //     )
+        MAKE_ASV_COUNT_TABLES(
+            final_asv_count_table_input
+        )
 
-    //     asv_krona_input = MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out
-    //                       .map( {it[0, 2]} )
+        asv_krona_input = MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out
+                          .map( {it[0, 2]} )
 
-    //     KRONA(
-    //         asv_krona_input
-    //     )
+        KRONA(
+            asv_krona_input
+        )
 
-    // emit:
-    //     asv_krona_input = asv_krona_input
-    //     krona_out = KRONA.out.krona_out
+    emit:
+        asv_krona_input = asv_krona_input
+        krona_out = KRONA.out.krona_out
     
 }
