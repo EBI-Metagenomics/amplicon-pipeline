@@ -9,6 +9,7 @@ include { CMSEARCH_SUBWF } from '../subworkflows/local/cmsearch_swf.nf'
 include { ITS_SWF } from '../subworkflows/local/its_swf.nf'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_SSU} from '../subworkflows/local/mapseq_otu_krona_swf.nf'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_LSU} from '../subworkflows/local/mapseq_otu_krona_swf.nf'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_PR2} from '../subworkflows/local/mapseq_otu_krona_swf.nf'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_UNITE} from '../subworkflows/local/mapseq_otu_krona_swf.nf'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_ITSONEDB} from '../subworkflows/local/mapseq_otu_krona_swf.nf'
 include { AMP_REGION_INFERENCE } from '../subworkflows/local/amp_region_inference_swf.nf'
@@ -24,6 +25,7 @@ ssu_mapseq_krona_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax
 lsu_mapseq_krona_tuple = tuple(file(params.lsu_db_fasta), file(params.lsu_db_tax), file(params.lsu_db_otu), file(params.lsu_db_mscluster), params.lsu_label)
 itsonedb_mapseq_krona_tuple = tuple(file(params.itsone_db_fasta), file(params.itsone_db_tax), file(params.itsone_db_otu), file(params.itsone_db_mscluster), params.itsone_label)
 unite_mapseq_krona_tuple = tuple(file(params.unite_db_fasta), file(params.unite_db_tax), file(params.unite_db_otu), file(params.unite_db_mscluster), params.unite_label)
+pr2_mapseq_krona_tuple = tuple(file(params.pr2_db_fasta), file(params.pr2_db_tax), file(params.pr2_db_otu), file(params.pr2_db_mscluster), params.pr2_label)
 
 // Initialise database inputs for DADA2+Krona
 silva_dada2_db = file(params.silva_dada2_db)
@@ -79,10 +81,15 @@ workflow AMPLICON_PIPELINE_V6 {
     //     ssu_mapseq_krona_tuple
     // )
 
+    MAPSEQ_OTU_KRONA_PR2(
+        CMSEARCH_SUBWF.out.ssu_fasta,
+        pr2_mapseq_krona_tuple
+    )  
+
     // MAPSEQ_OTU_KRONA_LSU(
     //     CMSEARCH_SUBWF.out.lsu_fasta,
     //     lsu_mapseq_krona_tuple
-    // )    
+    // )     
 
     // MAPSEQ_OTU_KRONA_ITSONEDB(
     //     ITS_SWF.out.its_masked_out,
@@ -94,62 +101,63 @@ workflow AMPLICON_PIPELINE_V6 {
     //     unite_mapseq_krona_tuple
     // )
 
+
     // Infer amplified variable regions for SSU, extract reads for each amplified region if there are more than one
-    AMP_REGION_INFERENCE(
-        CMSEARCH_SUBWF.out.cmsearch_deoverlap_out,
-        READS_QC_MERGE.out.reads_se_and_merged
-    )
+    // AMP_REGION_INFERENCE(
+    //     CMSEARCH_SUBWF.out.cmsearch_deoverlap_out,
+    //     READS_QC_MERGE.out.reads_se_and_merged
+    // )
 
-    // Identify whether primers exist or not in reads, separated by different amplified regions if more than one exists in a run
-    PRIMER_IDENTIFICATION(
-        AMP_REGION_INFERENCE.out.extracted_var_out
-    )
+    // // Identify whether primers exist or not in reads, separated by different amplified regions if more than one exists in a run
+    // PRIMER_IDENTIFICATION(
+    //     AMP_REGION_INFERENCE.out.extracted_var_out
+    // )
 
-    // Join primer identification flags with reads belonging to each run+amp_region
-    auto_trimming_input = PRIMER_IDENTIFICATION.out.conductor_out
-                          .join(AMP_REGION_INFERENCE.out.extracted_var_out, by: [0, 1])
+    // // Join primer identification flags with reads belonging to each run+amp_region
+    // auto_trimming_input = PRIMER_IDENTIFICATION.out.conductor_out
+    //                       .join(AMP_REGION_INFERENCE.out.extracted_var_out, by: [0, 1])
 
-    // Run subworkflow for automatic primer prediction
-    // Outputs empty fasta file if no primers, or fasta file containing predicted primers
-    AUTOMATIC_PRIMER_PREDICTION(
-        auto_trimming_input
-    )
+    // // Run subworkflow for automatic primer prediction
+    // // Outputs empty fasta file if no primers, or fasta file containing predicted primers
+    // AUTOMATIC_PRIMER_PREDICTION(
+    //     auto_trimming_input
+    // )
 
-    // Concatenate the different combinations of stranded std/auto primers for each run+amp_region
-    concat_input = PRIMER_IDENTIFICATION.out.std_primer_out
-                   .join(AUTOMATIC_PRIMER_PREDICTION.out.auto_primer_trimming_out, by: [0, 1])
+    // // Concatenate the different combinations of stranded std/auto primers for each run+amp_region
+    // concat_input = PRIMER_IDENTIFICATION.out.std_primer_out
+    //                .join(AUTOMATIC_PRIMER_PREDICTION.out.auto_primer_trimming_out, by: [0, 1])
 
-    // Concatenate all primers for for a run, send them to cutadapt with original QCd reads for primer trimming
-    CONCAT_PRIMER_CUTADAPT(
-        concat_input,
-        READS_QC.out.reads
-    )
+    // // Concatenate all primers for for a run, send them to cutadapt with original QCd reads for primer trimming
+    // CONCAT_PRIMER_CUTADAPT(
+    //     concat_input,
+    //     READS_QC.out.reads
+    // )
 
-    primer_validation_input = CONCAT_PRIMER_CUTADAPT.out.final_concat_primers_out
-                              .map{ tuple(it[0], it[2]) }
+    // primer_validation_input = CONCAT_PRIMER_CUTADAPT.out.final_concat_primers_out
+    //                           .map{ tuple(it[0], it[2]) }
 
-    // Verify that any identified primers (both std+auto) actually match to regions of the SSU gene (for Bacteria/Archaea/Eukaryotes)
-    // Output of this (a .tsv file) will go to CDCH
-    PRIMER_VALIDATION(
-        primer_validation_input
-    )
+    // // Verify that any identified primers (both std+auto) actually match to regions of the SSU gene (for Bacteria/Archaea/Eukaryotes)
+    // // Output of this (a .tsv file) will go to CDCH
+    // PRIMER_VALIDATION(
+    //     primer_validation_input
+    // )
 
-    dada2_input = concat_input
-                  .map { tuple(it[0], it[1])}
-                  .groupTuple(by: 0)
-                  .join(READS_QC.out.reads, by: 0, remainder: true)
-                  .join(CONCAT_PRIMER_CUTADAPT.out.cutadapt_out, by: 0, remainder:true)
-                  .map( { if (it[3] != null) { tuple(it[0], it[1], it[4]) } else { tuple(it[0], it[1], it[2]) }} )
+    // dada2_input = concat_input
+    //               .map { tuple(it[0], it[1])}
+    //               .groupTuple(by: 0)
+    //               .join(READS_QC.out.reads, by: 0, remainder: true)
+    //               .join(CONCAT_PRIMER_CUTADAPT.out.cutadapt_out, by: 0, remainder:true)
+    //               .map( { if (it[3] != null) { tuple(it[0], it[1], it[4]) } else { tuple(it[0], it[1], it[2]) }} )
 
-    // Run DADA2 ASV generation + generate Krona plots for each run+amp_region 
-    DADA2_KRONA_SILVA(
-        dada2_input,
-        AMP_REGION_INFERENCE.out.concat_var_regions,
-        AMP_REGION_INFERENCE.out.extracted_var_path,
-        READS_QC.out.reads,
-        silva_dada2_db,
-        dada2_krona_silva_tuple,
-    )
+    // // Run DADA2 ASV generation + generate Krona plots for each run+amp_region 
+    // DADA2_KRONA_SILVA(
+    //     dada2_input,
+    //     AMP_REGION_INFERENCE.out.concat_var_regions,
+    //     AMP_REGION_INFERENCE.out.extracted_var_path,
+    //     READS_QC.out.reads,
+    //     silva_dada2_db,
+    //     dada2_krona_silva_tuple,
+    // )
 
 
     // DADA2_KRONA_PR2(
