@@ -87,7 +87,7 @@ def main():
     notaxidfile_header = []
 
     if args.taxid:
-        if args.label.startswith("UNITE"):
+        if args.label.startswith("UNITE") or args.label.startswith("PR2"):
             output_header = [
                 "# OTU ID",
                 args.label,
