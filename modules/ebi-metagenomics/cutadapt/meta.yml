@@ -1,0 +1,62 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/yaml-schema.json
+name: "cutadapt"
+description: Trim adapters and primers from sequencing reads
+keywords:
+  - sequencing
+  - primer
+  - trimming
+  - qc
+  - adapter
+tools:
+  - "cutadapt":
+      description: "Trim adapters and primers from sequencing reads"
+      homepage: "https://cutadapt.readthedocs.io/en/stable/"
+      documentation: "https://cutadapt.readthedocs.io/en/stable/"
+      tool_dev_url: "https://github.com/marcelm/cutadapt"
+      doi: "10.14806/ej.17.1.200"
+      licence: ["MIT"]
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'test', single_end:false ]`
+  - reads:
+      type: file
+      description: List of fastq read files
+      pattern: "*.{fastq, fastq.gz}"
+  - primers:
+      type: file
+      description: |
+        List of at most two primer fasta files
+        The first file should be the forward strand
+        The second file should be the reverse strand
+        If you only want to trim a primer from one strand,
+        then use an empty file as a standin for the second
+        e.g. `[ path/to/fwd_primer, empty.txt ]` for only using
+        the forward primer
+      pattern: "*.fasta"
+
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'test', single_end:false ]`
+  - reads:
+      type: file
+      description: List of trimmed reads files
+      pattern: "*.fastq.gz"
+  - log:
+      type: file
+      description: Log file containing stdout from cutadapt
+      pattern: "*.log"
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+
+authors:
+  - "@chrisata"
