@@ -1,4 +1,6 @@
 
+include { RRNA_EXTRACTION } from '../../subworkflows/ebi-metagenomics/rrna_extraction/main'  
+
 include { INFERNAL_CMSEARCH } from '../../modules/ebi-metagenomics/infernal/cmsearch/main.nf'
 include { CMSEARCHTBLOUTDEOVERLAP } from '../../modules/ebi-metagenomics/cmsearchtbloutdeoverlap/main.nf'
 include { EASEL } from '../../modules/local/easel/main.nf'
@@ -10,35 +12,44 @@ workflow CMSEARCH_SUBWF {
     
     take:
         reads_fasta
+        rfam
+        claninfo
     main:
 
-        INFERNAL_CMSEARCH(
+        RRNA_EXTRACTION(
             reads_fasta,
-            file(params.rfam)
+            rfam,
+            claninfo
         )
 
-        CMSEARCHTBLOUTDEOVERLAP(
-            INFERNAL_CMSEARCH.out.cmsearch_tbl,
-            file(params.rfam_clan)
-        )
+        // INFERNAL_CMSEARCH(
+        //     reads_fasta,
+        //     file(params.rfam)
+        // )
+
+        // CMSEARCHTBLOUTDEOVERLAP(
+        //     INFERNAL_CMSEARCH.out.cmsearch_tbl,
+        //     file(params.rfam_clan)
+        // )
         
-        ch_easel_input = reads_fasta
-                         .join(CMSEARCHTBLOUTDEOVERLAP.out.cmsearch_tblout_deoverlapped)
+        // ch_easel_input = reads_fasta
+        //                  .join(CMSEARCHTBLOUTDEOVERLAP.out.cmsearch_tblout_deoverlapped)
 
 
-        EASEL(
-            ch_easel_input,
-        )
+        // EASEL(
+        //     ch_easel_input,
+        // )
 
         EXTRACT_COORDS(
-            EASEL.out.easel_coords,
-            EASEL.out.matched_seqs_with_coords,
+            RRNA_EXTRACTION.out.easel_sfetch,
+            RRNA_EXTRACTION.out.matched_seqs_with_coords,
         )
 
     emit:
-        cmsearch_out = INFERNAL_CMSEARCH.out.cmsearch_tbl
-        cmsearch_deoverlap_out = CMSEARCHTBLOUTDEOVERLAP.out.cmsearch_tblout_deoverlapped
-        easel_out = EASEL.out.easel_coords
+        // cmsearch_out = INFERNAL_CMSEARCH.out.cmsearch_tbl
+
+        cmsearch_deoverlap_out = RRNA_EXTRACTION.out.cmsearch_deoverlap
+        easel_out = RRNA_EXTRACTION.out.easel_sfetch
         ssu_fasta = EXTRACT_COORDS.out.ssu_fasta
         lsu_fasta = EXTRACT_COORDS.out.lsu_fasta
         concat_ssu_lsu_coords = EXTRACT_COORDS.out.concat_ssu_lsu_coords

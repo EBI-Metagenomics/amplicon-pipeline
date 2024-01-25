@@ -66,14 +66,16 @@ workflow AMPLICON_PIPELINE_V6 {
 
     // Cmsearch subworkflow to find rRNA reads for SSU+LSU
     CMSEARCH_SUBWF(
-        READS_QC_MERGE.out.reads_fasta
+        READS_QC_MERGE.out.reads_fasta,
+        file(params.rfam),
+        file(params.claninfo)
     )
 
     // Masking subworkflow to find rRNA reads for ITS
-    ITS_SWF(
-        READS_QC_MERGE.out.reads_fasta,
-        CMSEARCH_SUBWF.out.concat_ssu_lsu_coords
-    )
+    // ITS_SWF(
+    //     READS_QC_MERGE.out.reads_fasta,
+    //     CMSEARCH_SUBWF.out.concat_ssu_lsu_coords
+    // )
 
     // Next four subworkflow calls are MapSeq annotation + Krona generation for SSU+LSU+ITS
     // MAPSEQ_OTU_KRONA_SSU(
@@ -81,10 +83,10 @@ workflow AMPLICON_PIPELINE_V6 {
     //     ssu_mapseq_krona_tuple
     // )
 
-    MAPSEQ_OTU_KRONA_PR2(
-        CMSEARCH_SUBWF.out.ssu_fasta,
-        pr2_mapseq_krona_tuple
-    )  
+    // MAPSEQ_OTU_KRONA_PR2(
+    //     CMSEARCH_SUBWF.out.ssu_fasta,
+    //     pr2_mapseq_krona_tuple
+    // )  
 
     // MAPSEQ_OTU_KRONA_LSU(
     //     CMSEARCH_SUBWF.out.lsu_fasta,
