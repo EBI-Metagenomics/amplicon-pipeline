@@ -28,7 +28,7 @@ workflow PRIMER_IDENTIFICATION {
         // Combining std and general primer outputs and parsing them to guide 
         // samples through automatic primer identification and trimming by cutadapt
         comb_flags = GENERAL_PRIMER_FLAG.out.general_primer_out
-                     .join(STD_PRIMER_FLAG.out.std_primer_out, by: [0, 1])
+                     .join(STD_PRIMER_FLAG.out.std_primer_out, by: [0])
         
         // Generate a flags file with vals of 'none/std/auto' for both fwd and rev
         TRIMMING_CONDUCTOR(

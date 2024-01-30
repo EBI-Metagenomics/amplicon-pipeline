@@ -5,10 +5,10 @@ process REV_COMP_SE_PRIMERS {
     // publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
     
     input:
-    tuple val(meta), val(var_region), path(final_concat_primers)
+    tuple val(meta), path(final_concat_primers)
 
     output:
-    tuple val(meta), val(var_region), path("*rev_comp_se_primers.fasta"), optional:true, emit: rev_comp_se_primers_out
+    tuple val(meta), path("*rev_comp_se_primers.fasta"), optional:true, emit: rev_comp_se_primers_out
 
     """
     if [[ ${meta.single_end} = true ]]; then

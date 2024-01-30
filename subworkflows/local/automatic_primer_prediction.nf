@@ -26,15 +26,17 @@ workflow AUTOMATIC_PRIMER_PREDICTION {
         )
 
         // Join fastq channel and the inf_points channel
-        assess_inf_input = FIND_MCP_INF_POINTS.out.inf_points_out 
-                           .join(auto_trimming_input.map{ it[0, 1, 4] }, by: [0, 1])
+        assess_inf_input = FIND_MCP_INF_POINTS.out.inf_points_out
+                           .join(auto_trimming_input.map{ it[0, 3] }, by: [0])
         
         // Select inflection points most likely to be primer cutoff points
         ASSESS_MCP_INF_POINTS(
             assess_inf_input
         )
 
+        ASSESS_MCP_INF_POINTS.out.auto_primer_out
+
    emit:
-        auto_primer_trimming_out = ASSESS_MCP_INF_POINTS.out
+        auto_primer_trimming_out = ASSESS_MCP_INF_POINTS.out.auto_primer_out
 
 }

@@ -5,10 +5,10 @@ process MAKE_ASV_COUNT_TABLES {
     // publishDir "${outdir}/${project}/${sampleId}/asv-gen/${var_region}", mode : "copy" 
 
     input:
-    tuple val(meta), val(var_region), path(maps), path(chimeric_prop), path(matched_prop), path(taxa), path(extracted_var_path), path(reads)
+    tuple val(meta), path(maps), path(chimeric_prop), path(matched_prop), path(taxa), path(extracted_var_path), path(reads)
 
     output:
-    tuple val(meta), val(var_region), path("*asv_krona_counts.txt"), emit: asv_count_tables_out
+    tuple val(meta), path("*asv_krona_counts.txt"), emit: asv_count_tables_out
 
     """
     if [[ ${meta.single_end} = true ]]; then

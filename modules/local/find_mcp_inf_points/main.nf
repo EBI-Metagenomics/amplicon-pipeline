@@ -5,16 +5,16 @@ process FIND_MCP_INF_POINTS {
     label 'light'
 
     input:
-    tuple val(meta), val(var_region), path(mcp_cons_out)
+    tuple val(meta), path(mcp_cons_out)
 
     output:
-    tuple val(meta), val(var_region), path("*inf_points.tsv"), emit: inf_points_out
+    tuple val(meta), path("*inf_points.tsv"), emit: inf_points_out
 
     """
     if [[ -s ./$mcp_cons_out ]]; then
-        python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/find_mcp_inflection_points_MERGED.py -i $mcp_cons_out -s ${meta.id}_${var_region} -o ./
+        python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/find_mcp_inflection_points_MERGED.py -i $mcp_cons_out -s ${meta.id}_${meta.var_region} -o ./
     else
-        touch ${meta.id}_${var_region}_inf_points.tsv
+        touch ${meta.id}_${meta.var_region}_inf_points.tsv
     fi
     """
 

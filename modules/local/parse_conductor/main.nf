@@ -7,10 +7,10 @@ process PARSE_CONDUCTOR {
     label 'light'
 
     input:
-    tuple val(meta), val(var_region), path(trimming_conductor_out)
+    tuple val(meta), path(trimming_conductor_out)
 
     output:
-    tuple val(meta), val(var_region), env(fwd_flag), env(rev_flag), emit: conductor_out
+    tuple val(meta), env(fwd_flag), env(rev_flag), emit: conductor_out
 
     script:
     """
