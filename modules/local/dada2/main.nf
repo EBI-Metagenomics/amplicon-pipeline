@@ -9,12 +9,12 @@ process DADA2 {
 
 
     input:
-    tuple val(meta), val(var_region), path(reads)
+    tuple val(meta), path(reads)
     path dada2_db
     val(db_label)
 
     output:
-    tuple val(meta), val(var_region), path("*map.txt"), path("*chimeric.txt"), path("*matched.txt"), path("*taxa.tsv"), optional: true, emit: dada2_out
+    tuple val(meta), path("*map.txt"), path("*chimeric.txt"), path("*matched.txt"), path("*taxa.tsv"), optional: true, emit: dada2_out
 
     """
     if [[ ${meta.single_end} = true ]]; then

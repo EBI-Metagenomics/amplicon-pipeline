@@ -7,19 +7,19 @@ process CONCAT_PRIMERS {
     label 'light'
     
     input:
-    tuple val(meta), val(var_region), path(std_primers), path(auto_primers)
+    tuple val(meta), path(std_primers), path(auto_primers)
 
     output:
-    tuple val(meta), val(var_region), path("*concat_primers.fasta") , optional: true, emit: concat_primers_out
+    tuple val(meta), path("*concat_primers.fasta") , optional: true, emit: concat_primers_out
 
     shell:
     '''
     if [[ -s !{auto_primers} ]]; then
-        cat !{std_primers} > ./!{meta.id}_!{var_region}_concat_primers.fasta
-        echo '\n' >> ./!{meta.id}_!{var_region}_concat_primers.fasta
-        cat !{auto_primers} >>./!{meta.id}_!{var_region}_concat_primers.fasta
+        cat !{std_primers} > ./!{meta.id}_!{meta.var_region}_concat_primers.fasta
+        echo '\n' >> ./!{meta.id}_!{meta.var_region}_concat_primers.fasta
+        cat !{auto_primers} >>./!{meta.id}_!{meta.var_region}_concat_primers.fasta
     else
-        cat !{std_primers} > ./!{meta.id}_!{var_region}_concat_primers.fasta
+        cat !{std_primers} > ./!{meta.id}_!{meta.var_region}_concat_primers.fasta
     fi
     '''
 }

@@ -21,9 +21,11 @@ workflow AMP_REGION_INFERENCE {
             extract_var_input,
         )
 
+        final_var_out = EXTRACT_VAR_REGIONS.out.extracted_var_out
+                    .map { tuple(it[0] + ["var_region":it[1]], it[2]) }
     emit:
         concat_var_regions = CLASSIFY_VAR_REGIONS.out.concat_var_regions
-        extracted_var_out = EXTRACT_VAR_REGIONS.out.extracted_var_out
+        extracted_var_out = final_var_out
         extracted_var_path = EXTRACT_VAR_REGIONS.out.extracted_var_path
     
 }
