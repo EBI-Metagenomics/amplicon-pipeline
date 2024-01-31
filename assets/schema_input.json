@@ -29,8 +29,14 @@
                         "maxLength": 0
                     }
                 ]
+            },
+            "strandedness": {
+                "type": "string",
+                "errorMessage": "Strandedness must be provided and be one of 'single_end' or 'paired_end'",
+                "enum": ["paired_end", "single_end"],
+                "meta": ["my_strandedness"]
             }
         },
-        "required": ["sample", "fastq_1"]
+        "required": ["sample", "fastq_1", "strandedness"]
     }
 }
