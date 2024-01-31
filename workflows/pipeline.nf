@@ -1,6 +1,5 @@
 
-// nextflow run -resume main.nf --path /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_datasets/ERP122862_subset --project ERP122862 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged
-// nextflow run -profile lsf -resume main.nf --path samplesheet.csv --project ERP122862 --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged
+// nextflow run -profile lsf -resume main.nf --input samplesheet.csv --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged
 
 include { INPUT_CHECK } from '../subworkflows/local/input_check.nf'
 include { READS_QC } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
@@ -34,23 +33,9 @@ dada2_krona_silva_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_ta
 pr2_dada2_db = file(params.pr2_dada2_db)
 dada2_krona_pr2_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.dada2_pr2_label)
 
-
-params.path = null
-params.project = null
-params.outdir = null
-params.mode = null
-
-
-project = Channel.value( params.project )
-
-
-samplesheet = file( params.path )
-outdir = params.outdir
-
+samplesheet = file( params.input )
 
 workflow AMPLICON_PIPELINE_V6 {
-
-    // TODO: investigate primer val deoverlap script more
 
     INPUT_CHECK(samplesheet)
 
@@ -110,7 +95,7 @@ workflow AMPLICON_PIPELINE_V6 {
         READS_QC_MERGE.out.reads_se_and_merged
     )
 
-    // // Identify whether primers exist or not in reads, separated by different amplified regions if more than one exists in a run
+    // Identify whether primers exist or not in reads, separated by different amplified regions if more than one exists in a run
     PRIMER_IDENTIFICATION(
         AMP_REGION_INFERENCE.out.extracted_var_out
     )
