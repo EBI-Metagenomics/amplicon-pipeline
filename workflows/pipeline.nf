@@ -1,7 +1,6 @@
 
 // nextflow run -profile lsf -resume main.nf --input samplesheet.csv --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/merged
 
-include { INPUT_CHECK } from '../subworkflows/local/input_check.nf'
 include { READS_QC } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { READS_QC as READS_QC_MERGE } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { CMSEARCH_SUBWF } from '../subworkflows/local/cmsearch_swf.nf'
@@ -33,19 +32,31 @@ dada2_krona_silva_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_ta
 pr2_dada2_db = file(params.pr2_dada2_db)
 dada2_krona_pr2_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.dada2_pr2_label)
 
-samplesheet = file( params.input )
+// Read input samplesheet
+samplesheet = Channel.fromSamplesheet( "input" )
 
 workflow AMPLICON_PIPELINE_V6 {
 
-    INPUT_CHECK(samplesheet)
+    // Organise input tuple channel
+    groupReads = { meta, fq1, fq2 ->
+        if (fq2 == []) {
+            return tuple(meta, [fq1])
+        }
+        else {
+            return tuple(meta, [fq1, fq2])
+        }
+    }
+
+    ch_input = samplesheet
+                  .map(groupReads)
 
     // Quality control
     READS_QC_MERGE(
-        INPUT_CHECK.out.reads,
+        ch_input,
         true
     )
     READS_QC(
-        INPUT_CHECK.out.reads,
+        ch_input,
         false
     )
 
@@ -57,37 +68,36 @@ workflow AMPLICON_PIPELINE_V6 {
     )
 
     // Masking subworkflow to find rRNA reads for ITS
-    // ITS_SWF(
-    //     READS_QC_MERGE.out.reads_fasta,
-    //     CMSEARCH_SUBWF.out.concat_ssu_lsu_coords
-    // )
+    ITS_SWF(
+        READS_QC_MERGE.out.reads_fasta,
+        CMSEARCH_SUBWF.out.concat_ssu_lsu_coords
+    )
 
-    // Next four subworkflow calls are MapSeq annotation + Krona generation for SSU+LSU+ITS
-    // MAPSEQ_OTU_KRONA_SSU(
-    //     CMSEARCH_SUBWF.out.ssu_fasta,
-    //     ssu_mapseq_krona_tuple
-    // )
+    // Next five subworkflow calls are MapSeq annotation + Krona generation for SSU+LSU+ITS
+    MAPSEQ_OTU_KRONA_SSU(
+        CMSEARCH_SUBWF.out.ssu_fasta,
+        ssu_mapseq_krona_tuple
+    )
 
-    // MAPSEQ_OTU_KRONA_PR2(
-    //     CMSEARCH_SUBWF.out.ssu_fasta,
-    //     pr2_mapseq_krona_tuple
-    // )  
+    MAPSEQ_OTU_KRONA_PR2(
+        CMSEARCH_SUBWF.out.ssu_fasta,
+        pr2_mapseq_krona_tuple
+    )  
 
-    // MAPSEQ_OTU_KRONA_LSU(
-    //     CMSEARCH_SUBWF.out.lsu_fasta,
-    //     lsu_mapseq_krona_tuple
-    // )     
+    MAPSEQ_OTU_KRONA_LSU(
+        CMSEARCH_SUBWF.out.lsu_fasta,
+        lsu_mapseq_krona_tuple
+    )     
 
-    // MAPSEQ_OTU_KRONA_ITSONEDB(
-    //     ITS_SWF.out.its_masked_out,
-    //     itsonedb_mapseq_krona_tuple
-    // )    
+    MAPSEQ_OTU_KRONA_ITSONEDB(
+        ITS_SWF.out.its_masked_out,
+        itsonedb_mapseq_krona_tuple
+    )    
 
-    // MAPSEQ_OTU_KRONA_UNITE(
-    //     ITS_SWF.out.its_masked_out,
-    //     unite_mapseq_krona_tuple
-    // )
-
+    MAPSEQ_OTU_KRONA_UNITE(
+        ITS_SWF.out.its_masked_out,
+        unite_mapseq_krona_tuple
+    )
 
     // Infer amplified variable regions for SSU, extract reads for each amplified region if there are more than one
     AMP_REGION_INFERENCE(

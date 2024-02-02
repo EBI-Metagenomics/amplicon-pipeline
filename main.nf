@@ -15,8 +15,6 @@ validateParameters()
 // Print summary of supplied parameters
 log.info paramsSummaryLog(workflow)
 
-ch_input = Channel.fromSamplesheet( "input" )
-
 include { AMPLICON_PIPELINE_V6 } from './workflows/pipeline.nf'
 
 workflow {
