@@ -10,7 +10,8 @@
             "sample": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces"
+                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "meta": ["id"]
             },
             "fastq_1": {
                 "type": "string",
@@ -30,13 +31,12 @@
                     }
                 ]
             },
-            "strandedness": {
-                "type": "string",
+            "single_end": {
+                "type": "boolean",
                 "errorMessage": "Strandedness must be provided and be one of 'single_end' or 'paired_end'",
-                "enum": ["paired_end", "single_end"],
-                "meta": ["my_strandedness"]
+                "meta": ["single_end"]
             }
         },
-        "required": ["sample", "fastq_1", "strandedness"]
+        "required": ["sample", "fastq_1", "single_end"]
     }
 }
