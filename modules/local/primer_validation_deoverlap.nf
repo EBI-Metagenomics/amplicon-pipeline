@@ -12,7 +12,7 @@ process PRIMER_VALIDATION_DEOVERLAP {
     tuple val(meta), path("${cmsearch_out}.deoverlapped"), emit: cmsearch_deoverlap_out
 
     """
-    perl /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/cmsearch-deoverlap_primerval.pl -s --clanin $rfam_clan $cmsearch_out
+    perl /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/cmsearch-deoverlap.pl -s --clanin $rfam_clan $cmsearch_out
     """
 
 }

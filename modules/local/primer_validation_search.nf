@@ -13,7 +13,8 @@ process PRIMER_VALIDATION_SEARCH {
     tuple val(meta), path("*cmsearch_matches.tbl"), emit: cmsearch_out
 
     """
-    cmsearch --hmmonly --hmmF1 1 --hmmF2 1 --hmmF3 1 -o /dev/null --tblout ${meta.id}.cmsearch_matches.tbl $rfam $primer_fasta
+    cmsearch -g --noali -o /dev/null --tblout ${meta.id}.cmsearch_matches.tbl $rfam $primer_fasta
     """
+//     cmsearch --hmmonly --hmmF1 1 --hmmF2 1 --hmmF3 1 -o /dev/null --tblout ${meta.id}.cmsearch_matches.tbl $rfam $primer_fasta
 
 }

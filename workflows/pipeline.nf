@@ -74,30 +74,30 @@ workflow AMPLICON_PIPELINE_V6 {
     )
 
     // Next five subworkflow calls are MapSeq annotation + Krona generation for SSU+LSU+ITS
-    MAPSEQ_OTU_KRONA_SSU(
-        CMSEARCH_SUBWF.out.ssu_fasta,
-        ssu_mapseq_krona_tuple
-    )
+    // MAPSEQ_OTU_KRONA_SSU(
+    //     CMSEARCH_SUBWF.out.ssu_fasta,
+    //     ssu_mapseq_krona_tuple
+    // )
 
-    MAPSEQ_OTU_KRONA_PR2(
-        CMSEARCH_SUBWF.out.ssu_fasta,
-        pr2_mapseq_krona_tuple
-    )  
+    // MAPSEQ_OTU_KRONA_PR2(
+    //     CMSEARCH_SUBWF.out.ssu_fasta,
+    //     pr2_mapseq_krona_tuple
+    // )  
 
-    MAPSEQ_OTU_KRONA_LSU(
-        CMSEARCH_SUBWF.out.lsu_fasta,
-        lsu_mapseq_krona_tuple
-    )     
+    // MAPSEQ_OTU_KRONA_LSU(
+    //     CMSEARCH_SUBWF.out.lsu_fasta,
+    //     lsu_mapseq_krona_tuple
+    // )     
 
-    MAPSEQ_OTU_KRONA_ITSONEDB(
-        ITS_SWF.out.its_masked_out,
-        itsonedb_mapseq_krona_tuple
-    )    
+    // MAPSEQ_OTU_KRONA_ITSONEDB(
+    //     ITS_SWF.out.its_masked_out,
+    //     itsonedb_mapseq_krona_tuple
+    // )    
 
-    MAPSEQ_OTU_KRONA_UNITE(
-        ITS_SWF.out.its_masked_out,
-        unite_mapseq_krona_tuple
-    )
+    // MAPSEQ_OTU_KRONA_UNITE(
+    //     ITS_SWF.out.its_masked_out,
+    //     unite_mapseq_krona_tuple
+    // )
 
     // Infer amplified variable regions for SSU, extract reads for each amplified region if there are more than one
     AMP_REGION_INFERENCE(
@@ -136,34 +136,34 @@ workflow AMPLICON_PIPELINE_V6 {
     // Verify that any identified primers (both std+auto) actually match to regions of the SSU gene (for Bacteria/Archaea/Eukaryotes)
     // Output of this (a .tsv file) will go to CDCH
     // TODO THIS SUBWORKFLOW NEEDS REFACTORING
-    // PRIMER_VALIDATION(
-    //     primer_validation_input
-    // )
+    PRIMER_VALIDATION(
+        primer_validation_input
+    )
 
-    dada2_input = concat_input
-                  .map{ tuple(["id":it[0].id, "single_end":it[0].single_end], it[0].var_region) }
-                  .groupTuple(by: 0)
-                  .join(READS_QC.out.reads, by: 0)
-                  .join(CONCAT_PRIMER_CUTADAPT.out.cutadapt_out, by: 0, remainder:true)
-                  .map( { if (it[3] != null) { tuple(it[0], it[1], it[3]) } else { tuple(it[0], it[1], it[2]) }} )
-                  .map{ tuple(it[0] + ["var_region":it[1]], it[2]) }
+    // dada2_input = concat_input
+    //               .map{ tuple(["id":it[0].id, "single_end":it[0].single_end], it[0].var_region) }
+    //               .groupTuple(by: 0)
+    //               .join(READS_QC.out.reads, by: 0)
+    //               .join(CONCAT_PRIMER_CUTADAPT.out.cutadapt_out, by: 0, remainder:true)
+    //               .map( { if (it[3] != null) { tuple(it[0], it[1], it[3]) } else { tuple(it[0], it[1], it[2]) }} )
+    //               .map{ tuple(it[0] + ["var_region":it[1]], it[2]) }
 
     // Run DADA2 ASV generation + generate Krona plots for each run+amp_region 
-    DADA2_KRONA_SILVA(
-        dada2_input,
-        AMP_REGION_INFERENCE.out.concat_var_regions,
-        AMP_REGION_INFERENCE.out.extracted_var_path,
-        READS_QC.out.reads,
-        silva_dada2_db,
-        dada2_krona_silva_tuple,
-    )
+    // DADA2_KRONA_SILVA(
+    //     dada2_input,
+    //     AMP_REGION_INFERENCE.out.concat_var_regions,
+    //     AMP_REGION_INFERENCE.out.extracted_var_path,
+    //     READS_QC.out.reads,
+    //     silva_dada2_db,
+    //     dada2_krona_silva_tuple,
+    // )
 
-    DADA2_KRONA_PR2(
-        dada2_input,
-        AMP_REGION_INFERENCE.out.concat_var_regions,
-        AMP_REGION_INFERENCE.out.extracted_var_path,
-        READS_QC.out.reads,
-        pr2_dada2_db,
-        dada2_krona_pr2_tuple,
-    )
+    // DADA2_KRONA_PR2(
+    //     dada2_input,
+    //     AMP_REGION_INFERENCE.out.concat_var_regions,
+    //     AMP_REGION_INFERENCE.out.extracted_var_path,
+    //     READS_QC.out.reads,
+    //     pr2_dada2_db,
+    //     dada2_krona_pr2_tuple,
+    // )
 }

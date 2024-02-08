@@ -12,20 +12,22 @@ workflow PRIMER_VALIDATION {
             primer_validation_input,
             file(params.rfam)
         )
-
+        
         PRIMER_VALIDATION_DEOVERLAP(
             PRIMER_VALIDATION_SEARCH.out.cmsearch_out,
-            file(params.rfam_clan)
+            file(params.claninfo)
         )
 
         primer_validation_classify_var_regions_input = PRIMER_VALIDATION_DEOVERLAP.out.cmsearch_deoverlap_out
-                                                       .join(primer_validation_input, by: 0)
-
-        primer_validation_classify_var_regions_input.view()
+                                                       .map{ tuple(["id":it[0].id, "single_end":it[0].single_end], it[0].var_region, it[1]) }
+                                                       .join(primer_validation_input.map{ tuple(["id":it[0].id, "single_end":it[0].single_end], it[0].var_region, it[1]) }, by: 0)
+                                                       .map{ tuple(it[0] + ["var_region":it[1]], it[2], it[4]) }
         
         PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS(
             primer_validation_classify_var_regions_input
         )
+
+        PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS.out.primer_validation_out.view()
 
     emit:
         primer_validation_out = PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS.out.primer_validation_out
