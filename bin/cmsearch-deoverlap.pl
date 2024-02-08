@@ -215,7 +215,9 @@ sub parse_sorted_tblout_file {
     # Yes, if target sequence we just read is different from it
     # If yes, output info for it, and re-initialize data structures
     # for new sequence just read
+
     if((defined $prv_target) && ($prv_target ne $target)) { 
+
       output_one_target($out_FH, \@line_A, \@keepme_A);
       $already_seen_H{$prv_target} = 1; 
       @line_A    = ();
@@ -228,10 +230,10 @@ sub parse_sorted_tblout_file {
     }
     else { # this is not a new sequence
       # make sure that our current score or E-value is less than previous
-      if($rank_by_score && ($score > $prv_score)) { 
+      if($rank_by_score && defined($prv_score) && ($score > $prv_score)) {
         die "ERROR found lines with same target [$target] incorrectly sorted by score, did you sort by sequence name and score?";
       }
-      elsif((! $rank_by_score) && ($evalue < $prv_evalue)) { 
+      elsif((! $rank_by_score) && defined($prv_evalue) && ($evalue < $prv_evalue)) {
         die "ERROR found lines with same target [$target] incorrectly sorted by E-value, did you sort by sequence name and E-value?";
       }
     }
