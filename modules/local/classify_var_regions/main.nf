@@ -10,7 +10,6 @@ process CLASSIFY_VAR_REGIONS {
     tuple val(meta), path(cmsearch_deoverlap_out)
 
     output:
-    // tuple val(project), val(sampleId), path("*_regions.txt"), path("*seq_count.txt"), emit: classify_var_summary
     tuple val(meta), path ("*S.V*.txt"), optional: true, emit: classify_var_regions
     tuple val(meta), val("concat"), path("*.concat.regions.txt"), optional: true, emit: concat_var_regions
     tuple val(meta), path("*.tsv"), optional: true, emit: cdch_out

@@ -17,6 +17,7 @@ process DADA2 {
     tuple val(meta), path("*map.txt"), path("*chimeric.txt"), path("*matched.txt"), path("*taxa.tsv"), optional: true, emit: dada2_out
 
     """
+    echo 'hi'
     if [[ ${meta.single_end} = true ]]; then
         Rscript /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/dada2.R ${meta.id} $db_label $dada2_db $reads
     else

@@ -28,10 +28,13 @@ def parse_args():
 
 def order_df(taxa_df):
 
-    if len(taxa_df.columns) == 7:
+    if len(taxa_df.columns) == 8:
         taxa_df = taxa_df.sort_values(["Kingdom", "Phylum", "Class", "Order", "Family", "Genus"], ascending=True)
     elif len(taxa_df.columns) == 10:
         taxa_df = taxa_df.sort_values(["Domain", "Supergroup", "Division", "Subdivision", "Class", "Order", "Family", "Genus", "Species"], ascending=True)
+    else:
+        print("Data frame not the right size, something wrong.")
+        exit(1)
 
     return taxa_df
 
@@ -53,6 +56,7 @@ def make_tax_assignment_dict_silva(taxa_df, asv_dict):
         o = taxa_df.loc[sorted_index, "Order"]
         f = taxa_df.loc[sorted_index, "Family"]
         g = taxa_df.loc[sorted_index, "Genus"]        
+        s = taxa_df.loc[sorted_index, "Species"]
 
         tax_assignment = ""
 
@@ -94,6 +98,11 @@ def make_tax_assignment_dict_silva(taxa_df, asv_dict):
             if g != "0":
                 g = "_".join(g.split(" "))
                 tax_assignment += f"\tg__{g}"
+            else:
+                break
+            if s != "0":
+                s = "_".join(s.split(" "))
+                tax_assignment += f"\ts__{s}"
             break
 
         if tax_assignment == "":
@@ -132,10 +141,6 @@ def make_tax_assignment_dict_pr2(taxa_df, asv_dict):
             if d != "0":
                 d = "_".join(d.split(" "))
                 tax_assignment += f"d__{d}"
-                # if d == "Archaea" or d == "Bacteria":
-                #     tax_assignment += f"d__{d}"
-                # elif d == "Eukaryota":
-                #     tax_assignment += f"d__Eukaryota"
             else:
                 break
 
@@ -144,7 +149,6 @@ def make_tax_assignment_dict_pr2(taxa_df, asv_dict):
                 tax_assignment += f"\tsg__{sg}"
             else:
                 break
-
             if dv != "0":
                 dv = "_".join(dv.split(" "))
                 tax_assignment += f"\tdv__{dv}"
@@ -152,7 +156,6 @@ def make_tax_assignment_dict_pr2(taxa_df, asv_dict):
             if sdv != "0":
                 sdv = "_".join(sdv.split(" "))
                 tax_assignment += f"\tsdv__{sdv}"
-
             if c != "0":
                 c = "_".join(c.split(" "))
                 tax_assignment += f"\tc__{c}"
@@ -235,12 +238,16 @@ def main():
     if paired_end:
         rev_fr.close()
 
-    if len(taxa_df.columns) == 7:
+    ref_db = ""
+
+    if len(taxa_df.columns) == 8:
         tax_assignment_dict = make_tax_assignment_dict_silva(taxa_df, asv_dict)
+        ref_db = "silva"
     elif len(taxa_df.columns) == 10:
         tax_assignment_dict = make_tax_assignment_dict_pr2(taxa_df, asv_dict)
+        ref_db = "pr2"
 
-    with open(f"./{_SAMPLE}_{amp_region}_asv_krona_counts.txt", "w") as fw:
+    with open(f"./{_SAMPLE}_{amp_region}_{ref_db}_asv_krona_counts.txt", "w") as fw:
         for tax_assignment, count in tax_assignment_dict.items():
             fw.write(f"{count}\t{tax_assignment}\n")
     
