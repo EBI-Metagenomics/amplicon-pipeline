@@ -14,6 +14,10 @@ ref_db = args[3] # Reference DB
 path_f = args[4] # Forward fastq
 path_r = args[5] # Reverse fastq
 
+# different tax ranks for silva/pr2
+silva_tax_vec = c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+pr2_tax_vec = c("Domain", "Supergroup", "Division", "Subdivision", "Class", "Order", "Family", "Genus", "Species")
+
 # Learn error model
 err_f = learnErrors(path_f, multithread=TRUE)
 if (!is.na(path_r)){
@@ -51,9 +55,9 @@ if (length(merged$sequence) == 0){
 
   # Assign taxonomy (using SILVA)
   if (ref_label == "DADA2-SILVA"){
-    taxa = assignTaxonomy(seqtab.nochim, ref_db, multithread=TRUE)
+    taxa = assignTaxonomy(seqtab.nochim, ref_db, multithread=TRUE, taxLevels=silva_tax_vec)
   } else if (ref_label == "DADA2-PR2"){
-    taxa = assignTaxonomy(seqtab.nochim, ref_db, multithread=TRUE, taxLevels = c("Domain","Supergroup","Division","Subdivision","Class","Order","Family","Genus","Species"))
+    taxa = assignTaxonomy(seqtab.nochim, ref_db, multithread=TRUE, taxLevels=pr2_tax_vec)
   }
 
   chimera_ids = which(colnames(seqtab) %in% colnames(seqtab.nochim) == FALSE)
@@ -109,11 +113,11 @@ if (length(merged$sequence) == 0){
   # Save taxa annotation to file
   taxa = cbind(rownames(taxa), taxa)
   if (ref_label == "DADA2-SILVA"){
-    colnames(taxa) = c("ASV", colnames(taxa)[2:7])
+    colnames(taxa) = c("ASV", colnames(taxa)[2:8])
   } else if (ref_label == "DADA2-PR2"){
     colnames(taxa) = c("ASV", colnames(taxa)[2:10])
   }
-  write.table(taxa, file = paste0("./", prefix, "_taxa.tsv"), sep = "\t", row.names=FALSE)
+  write.table(taxa, file = paste0("./", prefix, "_", ref_label, "_taxa.tsv"), sep = "\t", row.names=FALSE)
 
   # Write proportion of chimeric reads into a file
   seqtab_read_count = sum(seqtab)

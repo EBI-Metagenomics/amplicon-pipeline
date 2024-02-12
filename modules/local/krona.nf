@@ -7,6 +7,7 @@ process KRONA {
 
     input:
     tuple val(meta), path(otu_counts)
+    tuple path(db_fasta), path(db_tax), path(db_otu), path(db_mscluster), val(label)
 
     output:
     tuple val(meta), path('*krona.html'), emit: krona_out

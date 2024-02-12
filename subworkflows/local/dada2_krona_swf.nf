@@ -44,7 +44,8 @@ workflow DADA2_KRONA {
         )
 
         KRONA(
-            MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out
+            MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out,
+            krona_tuple
         )
 
     emit:

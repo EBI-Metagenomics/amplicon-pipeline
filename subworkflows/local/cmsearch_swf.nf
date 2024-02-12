@@ -1,9 +1,5 @@
 
-include { RRNA_EXTRACTION } from '../../subworkflows/ebi-metagenomics/rrna_extraction/main'  
-
-include { INFERNAL_CMSEARCH } from '../../modules/ebi-metagenomics/infernal/cmsearch/main.nf'
-include { CMSEARCHTBLOUTDEOVERLAP } from '../../modules/ebi-metagenomics/cmsearchtbloutdeoverlap/main.nf'
-include { EASEL } from '../../modules/local/easel/main.nf'
+include { RRNA_EXTRACTION } from '../../subworkflows/ebi-metagenomics/rrna_extraction/main'
 include { EXTRACT_COORDS } from '../../modules/local/extract_coords/main.nf'
 
 workflow CMSEARCH_SUBWF {
@@ -22,32 +18,12 @@ workflow CMSEARCH_SUBWF {
             claninfo
         )
 
-        // INFERNAL_CMSEARCH(
-        //     reads_fasta,
-        //     file(params.rfam)
-        // )
-
-        // CMSEARCHTBLOUTDEOVERLAP(
-        //     INFERNAL_CMSEARCH.out.cmsearch_tbl,
-        //     file(params.rfam_clan)
-        // )
-        
-        // ch_easel_input = reads_fasta
-        //                  .join(CMSEARCHTBLOUTDEOVERLAP.out.cmsearch_tblout_deoverlapped)
-
-
-        // EASEL(
-        //     ch_easel_input,
-        // )
-
         EXTRACT_COORDS(
             RRNA_EXTRACTION.out.easel_sfetch,
             RRNA_EXTRACTION.out.matched_seqs_with_coords,
         )
 
     emit:
-        // cmsearch_out = INFERNAL_CMSEARCH.out.cmsearch_tbl
-
         cmsearch_deoverlap_out = RRNA_EXTRACTION.out.cmsearch_deoverlap
         easel_out = RRNA_EXTRACTION.out.easel_sfetch
         ssu_fasta = EXTRACT_COORDS.out.ssu_fasta
