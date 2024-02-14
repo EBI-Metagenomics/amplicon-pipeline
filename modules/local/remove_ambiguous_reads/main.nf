@@ -11,6 +11,7 @@ process REMOVE_AMBIGUOUS_READS {
     tuple val(meta), path("*noambig*fastq.gz"), emit: noambig_out
 
     """
+    echo "hi"
     if [[ ${meta.single_end} = true ]]; then
         python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/remove_ambiguous_reads.py -f $reads -s ${meta.id}
     else 
