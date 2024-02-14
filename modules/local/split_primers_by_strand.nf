@@ -1,7 +1,7 @@
 
 process SPLIT_PRIMERS_BY_STRAND {
     // Split the concatenated primer files into two, one containing the fwd primers, and one for the rev
-
+    tag "$meta.id"
     label 'light'
     // publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
     

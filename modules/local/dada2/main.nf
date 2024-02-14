@@ -1,7 +1,7 @@
 
 process DADA2 {
     // Run DADA2 pipeline including read-tracking
-
+    tag "$meta.id"
     label 'very_heavy'
     // publishDir "${outdir}/${project}/${sampleId}/asv-gen", pattern : "*.tsv" , mode : "copy" 
     // publishDir "${outdir}/${project}/${sampleId}/asv-gen", pattern : "*chimeric.txt" , mode : "copy" 

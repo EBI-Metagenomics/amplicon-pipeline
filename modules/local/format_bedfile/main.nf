@@ -1,6 +1,6 @@
 
 process FORMAT_BEDFILE {
-
+    tag "$meta.id"
     label 'light'
 
     input:

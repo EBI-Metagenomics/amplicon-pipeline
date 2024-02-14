@@ -1,6 +1,6 @@
 
 process MAPSEQ2BIOM {
-
+    tag "$meta.id"
     label 'light' // Will likely need to give this task more CPUs
     // publishDir "${outdir}/${project}/${sampleId}/taxonomy-summary/${label}", mode : "copy"
  

@@ -3,7 +3,7 @@ process PARSE_CONDUCTOR {
     
     // Parse the trimming_conductor output and store 
     // the flags into environment variables 
-
+    tag "$meta.id"
     label 'light'
 
     input:

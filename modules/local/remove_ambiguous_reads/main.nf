@@ -1,7 +1,7 @@
 
 process REMOVE_AMBIGUOUS_READS {
     // Run DADA2 pipeline including read-tracking
-
+    tag "$meta.id"
     label 'light'
 
     input:

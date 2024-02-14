@@ -1,7 +1,7 @@
 
 process ASSESS_MCP_INF_POINTS {
     // Select inflection points most likely to be primer cutoff points
-
+    tag "$meta.id"
     label 'light'
     // publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
 

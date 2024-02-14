@@ -1,7 +1,7 @@
 
 process FIND_MCP_INF_POINTS {
     // Find inflection points in conservation curves
-
+    tag "$meta.id"
     label 'light'
 
     input:
