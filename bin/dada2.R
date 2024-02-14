@@ -119,6 +119,10 @@ if (length(merged$sequence) == 0){
   }
   write.table(taxa, file = paste0("./", prefix, "_", ref_label, "_taxa.tsv"), sep = "\t", row.names=FALSE)
 
+  # Save ASV count table
+  write.table(seqtab.nochim, file = paste0("./", prefix, "_asv_counts.tsv"), sep = "\t", row.names=FALSE)
+
+
   # Write proportion of chimeric reads into a file
   seqtab_read_count = sum(seqtab)
   seqtab.nochim_read_count = sum(seqtab.nochim)
