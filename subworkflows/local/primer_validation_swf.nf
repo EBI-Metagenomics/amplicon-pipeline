@@ -27,8 +27,6 @@ workflow PRIMER_VALIDATION {
             primer_validation_classify_var_regions_input
         )
 
-        PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS.out.primer_validation_out.view()
-
     emit:
         primer_validation_out = PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS.out.primer_validation_out
     
