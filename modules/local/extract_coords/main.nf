@@ -1,6 +1,6 @@
 
 process EXTRACT_COORDS {
-
+    tag "$meta.id"
     label 'light'
     // publishDir "${outdir}/${project}/${meta.id}", pattern : "sequence-categorisation/*SU.fasta", mode : "copy"
 

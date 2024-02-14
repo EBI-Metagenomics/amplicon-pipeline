@@ -1,7 +1,7 @@
 
 process STD_PRIMER_FLAG {
     // Check for presence of standard library of primers (stored in ./data/standard_primers)
-
+    tag "$meta.id"
     label 'light'
     // publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
 

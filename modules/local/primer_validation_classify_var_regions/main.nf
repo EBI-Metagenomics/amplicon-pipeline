@@ -1,6 +1,6 @@
 
 process PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS {
-
+    tag "$meta.id"
     label 'light' 
     // publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
 

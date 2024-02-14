@@ -1,6 +1,6 @@
 
 process CLASSIFY_VAR_REGIONS {
-
+    tag "$meta.id"
     label 'light'
     // publishDir "${outdir}/${project}/${sampleId}/amplified-region-inference", pattern : "*.concat.regions.txt" , mode : "copy"
     // publishDir "${outdir}/${project}/${sampleId}/amplified-region-inference", pattern : "*.tsv" , mode : "copy"

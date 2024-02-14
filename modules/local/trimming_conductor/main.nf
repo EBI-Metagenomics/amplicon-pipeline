@@ -2,7 +2,7 @@
 process TRIMMING_CONDUCTOR {
     // Parse the outputs of the std and general primer searches and output
     // flags into "trimming_conductor_out.txt"
-
+    tag "$meta.id"
     label 'light'
     // publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
 

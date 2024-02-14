@@ -1,6 +1,6 @@
 
 process MAKE_ASV_COUNT_TABLES {
-
+    tag "$meta.id"
     label 'light'
     // publishDir "${outdir}/${project}/${sampleId}/asv-gen/${var_region}", mode : "copy" 
 
