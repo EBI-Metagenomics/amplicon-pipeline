@@ -42,19 +42,32 @@ process CUTADAPT {
 
     def primer_arg = "$fwd_primer $rev_primer"
 
-    """
-    cutadapt \\
-        --cores $task.cpus \\
-        $args \\
-        $trimmed \\
-        $primer_arg \\
-        $reads \\
-        > ${prefix}.cutadapt.log
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        cutadapt: \$(cutadapt --version)
-    END_VERSIONS
-    """
+    if(fwd_primer == "" && rev_primer == ""){
+        """
+        touch ${prefix}.cutadapt.log
+        touch ${prefix}.trim.fastq.gz
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            cutadapt: \$(cutadapt --version)
+        END_VERSIONS
+        """
+    }
+    else{
+        """
+        cutadapt \\
+            --cores $task.cpus \\
+            $args \\
+            $trimmed \\
+            $primer_arg \\
+            $reads \\
+            > ${prefix}.cutadapt.log
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            cutadapt: \$(cutadapt --version)
+        END_VERSIONS
+        """
+    }
 
     stub:
     def prefix  = task.ext.prefix ?: "${meta.id}"

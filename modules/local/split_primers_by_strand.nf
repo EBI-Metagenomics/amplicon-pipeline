@@ -29,6 +29,9 @@ process SPLIT_PRIMERS_BY_STRAND {
         else
             touch ./rev_primer.fasta
         fi
+    else
+        touch ./fwd_primer.fasta
+        touch ./rev_primer.fasta
     fi
     '''
 }

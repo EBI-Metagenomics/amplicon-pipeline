@@ -14,15 +14,24 @@ workflow AMP_REGION_INFERENCE {
         )
 
         extract_var_input = CLASSIFY_VAR_REGIONS.out.classify_var_regions
+                            .map { meta, var_regions -> 
+                                [ meta, var_regions, var_regions.size() ]
+                            }
                             .transpose()
                             .combine(reads_merged, by: 0)
+                            .map { meta, var_regions, var_regions_size, reads ->
+                                [ meta + ["var_regions_size":var_regions_size], var_regions, reads ]
+                            }
 
         EXTRACT_VAR_REGIONS(
             extract_var_input,
         )
 
         final_var_out = EXTRACT_VAR_REGIONS.out.extracted_var_out
-                    .map { tuple(it[0] + ["var_region":it[1]], it[2]) }
+                    .map { meta, var_region, extracted_reads ->
+                        [ meta + ["var_region":var_region], extracted_reads]
+                    }
+
     emit:
         concat_var_regions = CLASSIFY_VAR_REGIONS.out.concat_var_regions
         extracted_var_out = final_var_out

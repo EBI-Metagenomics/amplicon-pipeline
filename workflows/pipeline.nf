@@ -90,15 +90,15 @@ workflow AMPLICON_PIPELINE_V6 {
         lsu_mapseq_krona_tuple
     )     
 
-    // MAPSEQ_OTU_KRONA_ITSONEDB(
-    //     ITS_SWF.out.its_masked_out,
-    //     itsonedb_mapseq_krona_tuple
-    // )    
+    MAPSEQ_OTU_KRONA_ITSONEDB(
+        ITS_SWF.out.its_masked_out,
+        itsonedb_mapseq_krona_tuple
+    )    
 
-    // MAPSEQ_OTU_KRONA_UNITE(
-    //     ITS_SWF.out.its_masked_out,
-    //     unite_mapseq_krona_tuple
-    // )
+    MAPSEQ_OTU_KRONA_UNITE(
+        ITS_SWF.out.its_masked_out,
+        unite_mapseq_krona_tuple
+    )
 
     // Infer amplified variable regions for SSU, extract reads for each amplified region if there are more than one
     AMP_REGION_INFERENCE(
@@ -141,13 +141,50 @@ workflow AMPLICON_PIPELINE_V6 {
         primer_validation_input
     )
 
+    cutadapt_channel = CONCAT_PRIMER_CUTADAPT.out.cutadapt_out
+                       .map{ meta, reads -> 
+                         [ meta.subMap('id', 'single_end'), meta['var_region'], meta['var_regions_size'], reads ]
+                        }
+
     dada2_input = concat_input
-                  .map{ tuple(["id":it[0].id, "single_end":it[0].single_end], it[0].var_region) }
+                  .map{ meta, std_primer, auto_primer -> 
+                    key = groupKey(meta.subMap('id', 'single_end'), meta['var_regions_size'])
+                    [ key, meta['var_region'], meta['var_regions_size'] ]
+                   }
                   .groupTuple(by: 0)
                   .join(READS_QC.out.reads, by: 0)
-                  .join(CONCAT_PRIMER_CUTADAPT.out.cutadapt_out, by: 0, remainder:true)
-                  .map( { if (it[3] != null) { tuple(it[0], it[1], it[3]) } else { tuple(it[0], it[1], it[2]) }} )
-                  .map{ tuple(it[0] + ["var_region":it[1]], it[2]) }
+                  .mix(cutadapt_channel)
+                  .map { meta, var_region, var_regions_size, reads -> 
+                    [ groupKey(meta.subMap('id', 'single_end'), 2), var_region, var_regions_size, reads ]
+                  }
+                  .groupTuple(by:0) 
+                  .map{ meta, var_region, var_regions_size, reads -> 
+                    final_var_region = var_region.unique()[0]
+                    final_var_region_size = var_regions_size[0][0]
+                    final_meta = meta + ['var_region': final_var_region, 'var_regions_size': final_var_region_size]
+
+                    fastp_reads = reads[0]
+                    cutadapt_reads = reads[1]
+                    final_reads = ''
+                    if (meta['single_end'] ){
+                        if (cutadapt_reads.size() > 0){
+                            final_reads = cutadapt_reads
+                        }
+                        else{
+                            final_reads = fastp_reads
+                        }
+                    }
+                    else{
+                        if (cutadapt_reads[0].size() > 0){
+                            final_reads = cutadapt_reads
+                        }
+                        else{
+                            final_reads = fastp_reads
+                        }
+                    }
+                    [ final_meta, final_reads ]
+                  }
+
 
     // Run DADA2 ASV generation + generate Krona plots for each run+amp_region 
     DADA2_KRONA_SILVA(
@@ -167,4 +204,5 @@ workflow AMPLICON_PIPELINE_V6 {
         pr2_dada2_db,
         dada2_krona_pr2_tuple,
     )
+
 }
