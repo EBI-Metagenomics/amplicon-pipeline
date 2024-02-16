@@ -16,11 +16,16 @@ workflow CONCAT_PRIMER_CUTADAPT {
             concat_input
         )
 
+        // groupKey solution from https://training.nextflow.io/advanced/grouping/#passing-maps-through-processes
         final_concat_primers_input = CONCAT_PRIMERS.out.concat_primers_out
-                                    .map{ tuple(["id":it[0].id, "single_end":it[0].single_end], it[0].var_region, it[1]) }
+                                    .map{ meta, concat_primers ->
+                                        key = groupKey(meta.subMap('id', 'single_end'), meta['var_regions_size'])
+                                        [ key, meta['var_region'], concat_primers ]
+                                    }
                                     .groupTuple(by: 0)
-                                    .map { tuple(it[0] + ["var_region":it[1]], it[2]) }
-
+                                    .map{ meta, var_region, final_concat_primers ->
+                                        [ meta + ["var_region": var_region], final_concat_primers ]
+                                    }
         FINAL_CONCAT_PRIMERS(
             final_concat_primers_input
         )
@@ -35,9 +40,13 @@ workflow CONCAT_PRIMER_CUTADAPT {
 
         // Join concatenated primers to the fastp-cleaned paired reads files and run cutadapt on them
         cutadapt_input = SPLIT_PRIMERS_BY_STRAND.out.stranded_primer_out
-                        .map{ tuple(["id":it[0].id, "single_end":it[0].single_end], it[0].var_region, [it[1], it[2]]) }
+                        .map{ meta, fwd_primer, rev_primer ->
+                            [ meta.subMap('id', 'single_end'), meta['var_region'], meta['var_regions_size'], [fwd_primer, rev_primer] ]
+                        }
                         .join(reads, by: [0])
-                        .map{ tuple(it[0], it[3], it[2]) }
+                        .map{ meta, var_region, var_regions_size, primers, reads -> 
+                            [ meta + ["var_region":var_region, "var_regions_size": var_regions_size], reads, primers ]
+                        }
 
         CUTADAPT(
             cutadapt_input

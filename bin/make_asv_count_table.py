@@ -29,7 +29,7 @@ def parse_args():
 def order_df(taxa_df):
 
     if len(taxa_df.columns) == 8:
-        taxa_df = taxa_df.sort_values(["Kingdom", "Phylum", "Class", "Order", "Family", "Genus"], ascending=True)
+        taxa_df = taxa_df.sort_values(["Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"], ascending=True)
     elif len(taxa_df.columns) == 10:
         taxa_df = taxa_df.sort_values(["Domain", "Supergroup", "Division", "Subdivision", "Class", "Order", "Family", "Genus", "Species"], ascending=True)
     else:
