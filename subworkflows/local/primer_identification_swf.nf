@@ -14,10 +14,12 @@ workflow PRIMER_IDENTIFICATION {
 
     take:
         reads_merged
+        std_primer_library
     main:
         // Standard Library primers
         STD_PRIMER_FLAG(
-            reads_merged
+            reads_merged,
+            std_primer_library
         ) 
 
         // Primers in general

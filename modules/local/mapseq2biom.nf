@@ -1,9 +1,8 @@
 
 process MAPSEQ2BIOM {
     tag "$meta.id"
-    label 'light' // Will likely need to give this task more CPUs
-    // publishDir "${outdir}/${project}/${sampleId}/taxonomy-summary/${label}", mode : "copy"
- 
+    conda "bioconda::mgnify-pipelines-toolkit=0.1.0"
+    label 'light' // Will likely need to give this task more CPUs 
     
     input:
     tuple val(meta), path(mapseq_out)
@@ -14,7 +13,7 @@ process MAPSEQ2BIOM {
     tuple val(meta), path("${meta.id}.tsv"), path("*notaxid.tsv"), emit: mapseq2biom_out
 
     """
-    python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/mapseq2biom.py \
+    mapseq2biom \
         --out-file ${meta.id}.tsv \
         --krona ${meta.id}.txt \
         --no-tax-id-file ${meta.id}.notaxid.tsv \

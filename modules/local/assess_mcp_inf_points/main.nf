@@ -3,7 +3,7 @@ process ASSESS_MCP_INF_POINTS {
     // Select inflection points most likely to be primer cutoff points
     tag "$meta.id"
     label 'light'
-    // publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
+    conda "bioconda::mgnify-pipelines-toolkit=0.1.0"
 
     input:
     tuple val(meta), path(inf_points_out), path(reads_merged)
@@ -13,7 +13,7 @@ process ASSESS_MCP_INF_POINTS {
 
     """
     if [[ -s ./$inf_points_out ]]; then
-        python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/assess_inflection_point_mcp_MERGED.py -i $reads_merged -p $inf_points_out -s ${meta.id}_${meta.var_region} -o ./
+        assess_inflection_point_mcp -i $reads_merged -p $inf_points_out -s ${meta.id}_${meta.var_region} -o ./
     else
         touch ${meta.id}_${meta.var_region}_auto_primers.fasta
     fi

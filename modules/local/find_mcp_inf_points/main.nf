@@ -3,6 +3,7 @@ process FIND_MCP_INF_POINTS {
     // Find inflection points in conservation curves
     tag "$meta.id"
     label 'light'
+    conda "bioconda::mgnify-pipelines-toolkit=0.1.0"
 
     input:
     tuple val(meta), path(mcp_cons_out)
@@ -12,7 +13,7 @@ process FIND_MCP_INF_POINTS {
 
     """
     if [[ -s ./$mcp_cons_out ]]; then
-        python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/find_mcp_inflection_points_MERGED.py -i $mcp_cons_out -s ${meta.id}_${meta.var_region} -o ./
+        find_mcp_inflection_points -i $mcp_cons_out -s ${meta.id}_${meta.var_region} -o ./
     else
         touch ${meta.id}_${meta.var_region}_inf_points.tsv
     fi

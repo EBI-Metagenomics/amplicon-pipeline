@@ -32,6 +32,9 @@ dada2_krona_silva_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_ta
 pr2_dada2_db = file(params.pr2_dada2_db)
 dada2_krona_pr2_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.dada2_pr2_label)
 
+// Standard primer library
+std_primer_library = file(params.std_primer_library, type: 'dir')
+
 // Read input samplesheet
 samplesheet = Channel.fromSamplesheet( "input" )
 
@@ -108,7 +111,8 @@ workflow AMPLICON_PIPELINE_V6 {
 
     // Identify whether primers exist or not in reads, separated by different amplified regions if more than one exists in a run
     PRIMER_IDENTIFICATION(
-        AMP_REGION_INFERENCE.out.extracted_var_out
+        AMP_REGION_INFERENCE.out.extracted_var_out,
+        std_primer_library
     )
 
     // Join primer identification flags with reads belonging to each run+amp_region
@@ -131,15 +135,15 @@ workflow AMPLICON_PIPELINE_V6 {
         READS_QC.out.reads
     )
 
-    primer_validation_input = CONCAT_PRIMER_CUTADAPT.out.final_concat_primers_out
-                              .map{ tuple(it[0], it[1]) }
+    // primer_validation_input = CONCAT_PRIMER_CUTADAPT.out.final_concat_primers_out
+    //                           .map{ tuple(it[0], it[1]) }
 
-    // Verify that any identified primers (both std+auto) actually match to regions of the SSU gene (for Bacteria/Archaea/Eukaryotes)
-    // Output of this (a .tsv file) will go to CDCH
-    // TODO THIS SUBWORKFLOW NEEDS REFACTORING
-    PRIMER_VALIDATION(
-        primer_validation_input
-    )
+    // // Verify that any identified primers (both std+auto) actually match to regions of the SSU gene (for Bacteria/Archaea/Eukaryotes)
+    // // Output of this (a .tsv file) will go to CDCH
+    // // TODO THIS SUBWORKFLOW NEEDS REFACTORING
+    // PRIMER_VALIDATION(
+    //     primer_validation_input
+    // )
 
     cutadapt_channel = CONCAT_PRIMER_CUTADAPT.out.cutadapt_out
                        .map{ meta, reads -> 

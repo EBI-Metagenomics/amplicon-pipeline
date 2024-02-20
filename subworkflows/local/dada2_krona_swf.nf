@@ -51,7 +51,7 @@ workflow DADA2_KRONA {
                                       .combine(fastp_cleaned_fastq, by: 0)
                                       .map { meta, var_region, var_regions_size, maps, taxa, extracted_var, reads ->
                                         [ meta + ['var_region': var_region, 'var_regions_size': var_regions_size], maps, taxa, extracted_var, reads ]
-                                      }    
+                                      }
         MAKE_ASV_COUNT_TABLES(
             final_asv_count_table_input
         )

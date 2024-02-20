@@ -2,7 +2,7 @@
 process REV_COMP_SE_PRIMERS {
     tag "$meta.id"
     label 'light'
-    // publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
+    conda "bioconda::mgnify-pipelines-toolkit=0.1.0"
     
     input:
     tuple val(meta), path(final_concat_primers)
@@ -12,7 +12,7 @@ process REV_COMP_SE_PRIMERS {
 
     """
     if [[ -s $final_concat_primers && ${meta.single_end} = true ]]; then
-        python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/rev_comp_se_primers.py -i $final_concat_primers -s ${meta.id} -o ./
+        rev_comp_se_primers -i $final_concat_primers -s ${meta.id} -o ./
     elif [[ -s $final_concat_primers && ${meta.single_end} = false ]]; then
         cat $final_concat_primers > ./${meta.id}_rev_comp_se_primers.fasta
     else

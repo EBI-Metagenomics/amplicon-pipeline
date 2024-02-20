@@ -2,7 +2,7 @@
 process EXTRACT_COORDS {
     tag "$meta.id"
     label 'light'
-    // publishDir "${outdir}/${project}/${meta.id}", pattern : "sequence-categorisation/*SU.fasta", mode : "copy"
+    conda "bioconda::mgnify-pipelines-toolkit=0.1.0"
 
     input:
     tuple val(meta), path(easel_coords)
@@ -15,8 +15,8 @@ process EXTRACT_COORDS {
 
 
     """
-    python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/get_subunits.py -i $easel_coords -n ${meta.id}
-    python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/get_subunits_coords.py -i $matched_seqs_with_coords -s SSU -l LSU
+    get_subunits -i $easel_coords -n ${meta.id}
+    get_subunits_coords -i $matched_seqs_with_coords -s SSU -l LSU
     cat SSU_coords LSU_coords > ${meta.id}_concat_SSU_LSU_coords
     """
 
