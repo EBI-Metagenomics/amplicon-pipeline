@@ -2,9 +2,7 @@
 process CLASSIFY_VAR_REGIONS {
     tag "$meta.id"
     label 'light'
-    // publishDir "${outdir}/${project}/${sampleId}/amplified-region-inference", pattern : "*.concat.regions.txt" , mode : "copy"
-    // publishDir "${outdir}/${project}/${sampleId}/amplified-region-inference", pattern : "*.tsv" , mode : "copy"
-
+    conda "bioconda::mgnify-pipelines-toolkit=0.1.0"
 
     input:
     tuple val(meta), path(cmsearch_deoverlap_out)
@@ -15,13 +13,12 @@ process CLASSIFY_VAR_REGIONS {
     tuple val(meta), path("*.tsv"), optional: true, emit: cdch_out
 
     """
-    python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/classify_var_regions.py -d ./ -o ${meta.id} --statistics $cmsearch_deoverlap_out
+    classify_var_regions -d ./ -o ${meta.id} --statistics $cmsearch_deoverlap_out
     
     num_files="\$(ls *S.V*.txt | wc -l  )"
     if [ \$num_files -gt 1 ]; then
         cat *S.V*.txt > ${meta.id}.concat.regions.txt
     fi
-    
     """
 
 }
