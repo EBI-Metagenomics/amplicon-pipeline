@@ -3,7 +3,7 @@ process STD_PRIMER_FLAG {
     // Check for presence of standard library of primers (stored in ./data/standard_primers)
     tag "$meta.id"
     label 'light'
-    conda "bioconda::mgnify-pipelines-toolkit=0.1.0"
+    conda "${projectDir}/conf/environment.yml"
 
     input:
     tuple val(meta), path(reads_merged)

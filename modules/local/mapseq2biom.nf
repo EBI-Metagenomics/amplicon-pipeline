@@ -1,7 +1,7 @@
 
 process MAPSEQ2BIOM {
     tag "$meta.id"
-    conda "bioconda::mgnify-pipelines-toolkit=0.1.0"
+    conda "${projectDir}/conf/environment.yml"
     label 'light' // Will likely need to give this task more CPUs 
     
     input:

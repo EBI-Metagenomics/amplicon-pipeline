@@ -2,7 +2,7 @@
 process REV_COMP_SE_PRIMERS {
     tag "$meta.id"
     label 'light'
-    conda "bioconda::mgnify-pipelines-toolkit=0.1.0"
+    conda "${projectDir}/conf/environment.yml"
     
     input:
     tuple val(meta), path(final_concat_primers)

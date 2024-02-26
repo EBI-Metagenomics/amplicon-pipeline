@@ -3,7 +3,7 @@ process ASSESS_MCP_CONS {
     // Use Most Common Prefix (MCP) method to generate curves of base conservation
     tag "$meta.id"
     label 'light'
-    conda "bioconda::mgnify-pipelines-toolkit=0.1.0"
+    conda "${projectDir}/conf/environment.yml"
 
     input:
     tuple val(meta), val(fwd_flag), val(rev_flag), path(reads_merged)

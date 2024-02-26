@@ -2,7 +2,6 @@
 process FINAL_CONCAT_PRIMERS {
     tag "$meta.id"
     label 'light'
-    // publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
     
     input:
     tuple val(meta), path(cat_primers)
