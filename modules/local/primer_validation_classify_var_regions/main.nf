@@ -2,7 +2,6 @@
 process PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS {
     tag "$meta.id"
     label 'light' 
-    // publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
 
     input:
     tuple val(meta), path(cmsearch_deoverlap_out), path(concat_primers_fasta)

@@ -3,7 +3,7 @@ process GENERAL_PRIMER_FLAG {
     // Check for the presence of primers in general
     tag "$meta.id"
     label 'light'
-    conda "bioconda::mgnify-pipelines-toolkit=0.1.0"
+    conda "${projectDir}/conf/environment.yml"
 
     input:
     tuple val(meta), path(reads_merged)

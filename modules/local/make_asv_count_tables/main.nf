@@ -2,7 +2,7 @@
 process MAKE_ASV_COUNT_TABLES {
     tag "$meta.id"
     label 'light'
-    conda "bioconda::mgnify-pipelines-toolkit=0.1.0"
+    conda "${projectDir}/conf/environment.yml"
 
     input:
     tuple val(meta), path(maps), path(taxa), path(extracted_var_path), path(reads)

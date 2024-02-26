@@ -3,7 +3,7 @@ process FIND_MCP_INF_POINTS {
     // Find inflection points in conservation curves
     tag "$meta.id"
     label 'light'
-    conda "bioconda::mgnify-pipelines-toolkit=0.1.0"
+    conda "${projectDir}/conf/environment.yml"
 
     input:
     tuple val(meta), path(mcp_cons_out)
