@@ -27,31 +27,27 @@ workflow DADA2_KRONA {
         )
 
         split_input = DADA2.out.dada2_out
-                      .map { meta, maps, taxa -> 
-                        [ meta.subMap('id', 'single_end', 'var_regions_size'), meta['var_region'], maps, taxa ]
+                      .map { meta, maps, taxa, filt_reads -> 
+                        [ meta.subMap('id', 'single_end', 'var_regions_size'), meta['var_region'], maps, taxa, filt_reads ]
                        }
                       .transpose(by: 1)
                       .join(extracted_var_path, by: [0, 1])
         
         multi_region_concats = split_input
-                                .map { meta, var_region, maps, taxa, extracted_var ->
-                                    [ meta.subMap('id', 'single_end'), var_region, meta['var_regions_size'], maps, taxa, extracted_var ]
+                                .map { meta, var_region, maps, taxa, filt_reads, extracted_var ->
+                                    [ meta.subMap('id', 'single_end'), var_region, meta['var_regions_size'], maps, taxa, filt_reads, extracted_var ]
                                 }
                                .join(concat_var_regions, by: 0)
-                               .map {meta, var_region, var_regions_size, maps, taxa, _, concat_str, concat_vars ->
-                                    [ meta + ['var_regions_size':var_regions_size], concat_str, maps, taxa, concat_vars ]
+                               .map { meta, var_region, var_regions_size, maps, taxa, filt_reads, _, concat_str, concat_vars ->
+                                    [ meta + ['var_regions_size':var_regions_size], concat_str, maps, taxa, filt_reads, concat_vars ]
                                }
-
 
         final_asv_count_table_input = split_input
                                       .mix(multi_region_concats)
-                                      .map { meta, var_region, maps, taxa, extracted_var ->
-                                        [ meta.subMap('id', 'single_end'), var_region, meta['var_regions_size'], maps, taxa, extracted_var ]
-                                    }
-                                      .combine(fastp_cleaned_fastq, by: 0)
-                                      .map { meta, var_region, var_regions_size, maps, taxa, extracted_var, reads ->
-                                        [ meta + ['var_region': var_region, 'var_regions_size': var_regions_size], maps, taxa, extracted_var, reads ]
+                                      .map { meta, var_region, maps, taxa, filt_reads, extracted_var ->
+                                        [ meta + ['var_region': var_region], maps, taxa, filt_reads, extracted_var ]
                                       }
+        
         MAKE_ASV_COUNT_TABLES(
             final_asv_count_table_input
         )

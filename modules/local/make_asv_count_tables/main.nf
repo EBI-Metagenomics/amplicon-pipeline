@@ -5,7 +5,7 @@ process MAKE_ASV_COUNT_TABLES {
     conda "${projectDir}/conf/environment.yml"
 
     input:
-    tuple val(meta), path(maps), path(taxa), path(extracted_var_path), path(reads)
+    tuple val(meta), path(maps), path(taxa), path(reads), path(extracted_var_path)
 
     output:
     tuple val(meta), path("*asv_krona_counts.txt"), emit: asv_count_tables_out
