@@ -173,9 +173,18 @@ workflow AMPLICON_PIPELINE_V6 {
 
                     fastp_reads = reads[0]
                     cutadapt_reads = reads[1]
+                    
+                    cutadapt_read_size = 0
+                    if (meta.single_end == true){
+                        cutadapt_read_size = cutadapt_reads.size()
+                    }
+                    else{
+                        cutadapt_read_size = cutadapt_reads[0].size()
+                    }
+                    
                     final_reads = ''
                     if (meta['single_end'] ){
-                        if (cutadapt_reads.size() > 0){
+                        if (cutadapt_read_size > 0){
                             final_reads = cutadapt_reads
                         }
                         else{
@@ -183,7 +192,7 @@ workflow AMPLICON_PIPELINE_V6 {
                         }
                     }
                     else{
-                        if (cutadapt_reads[0].size() > 0){
+                        if (cutadapt_read_size > 0){
                             final_reads = cutadapt_reads
                         }
                         else{

@@ -2,9 +2,11 @@
 library(tidyverse)
 library(dada2)
 library(data.table)
+library(ShortRead)
 
 # Load function for tracking reads to their DADA2-generated ASVs
 source("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/read_asv_tracking.R")
+source("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/trunc_len_automation.R")
 
 args = commandArgs(trailingOnly=TRUE) # Expects thre arguments, one fastq for each strand (F and R), and a prefix
 
@@ -15,19 +17,37 @@ path_f = args[4] # Forward fastq
 path_r = args[5] # Reverse fastq
 
 # different tax ranks for silva/pr2
-silva_tax_vec = c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+silva_tax_vec = c("Superkingdom", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
 pr2_tax_vec = c("Domain", "Supergroup", "Division", "Subdivision", "Class", "Order", "Family", "Genus", "Species")
 
-# Learn error model
-err_f = learnErrors(path_f, multithread=TRUE)
+# Identify truncLen parameter for filterAndTrim function
+final_where_to_cut_f = trunc_len_automation(path_f)
 if (!is.na(path_r)){
-  err_r = learnErrors(path_r, multithread=TRUE)
+  final_where_to_cut_r = trunc_len_automation(path_r)
+}
+
+# Do some quality filtering
+filt_f =  paste0("./", prefix, "_1", "_filt.fastq.gz")
+if (!is.na(path_r)){
+  filt_r =  paste0("./", prefix, "_2", "_filt.fastq.gz")
+  print(final_where_to_cut_f)
+  print(final_where_to_cut_r)
+  out = filterAndTrim(path_f, filt_f, path_r, filt_r, rm.phix=TRUE, maxEE=c(1,1), truncQ=2, truncLen=c(final_where_to_cut_f,final_where_to_cut_r), compress=TRUE, multithread=TRUE)
+} else{
+  print(final_where_to_cut_f)
+  out = filterAndTrim(path_f, filt_f, rm.phix=TRUE, maxEE=1, truncQ=2, truncLen=final_where_to_cut_f, compress=TRUE, multithread=TRUE)
+}
+
+# Learn error model
+err_f = learnErrors(filt_f, multithread=TRUE)
+if (!is.na(path_r)){
+  err_r = learnErrors(filt_r, multithread=TRUE)
 }
 
 # Dereplicate sequences
-drp_f = derepFastq(path_f)
+drp_f = derepFastq(filt_f)
 if (!is.na(path_r)){
-  drp_r = derepFastq(path_r)
+  drp_r = derepFastq(filt_r)
 }
 
 # Generate stranded ASVs
@@ -113,7 +133,7 @@ if (length(merged$sequence) == 0){
   # Save taxa annotation to file
   taxa = cbind(rownames(taxa), taxa)
   if (ref_label == "DADA2-SILVA"){
-    colnames(taxa) = c("ASV", colnames(taxa)[2:8])
+    colnames(taxa) = c("ASV", colnames(taxa)[2:9])
   } else if (ref_label == "DADA2-PR2"){
     colnames(taxa) = c("ASV", colnames(taxa)[2:10])
   }

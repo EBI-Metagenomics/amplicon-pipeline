@@ -43,15 +43,30 @@ process CUTADAPT {
     def primer_arg = "$fwd_primer $rev_primer"
 
     if(fwd_primer == "" && rev_primer == ""){
-        """
-        touch ${prefix}.cutadapt.log
-        touch ${prefix}.trim.fastq.gz
+        if (!meta.single_end){
+            """
+            touch ${prefix}.cutadapt.log
+            touch ${prefix}_1.trim.fastq.gz
+            touch ${prefix}_2.trim.fastq.gz
 
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            cutadapt: \$(cutadapt --version)
-        END_VERSIONS
-        """
+            cat <<-END_VERSIONS > versions.yml
+            "${task.process}":
+                cutadapt: \$(cutadapt --version)
+            END_VERSIONS
+            """
+        }
+        else{
+            """
+            touch ${prefix}.cutadapt.log
+            touch ${prefix}.trim.fastq.gz
+
+            cat <<-END_VERSIONS > versions.yml
+            "${task.process}":
+                cutadapt: \$(cutadapt --version)
+            END_VERSIONS
+            """
+
+        }
     }
     else{
         """
