@@ -74,11 +74,11 @@ if (length(merged$sequence) == 0){
   seqtab.nochim = removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
 
   # Assign taxonomy (using SILVA)
-  if (ref_label == "DADA2-SILVA"){
-    taxa = assignTaxonomy(seqtab.nochim, ref_db, multithread=TRUE, taxLevels=silva_tax_vec)
-  } else if (ref_label == "DADA2-PR2"){
-    taxa = assignTaxonomy(seqtab.nochim, ref_db, multithread=TRUE, taxLevels=pr2_tax_vec)
-  }
+  # if (ref_label == "DADA2-SILVA"){
+  #   taxa = assignTaxonomy(seqtab.nochim, ref_db, multithread=TRUE, taxLevels=silva_tax_vec, tryRC=FALSE, outputBootstraps=TRUE)
+  # } else if (ref_label == "DADA2-PR2"){
+  #   taxa = assignTaxonomy(seqtab.nochim, ref_db, multithread=TRUE, taxLevels=pr2_tax_vec, tryRC=FALSE, outputBootstraps=TRUE)
+  # }
 
   chimera_ids = which(colnames(seqtab) %in% colnames(seqtab.nochim) == FALSE)
 
@@ -131,17 +131,16 @@ if (length(merged$sequence) == 0){
     fwrite(final_f_output, file = paste0("./", prefix, "_map.txt"), sep="\n")
   }
   # Save taxa annotation to file
-  taxa = cbind(rownames(taxa), taxa)
-  if (ref_label == "DADA2-SILVA"){
-    colnames(taxa) = c("ASV", colnames(taxa)[2:9])
-  } else if (ref_label == "DADA2-PR2"){
-    colnames(taxa) = c("ASV", colnames(taxa)[2:10])
-  }
-  write.table(taxa, file = paste0("./", prefix, "_", ref_label, "_taxa.tsv"), sep = "\t", row.names=FALSE)
+  # taxa_ranks = cbind(rownames(taxa$tax), taxa$tax)
+  # if (ref_label == "DADA2-SILVA"){
+  #   colnames(taxa_ranks) = c("ASV", colnames(taxa_ranks)[2:9])
+  # } else if (ref_label == "DADA2-PR2"){
+  #   colnames(taxa_ranks) = c("ASV", colnames(taxa_ranks)[2:10])
+  # }
+  # write.table(taxa_ranks, file = paste0("./", prefix, "_", ref_label, "_taxa.tsv"), sep = "\t", row.names=FALSE)
 
   # Save ASV count table
   write.table(seqtab.nochim, file = paste0("./", prefix, "_asv_counts.tsv"), sep = "\t", row.names=FALSE)
-
 
   # Write proportion of chimeric reads into a file
   seqtab_read_count = sum(seqtab)
@@ -149,5 +148,11 @@ if (length(merged$sequence) == 0){
   proportion_chimeric = 1 - (seqtab.nochim_read_count / seqtab_read_count)
   write(proportion_chimeric, paste0("./", prefix, "_proportion_chimeric.txt"))
 
+  # Save ASV sequences to FASTA file
+  seqtab.nochim.length = length(seqtab.nochim)
+  num_list = as.character(1:seqtab.nochim.length)
+  id_list = paste("seq", num_list, sep="_")
+  unqs = getUniques(seqtab.nochim)
+  uniquesToFasta(unqs, paste0("./", prefix, "_asvs.fasta"), id_list)
 
 }
