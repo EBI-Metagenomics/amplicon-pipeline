@@ -96,7 +96,7 @@ def main():
     
     _INPUT, _LABEL, _SAMPLE = parse_args()
 
-    mseq_df = pd.read_csv(_INPUT, header=1, sep='\t', usecols=[0, 13])
+    mseq_df = pd.read_csv(_INPUT, header=1, delim_whitespace=True, usecols=[0, 12])
 
     short_ranks, long_ranks = parse_label(_LABEL)
     res_df = parse_mapseq(mseq_df, short_ranks, long_ranks)

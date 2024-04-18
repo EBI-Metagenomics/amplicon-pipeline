@@ -13,10 +13,10 @@ process MAKE_ASV_COUNT_TABLES {
     """
     if [[ ${meta.single_end} = true ]]; then
         zcat $reads | sed -n "1~4p" > headers.txt
-        make_asv_count_table -t $taxa -f $maps -a $extracted_var_path -hd ./headers.txt  -s ${meta.id}
+        python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/make_asv_count_table.py -t $taxa -f $maps -a $extracted_var_path -hd ./headers.txt  -s ${meta.id}
     else
         zcat ${reads[0]} | sed -n "1~4p" > headers.txt
-        make_asv_count_table -t $taxa -f ${maps[0]} -r ${maps[1]} -a $extracted_var_path -hd ./headers.txt  -s ${meta.id}
+        python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/make_asv_count_table.py -t $taxa -f ${maps[0]} -r ${maps[1]} -a $extracted_var_path -hd ./headers.txt  -s ${meta.id}
     fi    
     """
 

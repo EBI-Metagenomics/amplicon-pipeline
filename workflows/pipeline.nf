@@ -30,7 +30,7 @@ silva_dada2_db = file(params.silva_dada2_db)
 dada2_krona_silva_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.dada2_silva_label)
 
 pr2_dada2_db = file(params.pr2_dada2_db)
-dada2_krona_pr2_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.dada2_pr2_label)
+dada2_krona_pr2_tuple = tuple(file(params.pr2_db_fasta), file(params.pr2_db_tax), file(params.pr2_db_otu), file(params.pr2_db_mscluster), params.dada2_pr2_label)
 
 // Standard primer library
 std_primer_library = file(params.std_primer_library, type: 'dir')
