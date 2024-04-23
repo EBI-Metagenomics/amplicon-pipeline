@@ -1,0 +1,22 @@
+{
+    "multi_contains_DOCTYPE_html_PUBLIC": {
+        "content": [
+            true
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.10.1"
+        },
+        "timestamp": "2024-04-17T11:15:59.756328"
+    },
+    "single_contains_DOCTYPE_html_PUBLIC": {
+        "content": [
+            true
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.10.1"
+        },
+        "timestamp": "2024-04-17T11:16:15.282079"
+    }
+}

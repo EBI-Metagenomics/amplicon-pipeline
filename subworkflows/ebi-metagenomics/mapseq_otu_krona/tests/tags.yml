@@ -1,0 +1,2 @@
+subworkflows/mapseq_otu_krona:
+  - subworkflows/ebi-metagenomics/mapseq_otu_krona/**

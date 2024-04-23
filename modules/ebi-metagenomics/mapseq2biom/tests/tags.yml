@@ -1,0 +1,2 @@
+mapseq2biom:
+  - "modules/ebi-metagenomics/mapseq2biom/**"

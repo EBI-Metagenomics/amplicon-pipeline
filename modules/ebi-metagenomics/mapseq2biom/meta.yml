@@ -1,0 +1,62 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "mapseq2biom"
+description: Process MAPseq output into biom and krona-txt formats
+keywords:
+  - mapseq
+  - taxonomy
+  - krona
+
+tools:
+  - "mapseq2biom":
+      description: "Process MAPseq output into biom and krona-txt formats, uses mgnify-pipelines-toolkit as conda environment"
+      homepage: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
+      documentation: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
+      tool_dev_url: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
+      licence: ["Apache-2.0"]
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'sample1', single_end:false ]`
+  - msq:
+      type: file
+      description: MAPseq output file
+      pattern: "*.mseq"
+  - db_otu:
+      type: file
+      description: Processed reference database otu file
+      pattern: "*.otu"
+  - db_label:
+      type: string
+      description: Reference database label
+
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'sample1', single_end:false ]`
+  - krona_input:
+      type: file
+      description: Converted .txt file to be used with Krona
+      pattern: "*.txt"
+  - biom_out:
+      type: file
+      description: Converted biom file
+      pattern: "*.tsv"
+  - biom_notaxid_out:
+      type: file
+      description: Converted biom file without taxids
+      pattern: "*.tsv"
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+
+authors:
+  - "@chrisata"
+maintainers:
+  - "@chrisata"
