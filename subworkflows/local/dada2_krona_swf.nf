@@ -42,13 +42,14 @@ workflow DADA2_KRONA {
             krona_tuple[4] // db_label
         )
 
+        // Transpose by var region in case any samples have more than one
         split_mapseq2asvtable = MAPSEQ2ASVTABLE.out.asvtaxtable
                                 .map { meta, asvtaxtable -> 
                                      [ meta.subMap('id', 'single_end', 'var_regions_size'), meta['var_region'], asvtaxtable ]       
                                     }
                                 .transpose(by: 1)
 
-
+        // Transpose by var region in case any samples have more than one. Also reorder the inputs slightly
         split_input = DADA2.out.dada2_out
                       .map { meta, maps, asv_seqs, filt_reads -> 
                         [ meta.subMap('id', 'single_end', 'var_regions_size'), meta['var_region'], maps, filt_reads ]
@@ -60,7 +61,8 @@ workflow DADA2_KRONA {
                         meta, var_region, maps, filt_reads, extracted_var, asvtaxtable ->
                         [ meta, var_region, maps, asvtaxtable, filt_reads, extracted_var ] 
                       }
-        
+
+        // Make a channel containing the concatenated var region for any sample that has more than one var region
         multi_region_concats = split_input
                                 .map { meta, var_region, maps, asvtaxtable, filt_reads, extracted_var ->
                                     [ meta.subMap('id', 'single_end'), var_region, meta['var_regions_size'], maps, asvtaxtable, filt_reads, extracted_var ]
@@ -69,7 +71,7 @@ workflow DADA2_KRONA {
                                .map { meta, var_region, var_regions_size, maps, asvtaxtable, filt_reads, _, concat_str, concat_vars ->
                                     [ meta + ['var_regions_size':var_regions_size], concat_str, maps, asvtaxtable, filt_reads, concat_vars ]
                                }
-
+        // Add in the concatenated var region channel to the rest of the input
         final_asv_count_table_input = split_input
                                       .mix(multi_region_concats)
                                       .map { meta, var_region, maps, asvtaxtable, filt_reads, extracted_var ->
