@@ -5,11 +5,12 @@ include { READS_QC } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { READS_QC as READS_QC_MERGE } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { CMSEARCH_SUBWF } from '../subworkflows/local/cmsearch_swf.nf'
 include { ITS_SWF } from '../subworkflows/local/its_swf.nf'
-include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_SSU} from '../subworkflows/local/mapseq_otu_krona_swf.nf'
-include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_LSU} from '../subworkflows/local/mapseq_otu_krona_swf.nf'
-include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_PR2} from '../subworkflows/local/mapseq_otu_krona_swf.nf'
-include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_UNITE} from '../subworkflows/local/mapseq_otu_krona_swf.nf'
-include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_ITSONEDB} from '../subworkflows/local/mapseq_otu_krona_swf.nf'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_SSU} from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_LSU} from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_PR2} from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_UNITE} from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_ITSONEDB} from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
+
 include { AMP_REGION_INFERENCE } from '../subworkflows/local/amp_region_inference_swf.nf'
 include { PRIMER_IDENTIFICATION } from '../subworkflows/local/primer_identification_swf.nf'
 include { AUTOMATIC_PRIMER_PREDICTION } from '../subworkflows/local/automatic_primer_prediction.nf'
@@ -19,11 +20,11 @@ include { DADA2_KRONA as DADA2_KRONA_SILVA} from '../subworkflows/local/dada2_kr
 include { DADA2_KRONA as DADA2_KRONA_PR2} from '../subworkflows/local/dada2_krona_swf.nf'
 
 // Initialise different database inputs for MapSeq+Krona
-ssu_mapseq_krona_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.ssu_label)
-lsu_mapseq_krona_tuple = tuple(file(params.lsu_db_fasta), file(params.lsu_db_tax), file(params.lsu_db_otu), file(params.lsu_db_mscluster), params.lsu_label)
-itsonedb_mapseq_krona_tuple = tuple(file(params.itsone_db_fasta), file(params.itsone_db_tax), file(params.itsone_db_otu), file(params.itsone_db_mscluster), params.itsone_label)
-unite_mapseq_krona_tuple = tuple(file(params.unite_db_fasta), file(params.unite_db_tax), file(params.unite_db_otu), file(params.unite_db_mscluster), params.unite_label)
-pr2_mapseq_krona_tuple = tuple(file(params.pr2_db_fasta), file(params.pr2_db_tax), file(params.pr2_db_otu), file(params.pr2_db_mscluster), params.pr2_label)
+ssu_mapseq_krona_tuple = Channel.of(tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.ssu_label))
+lsu_mapseq_krona_tuple = Channel.of(tuple(file(params.lsu_db_fasta), file(params.lsu_db_tax), file(params.lsu_db_otu), file(params.lsu_db_mscluster), params.lsu_label))
+itsonedb_mapseq_krona_tuple = Channel.of(tuple(file(params.itsone_db_fasta), file(params.itsone_db_tax), file(params.itsone_db_otu), file(params.itsone_db_mscluster), params.itsone_label))
+unite_mapseq_krona_tuple = Channel.of(tuple(file(params.unite_db_fasta), file(params.unite_db_tax), file(params.unite_db_otu), file(params.unite_db_mscluster), params.unite_label))
+pr2_mapseq_krona_tuple = Channel.of(tuple(file(params.pr2_db_fasta), file(params.pr2_db_tax), file(params.pr2_db_otu), file(params.pr2_db_mscluster), params.pr2_label))
 
 // Initialise database inputs for DADA2+Krona
 silva_dada2_db = file(params.silva_dada2_db)

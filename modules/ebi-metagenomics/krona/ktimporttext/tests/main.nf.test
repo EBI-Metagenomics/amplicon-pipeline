@@ -1,0 +1,66 @@
+// This krona/ktimporttext unit test file is converted to nf-test from an existing pytest test at this commit: https://github.com/nf-core/modules/commit/5e34754d42cd2d5d248ca8673c0a53cdf5624905
+// I have converted it because the standard way of writing nf-core unit tests now is to use nf-test
+// It is otherwise exactly the same unit test
+
+nextflow_process {
+
+    name "Test Process KRONA_KTIMPORTTEXT"
+    script "../main.nf"
+    process "KRONA_KTIMPORTTEXT"
+
+    tag "modules"
+    tag "modules_nfcore"
+    tag "krona"
+    tag "krona/ktimporttext"
+
+    test("test_krona_ktimporttext - multi") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    [
+                        file('https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/delete_me/krona/ktimporttext.txt', checkIfExists: true),                       // krona default test file
+                        file('https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/genomics/sarscov2/metagenome/test_1.kraken2.report.txt', checkIfExists: true), // Kraken2 report file
+                        file('https://raw.githubusercontent.com/nf-core/test-datasets/modules/data/delete_me/krona/kaiju_out4krona.txt', checkIfExists: true)                     // Kaiju output 4 krona
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(path(process.out.get(0).get(0).get(1)).readLines()[0].contains("DOCTYPE html PUBLIC")).match("multi_contains_DOCTYPE_html_PUBLIC") }
+            )
+        }
+
+    }
+
+    test("test_krona_ktimporttext - single") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    [
+                        file('http://krona.sourceforge.net/examples/text.txt', checkIfExists: true) // krona default test file
+                    ]
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(path(process.out.get(0).get(0).get(1)).readLines()[0].contains("DOCTYPE html PUBLIC")).match("single_contains_DOCTYPE_html_PUBLIC") }
+            )
+        }
+
+    }
+
+}

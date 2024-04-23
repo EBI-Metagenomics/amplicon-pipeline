@@ -1,0 +1,67 @@
+
+nextflow_process {
+
+    name "Test Process MAPSEQ2BIOM"
+    script "../main.nf"
+    process "MAPSEQ2BIOM"
+    config "./nextflow.config"
+    
+    tag "modules"
+    tag "modules_nfcore"
+    tag "mapseq2biom"
+
+    test("test_silva - mseq") {
+
+        when {
+            process {
+                """                
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file("${moduleDir}/tests/test.mseq", checkIfExists: true)
+                    ]
+                input[1] = [
+                    file("${moduleDir}/tests/silva_ssu/test.otu", checkIfExists: true),
+                    "SILVA-SSU"
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("test_silva - mseq - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file("${moduleDir}/tests/test.mseq", checkIfExists: true)
+                    ]
+                input[1] = [
+                    file("${moduleDir}/tests/silva_ssu/test.otu", checkIfExists: true),
+                    "SILVA-SSU"
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

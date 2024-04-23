@@ -1,0 +1,2 @@
+krona/ktimporttext:
+  - "modules/ebi-metagenomics/krona/ktimporttext/**"

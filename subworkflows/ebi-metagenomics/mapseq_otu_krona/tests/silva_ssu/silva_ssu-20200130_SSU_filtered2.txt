@@ -1,0 +1,6 @@
+#cutoff: 0.00:0.08 0.00:0.08 0.70:0.35 0.70:0.35 0.70:0.35 0.80:0.25 0.92:0.08 0.95:0.05
+#name: SILVA
+#levels: Superkingdom Kingdom Phylum Class Order Family Genus Species
+AC207586.19448.20862	sk__Eukaryota;k__Metazoa;p__Chordata;c__Mammalia;o__;f__;g__;s__
+AF350223.1.1756	sk__Eukaryota;k__;p__;c__Phaeophyceae;o__Dictyotales;f__Dictyotaceae;g__Spatoglossum;s__Spatoglossum_pacificum
+GY187501.2.1421	sk__Bacteria;k__;p__Proteobacteria;c__Epsilonproteobacteria;o__Campylobacterales;f__Helicobacteraceae;g__Helicobacter;s__

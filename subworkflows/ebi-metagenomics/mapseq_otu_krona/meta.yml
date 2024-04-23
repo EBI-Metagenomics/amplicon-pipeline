@@ -1,0 +1,66 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "mapseq_otu_krona"
+description: Taxononmy assignment and visualisation of reads using input reference database
+keywords:
+  - taxonomy
+  - rRNA
+  - MAPseq
+  - krona
+components:
+  - mapseq
+  - mapseq2biom
+  - krona/ktimporttext
+input:
+  - ch_fasta:
+      type: file
+      description: |
+        The input channel containing the FASTA file containing reads
+        Structure: [ val(meta), path(fasta) ]
+      pattern: "*.{fasta/fasta.gz}"
+  - ch_dbs:
+      type: tuple
+      description: |
+        A structured tuple containing the different reference database files
+        Some of these files are processed specifically for use by MAPseq
+        Structure: [ path(fasta), path(tax), path(otu), path(mscluster), val(label) ]
+output:
+  - mseq:
+      type: file
+      description: |
+        MAPseq output file
+        Structure: [ val(meta), path(mseq) ]
+      pattern: "*.mseq"
+  - krona_input:
+      type: file
+      description: |
+        mapseq2biom output file to be used as input to Krona
+        Structure: [ val(meta), path(txt) ]
+      pattern: "*.txt"
+  - biom_out:
+      type: file
+      description: |
+        mapseq2biom output Biom file
+        Structure: [ val(meta), path(tsv) ]
+      pattern: "*.tsv"
+  - biom_notaxid_out:
+      type: file
+      description: |
+        mapseq2biom output Biom file without taxids
+        Structure: [ val(meta), path(tsv) ]
+      pattern: "*.tsv"
+  - html:
+      type: file
+      description: |
+        Krona output html file
+        Structure: [ val(meta), path(html) ]
+      pattern: "*.html"
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+authors:
+  - "@chrisata"
+maintainers:
+  - "@chrisata"

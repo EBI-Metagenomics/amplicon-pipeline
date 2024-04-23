@@ -1,0 +1,52 @@
+{
+    "mapseq2biom_output_krona": {
+        "content": [
+            true
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.04.3"
+        },
+        "timestamp": "2024-04-18T12:06:53.987371352"
+    },
+    "mapseq2biom_output_biom": {
+        "content": [
+            true
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.04.3"
+        },
+        "timestamp": "2024-04-18T12:06:54.014873914"
+    },
+    "mapseq_output": {
+        "content": [
+            true
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.04.3"
+        },
+        "timestamp": "2024-04-18T12:06:53.975004502"
+    },
+    "mapseq2biom_output_biom_notaxid": {
+        "content": [
+            true
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.04.3"
+        },
+        "timestamp": "2024-04-18T12:06:54.025478915"
+    },
+    "krona_output": {
+        "content": [
+            true
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.04.3"
+        },
+        "timestamp": "2024-04-18T12:06:54.050582264"
+    }
+}
