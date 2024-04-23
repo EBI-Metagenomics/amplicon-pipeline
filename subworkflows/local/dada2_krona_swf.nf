@@ -42,41 +42,51 @@ workflow DADA2_KRONA {
             krona_tuple[4] // db_label
         )
 
-        MAPSEQ2ASVTABLE.out.asvtaxtable.view()
+        split_mapseq2asvtable = MAPSEQ2ASVTABLE.out.asvtaxtable
+                                .map { meta, asvtaxtable -> 
+                                     [ meta.subMap('id', 'single_end', 'var_regions_size'), meta['var_region'], asvtaxtable ]       
+                                    }
+                                .transpose(by: 1)
 
-    //     split_input = DADA2.out.dada2_out
-    //                   .map { meta, maps, taxa, filt_reads -> 
-    //                     [ meta.subMap('id', 'single_end', 'var_regions_size'), meta['var_region'], maps, taxa, filt_reads ]
-    //                    }
-    //                   .transpose(by: 1)
-    //                   .join(extracted_var_path, by: [0, 1])
+
+        split_input = DADA2.out.dada2_out
+                      .map { meta, maps, asv_seqs, filt_reads -> 
+                        [ meta.subMap('id', 'single_end', 'var_regions_size'), meta['var_region'], maps, filt_reads ]
+                       }
+                      .transpose(by: 1)
+                      .join(extracted_var_path, by: [0, 1])
+                      .join(split_mapseq2asvtable, by: [0, 1])
+                      .map {
+                        meta, var_region, maps, filt_reads, extracted_var, asvtaxtable ->
+                        [ meta, var_region, maps, asvtaxtable, filt_reads, extracted_var ] 
+                      }
         
-    //     multi_region_concats = split_input
-    //                             .map { meta, var_region, maps, taxa, filt_reads, extracted_var ->
-    //                                 [ meta.subMap('id', 'single_end'), var_region, meta['var_regions_size'], maps, taxa, filt_reads, extracted_var ]
-    //                             }
-    //                            .join(concat_var_regions, by: 0)
-    //                            .map { meta, var_region, var_regions_size, maps, taxa, filt_reads, _, concat_str, concat_vars ->
-    //                                 [ meta + ['var_regions_size':var_regions_size], concat_str, maps, taxa, filt_reads, concat_vars ]
-    //                            }
+        multi_region_concats = split_input
+                                .map { meta, var_region, maps, asvtaxtable, filt_reads, extracted_var ->
+                                    [ meta.subMap('id', 'single_end'), var_region, meta['var_regions_size'], maps, asvtaxtable, filt_reads, extracted_var ]
+                                }
+                               .join(concat_var_regions, by: 0)
+                               .map { meta, var_region, var_regions_size, maps, asvtaxtable, filt_reads, _, concat_str, concat_vars ->
+                                    [ meta + ['var_regions_size':var_regions_size], concat_str, maps, asvtaxtable, filt_reads, concat_vars ]
+                               }
 
-    //     final_asv_count_table_input = split_input
-    //                                   .mix(multi_region_concats)
-    //                                   .map { meta, var_region, maps, taxa, filt_reads, extracted_var ->
-    //                                     [ meta + ['var_region': var_region], maps, taxa, filt_reads, extracted_var ]
-    //                                   }
+        final_asv_count_table_input = split_input
+                                      .mix(multi_region_concats)
+                                      .map { meta, var_region, maps, asvtaxtable, filt_reads, extracted_var ->
+                                        [ meta + ['var_region': var_region], maps, asvtaxtable, filt_reads, extracted_var ]
+                                      }
         
-    //     MAKE_ASV_COUNT_TABLES(
-    //         final_asv_count_table_input
-    //     )
+        MAKE_ASV_COUNT_TABLES(
+            final_asv_count_table_input
+        )
 
-    //     KRONA(
-    //         MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out,
-    //         krona_tuple
-    //     )
+        KRONA(
+            MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out,
+            krona_tuple
+        )
 
-    // emit:
-    //     asv_count_tables_out = MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out
-    //     krona_out = KRONA.out.krona_out
+    emit:
+        asv_count_tables_out = MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out
+        krona_out = KRONA.out.krona_out
     
 }
