@@ -22,13 +22,13 @@ workflow MAPSEQ_OTU_KRONA {
 
     MAPSEQ(
         ch_fasta,
-        input.mapseq_input.collect()
+        input.mapseq_input
     )
     ch_versions = ch_versions.mix(MAPSEQ.out.versions.first())
 
     MAPSEQ2BIOM(
         MAPSEQ.out.mseq,
-        input.mapseq_to_biom_input.collect()
+        input.mapseq_to_biom_input
     )
     ch_versions = ch_versions.mix(MAPSEQ2BIOM.out.versions.first())
 
