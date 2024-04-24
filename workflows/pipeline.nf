@@ -20,11 +20,11 @@ include { DADA2_KRONA as DADA2_KRONA_SILVA} from '../subworkflows/local/dada2_kr
 include { DADA2_KRONA as DADA2_KRONA_PR2} from '../subworkflows/local/dada2_krona_swf.nf'
 
 // Initialise different database inputs for MapSeq+Krona
-ssu_mapseq_krona_tuple = Channel.of(tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.ssu_label))
-lsu_mapseq_krona_tuple = Channel.of(tuple(file(params.lsu_db_fasta), file(params.lsu_db_tax), file(params.lsu_db_otu), file(params.lsu_db_mscluster), params.lsu_label))
-itsonedb_mapseq_krona_tuple = Channel.of(tuple(file(params.itsone_db_fasta), file(params.itsone_db_tax), file(params.itsone_db_otu), file(params.itsone_db_mscluster), params.itsone_label))
-unite_mapseq_krona_tuple = Channel.of(tuple(file(params.unite_db_fasta), file(params.unite_db_tax), file(params.unite_db_otu), file(params.unite_db_mscluster), params.unite_label))
-pr2_mapseq_krona_tuple = Channel.of(tuple(file(params.pr2_db_fasta), file(params.pr2_db_tax), file(params.pr2_db_otu), file(params.pr2_db_mscluster), params.pr2_label))
+ssu_mapseq_krona_tuple = Channel.of([file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.ssu_label])
+lsu_mapseq_krona_tuple = Channel.of([file(params.lsu_db_fasta), file(params.lsu_db_tax), file(params.lsu_db_otu), file(params.lsu_db_mscluster), params.lsu_label])
+itsonedb_mapseq_krona_tuple = Channel.of([file(params.itsone_db_fasta), file(params.itsone_db_tax), file(params.itsone_db_otu), file(params.itsone_db_mscluster), params.itsone_label])
+unite_mapseq_krona_tuple = Channel.of([file(params.unite_db_fasta), file(params.unite_db_tax), file(params.unite_db_otu), file(params.unite_db_mscluster), params.unite_label])
+pr2_mapseq_krona_tuple = Channel.of([file(params.pr2_db_fasta), file(params.pr2_db_tax), file(params.pr2_db_otu), file(params.pr2_db_mscluster), params.pr2_label])
 
 // Initialise database inputs for DADA2+Krona
 silva_dada2_db = file(params.silva_dada2_db)
