@@ -1,10 +1,10 @@
 
 include { REMOVE_AMBIGUOUS_READS } from '../../modules/local/remove_ambiguous_reads/main.nf'
 include { DADA2 } from '../../modules/local/dada2/main.nf'
-include { MAPSEQ } from '../../modules/local/mapseq.nf'
+include { MAPSEQ             } from '../../modules/ebi-metagenomics/mapseq/main'
 include { MAPSEQ2ASVTABLE } from '../../modules/local/mapseq2asvtable/main.nf'
 include { MAKE_ASV_COUNT_TABLES } from '../../modules/local/make_asv_count_tables/main.nf'
-include { KRONA } from '../../modules/local/krona.nf'
+include { KRONA_KTIMPORTTEXT } from '../../modules/ebi-metagenomics/krona/ktimporttext/main'
 
 workflow DADA2_KRONA {
     
@@ -34,11 +34,11 @@ workflow DADA2_KRONA {
                         }
         MAPSEQ(
             mapseq_input,
-            krona_tuple
+            tuple(krona_tuple[0], krona_tuple[1], krona_tuple[3])
         )
 
         MAPSEQ2ASVTABLE(
-            MAPSEQ.out.mapseq_out,
+            MAPSEQ.out.mseq,
             krona_tuple[4] // db_label
         )
 
@@ -82,13 +82,12 @@ workflow DADA2_KRONA {
             final_asv_count_table_input
         )
 
-        KRONA(
+        KRONA_KTIMPORTTEXT(
             MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out,
-            krona_tuple
         )
 
     emit:
         asv_count_tables_out = MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out
-        krona_out = KRONA.out.krona_out
+        krona_out = KRONA_KTIMPORTTEXT.out.html
     
 }
