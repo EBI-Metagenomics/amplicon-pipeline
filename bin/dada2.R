@@ -1,15 +1,17 @@
+#!/usr/bin/env Rscript
 
-library(tidyverse)
-library(dada2)
-library(data.table)
-library(ShortRead)
+# Have to use `box` instead of `library` and `source` so that custom scripts can be loaded when executed by Nextflow
+box::use(tidyverse[...])
+box::use(data.table[...])
+box::use(dada2[...])
 
-# Load function for tracking reads to their DADA2-generated ASVs
-source("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/read_asv_tracking.R")
-source("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/trunc_len_automation.R")
+# Custom function for tracking reads to their DADA2-generated ASVs (bin/read_asv_tracking.R) 
+box::use(./read_asv_tracking[...])
+# Custom function for automatic truncation of reads based on quality scores (bin/trunc_len_automation.R)
+box::use(./trunc_len_automation[...])
 
-args = commandArgs(trailingOnly=TRUE) # Expects thre arguments, one fastq for each strand (F and R), and a prefix
-
+args = commandArgs(trailingOnly=TRUE) # Expects at most three arguments, a prefix, and one fastq for each strand (F and R)
+                                      # If it's a single-end run, then the third argument should not be used
 prefix = args[1] # Prefix
 path_f = args[2] # Forward fastq
 path_r = args[3] # Reverse fastq

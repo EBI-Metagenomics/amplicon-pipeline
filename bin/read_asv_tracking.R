@@ -1,5 +1,7 @@
+#!/usr/bin/env Rscript
 
-  read_asv_tracking = function(dada_obj, drp_obj, merged, strand, chimera_ids) {
+#' @export
+read_asv_tracking = function(dada_obj, drp_obj, merged, strand, chimera_ids) {
     
     # Select requested strand ASV map
     if (strand == "forward"){
