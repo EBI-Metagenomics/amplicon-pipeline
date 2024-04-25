@@ -143,18 +143,10 @@
           "default": "LSU",
           "description": "SILVA LSU Label"
         },
-        "silva_dada2_db": {
-          "type": "string",
-          "description": "Path to SILVA DADA2 fasta file"
-        },
         "dada2_silva_label": {
           "type": "string",
           "default": "DADA2-SILVA",
           "description": "DADA2 SILVA label"
-        },
-        "pr2_dada2_db": {
-          "type": "string",
-          "description": "Path to PR2 DADA2 fasta file"
         },
         "dada2_pr2_label": {
           "type": "string",
