@@ -1,6 +1,6 @@
 # asv-gen
 
-This repository contains the in-progress Nextflow rework of the V5 MGnify amplicon annotation pipeline, which will include the addition of Amplicon Sequence Variant (ASV) annotation as a new major feature.
+This repository contains the in-progress Nextflow rework of the V5 MGnify amplicon annotation pipeline, which will include the addition of Amplicon Sequence Variant (ASV) annotation as a new major feature under the V6 analysis pipelines.
 
 The reworked pipeline can be divided into seven different subworkflows, four of which already exist in the current V5 amplicon pipeline:
 
@@ -17,78 +17,62 @@ The new subworkflows consist of:
 
 ![V6 Schema](https://github.com/EBI-Metagenomics/asv-gen/assets/34323164/4b42b6c0-dfd2-4fd7-a04f-942a1f3904fa)
 
-## Completion
-
-The different subworkflows' levels of completion:
-
-- Quality Control (V5) :white_check_mark:
-- rRNA Prediction and SSU+LSU extraction (V5) :white_check_mark:
-- ITS extraction (V5) :white_check_mark:
-- SSU+LSU+ITS taxonomic classification and visualisation (V5) :white_check_mark:
-- Amplified region inference :white_check_mark:
-- Primer trimming :white_check_mark:
-- ASV generation, classification, and visualisation :white_check_mark:
-
-
 ## Requirements
 
 At the moment the prerequisites are Singularity and a micromamba environment located at:
 
 `/hps/software/users/rdf/metagenomics/service-team/software/micromamba/envs/asv-test`
 
+## Input shape
+
+The input data to the pipeline should be a `samplesheet.csv` file with this format:
+```
+sample,fastq_1,fastq_2,single_end
+SRR9674618,/path/to/reads/SRR9674618.fastq.gz,,true
+SRR17062740,/path/to/reads/SRR17062740_1.fastq.gz,/path/to/reads/SRR17062740_2.fastq.gz,false
+```
 
 ## How to run
 
-You can run the current version of the pipeline like this:
+You can run the current version of the pipeline on SLURM like this:
 
-`nextflow run main.nf --path {directory/containing/fastq} --project {project_accession} --outdir {path/to/out}`
+`nextflow run -profile codon_slurm main.nf --input /path/to/samplesheet --outdir /path/to/outdir`
 
-## Output Directory Structure
+## Output directory structure
 
 Example output directory structure for one run:
 
 ```
 .
 ├── amplified-region-inference
-│   ├── ERR4334351.trimmed.fastq_16S-V3-V4_extracted.fastq.gz
+│   ├── ERR4334351_16S-V3-V4_extracted.fastq.gz
+│   ├── ERR4334351.16S.V3-V4.txt
 │   └── ERR4334351.tsv
 ├── asv-gen
 │   ├── 16S-V3-V4
-│   │   └── ERR4334351_16S.V3-V4_asv_krona_counts.txt
+│   ├── ERR4334351_asvs.fasta
 │   ├── ERR4334351_proportion_chimeric.txt
-│   ├── ERR4334351_proportion_matched.txt
-│   └── ERR4334351_taxa.tsv
+│   └── ERR4334351_proportion_matched.txt
 ├── primer-identification
 │   ├── ERR4334351_16S-V3-V4_auto_primers.fasta
-│   ├── ERR4334351_16S-V3-V4_std_primer_out.txt
 │   ├── ERR4334351_16S-V3-V4_std_primers.fasta
-│   ├── ERR4334351_1.cutadapt.fastq.gz
-│   ├── ERR4334351_2.cutadapt.fastq.gz
+│   ├── ERR4334351_1.trim.fastq.gz
+│   ├── ERR4334351_2.trim.fastq.gz
 │   ├── ERR4334351_final_concat_primers.fasta
 │   ├── ERR4334351_primer_validation.tsv
+│   ├── ERR4334351_rev_comp_se_primers.fasta
 │   └── ERR4334351_trimming_conductor_out_16S-V3-V4.txt
-├── QC
-│   ├── ERR4334351.fasta
-│   └── ERR4334351.trimmed.fastq.gz
+├── qc
+│   ├── ERR4334351.merged.fastq.gz
+│   └── ERR4334351.seqtk-seq.fasta.gz
 ├── sequence-categorisation
-│   ├── ERR4334351.cmsearch_matches.tbl.deoverlapped
-│   └── ERR4334351_SSU.fasta
+│   ├── ERR4334351_SSU.fasta
+│   └── ERR4334351.tblout.deoverlapped
 └── taxonomy-summary
+    ├── DADA2-PR2
     ├── DADA2-SILVA
-    │   └── ERR4334351_16S.V3-V4_asv_krona_counts_krona.html
     ├── ITSonedb
-    │   ├── ERR4334351_ITS_masked_krona.html
-    │   ├── ERR4334351_ITS_masked.notaxid.tsv
-    │   ├── ERR4334351_ITS_masked.tsv
-    │   └── ERR4334351_ITS_masked.txt
+    ├── PR2
     ├── SSU
-    │   ├── ERR4334351_SSU_krona.html
-    │   ├── ERR4334351_SSU.notaxid.tsv
-    │   ├── ERR4334351_SSU.tsv
-    │   └── ERR4334351_SSU.txt
     └── UNITE
-        ├── ERR4334351_ITS_masked_krona.html
-        ├── ERR4334351_ITS_masked.notaxid.tsv
-        ├── ERR4334351_ITS_masked.tsv
-        └── ERR4334351_ITS_masked.txt
 ```
