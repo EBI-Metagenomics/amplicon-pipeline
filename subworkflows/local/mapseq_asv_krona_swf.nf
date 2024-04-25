@@ -1,34 +1,20 @@
 
-include { REMOVE_AMBIGUOUS_READS } from '../../modules/local/remove_ambiguous_reads/main.nf'
-include { DADA2 } from '../../modules/local/dada2/main.nf'
 include { MAPSEQ             } from '../../modules/ebi-metagenomics/mapseq/main'
 include { MAPSEQ2ASVTABLE } from '../../modules/local/mapseq2asvtable/main.nf'
 include { MAKE_ASV_COUNT_TABLES } from '../../modules/local/make_asv_count_tables/main.nf'
 include { KRONA_KTIMPORTTEXT } from '../../modules/ebi-metagenomics/krona/ktimporttext/main'
 
-workflow DADA2_KRONA {
+workflow MAPSEQ_ASV_KRONA {
     
     take:
-        dada2_input
+        dada2_output
         concat_var_regions
         extracted_var_path
-        fastp_cleaned_fastq
-        dada2_db
         krona_tuple
 
     main:
 
-        REMOVE_AMBIGUOUS_READS(
-            dada2_input
-        )
-
-        DADA2(
-            REMOVE_AMBIGUOUS_READS.out.noambig_out,
-            dada2_db,
-            krona_tuple[4] // db_label
-        )
-
-        mapseq_input = DADA2.out.dada2_out
+        mapseq_input = dada2_output
                        .map { meta, maps, asv_seqs, filt_reads ->
                             [ meta, asv_seqs ]
                         }
@@ -50,7 +36,7 @@ workflow DADA2_KRONA {
                                 .transpose(by: 1)
 
         // Transpose by var region in case any samples have more than one. Also reorder the inputs slightly
-        split_input = DADA2.out.dada2_out
+        split_input = dada2_output
                       .map { meta, maps, asv_seqs, filt_reads -> 
                         [ meta.subMap('id', 'single_end', 'var_regions_size'), meta['var_region'], maps, filt_reads ]
                        }
