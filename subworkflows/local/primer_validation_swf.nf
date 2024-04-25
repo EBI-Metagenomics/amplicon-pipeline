@@ -7,7 +7,9 @@ workflow PRIMER_VALIDATION {
     
     take:
         primer_validation_input
+
     main:
+
         PRIMER_VALIDATION_SEARCH(
             primer_validation_input,
             file(params.rfam)
