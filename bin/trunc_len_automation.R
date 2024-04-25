@@ -1,9 +1,13 @@
+#!/usr/bin/env Rscript
 
-# Heavily inspired by what @alexandriai168  wrote on this GitHub issue:
-# https://github.com/benjjneb/dada2/issues/1729
-
+#' @export
 trunc_len_automation = function(fastq_path){
-  
+  # Heavily inspired by what @alexandriai168 wrote on this GitHub issue:
+  # https://github.com/benjjneb/dada2/issues/1729
+
+  box::use(ShortRead[...])
+  box::use(utils[tail])
+
   n = 500000
   reads_remainder_threshold = 0.5
   final_where_to_cut = 0
@@ -14,8 +18,6 @@ trunc_len_automation = function(fastq_path){
   total_read_count = srqa[["readCounts"]]$read
   counts_per_cycle = rowsum(df$Count, df$Cycle)
   means = tail(rowsum(df$Score*df$Count, df$Cycle)/rowsum(df$Count, df$Cycle), length(counts_per_cycle) - 99)
-
-  
   filtered_counts_per_cycle = tail(counts_per_cycle, length(counts_per_cycle) - 99)
   
   q_score_list = 20:30

@@ -14,9 +14,9 @@ process DADA2 {
     
     """
     if [[ ${meta.single_end} = true ]]; then
-        Rscript /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/dada2.R ${meta.id} $reads
+        dada2.R ${meta.id} $reads
     else
-        Rscript /hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen/bin/dada2.R ${meta.id} ${reads[0]} ${reads[1]}
+        dada2.R ${meta.id} ${reads[0]} ${reads[1]}
     fi
     """
 
