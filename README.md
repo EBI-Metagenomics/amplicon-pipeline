@@ -4,16 +4,16 @@ This repository contains the in-progress Nextflow rework of the V5 MGnify amplic
 
 The reworked pipeline can be divided into seven different subworkflows, four of which already exist in the current V5 amplicon pipeline:
 
-* Quality Control (V5)
-* rRNA Prediction and SSU+LSU extraction (V5)
-* ITS extraction (V5)
-* SSU+LSU+ITS taxonomic classification and visualisation (V5)
+- Quality Control (V5)
+- rRNA Prediction and SSU+LSU extraction (V5)
+- ITS extraction (V5)
+- SSU+LSU+ITS taxonomic classification and visualisation (V5)
 
 The new subworkflows consist of:
 
-* Amplified region inference
-* Primer trimming
-* ASV generation, classification, and visualisation
+- Amplified region inference
+- Primer trimming
+- ASV generation, classification, and visualisation
 
 ![V6 Schema](https://github.com/EBI-Metagenomics/asv-gen/assets/34323164/4b42b6c0-dfd2-4fd7-a04f-942a1f3904fa)
 
@@ -26,6 +26,7 @@ At the moment the prerequisites are Singularity and a micromamba environment loc
 ## Input shape
 
 The input data to the pipeline should be a `samplesheet.csv` file with this format:
+
 ```
 sample,fastq_1,fastq_2,single_end
 SRR9674618,/path/to/reads/SRR9674618.fastq.gz,,true
