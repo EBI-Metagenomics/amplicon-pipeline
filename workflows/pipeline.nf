@@ -1,6 +1,4 @@
 
-// nextflow run -profile lsf -resume main.nf --input samplesheet.csv --outdir /hps/nobackup/rdf/metagenomics/service-team/users/chrisata/asv_nf_testing/samplesheet
-
 include { READS_QC } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { READS_QC as READS_QC_MERGE } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { CMSEARCH_SUBWF } from '../subworkflows/local/cmsearch_swf.nf'
@@ -16,21 +14,19 @@ include { PRIMER_IDENTIFICATION } from '../subworkflows/local/primer_identificat
 include { AUTOMATIC_PRIMER_PREDICTION } from '../subworkflows/local/automatic_primer_prediction.nf'
 include { CONCAT_PRIMER_CUTADAPT } from '../subworkflows/local/concat_primer_cutadapt.nf'
 include { PRIMER_VALIDATION } from '../subworkflows/local/primer_validation_swf.nf'
-include { DADA2_KRONA as DADA2_KRONA_SILVA} from '../subworkflows/local/dada2_krona_swf.nf'
-include { DADA2_KRONA as DADA2_KRONA_PR2} from '../subworkflows/local/dada2_krona_swf.nf'
+include { DADA2_SWF } from '../subworkflows/local/dada2_swf.nf'
+include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_SILVA } from '../subworkflows/local/mapseq_asv_krona_swf.nf'
+include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_PR2 } from '../subworkflows/local/mapseq_asv_krona_swf.nf'
 
-// Initialise different database inputs for MapSeq+Krona
+// Initialise different database inputs for taxonomic assignments with regular taxonomy resolution method
 ssu_mapseq_krona_tuple = Channel.of([file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.ssu_label])
 lsu_mapseq_krona_tuple = Channel.of([file(params.lsu_db_fasta), file(params.lsu_db_tax), file(params.lsu_db_otu), file(params.lsu_db_mscluster), params.lsu_label])
 itsonedb_mapseq_krona_tuple = Channel.of([file(params.itsone_db_fasta), file(params.itsone_db_tax), file(params.itsone_db_otu), file(params.itsone_db_mscluster), params.itsone_label])
 unite_mapseq_krona_tuple = Channel.of([file(params.unite_db_fasta), file(params.unite_db_tax), file(params.unite_db_otu), file(params.unite_db_mscluster), params.unite_label])
 pr2_mapseq_krona_tuple = Channel.of([file(params.pr2_db_fasta), file(params.pr2_db_tax), file(params.pr2_db_otu), file(params.pr2_db_mscluster), params.pr2_label])
 
-// Initialise database inputs for DADA2+Krona
-silva_dada2_db = file(params.silva_dada2_db)
+// Initialise different database inputs for taxonomic assignments with ASV resolution method
 dada2_krona_silva_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.dada2_silva_label)
-
-pr2_dada2_db = file(params.pr2_dada2_db)
 dada2_krona_pr2_tuple = tuple(file(params.pr2_db_fasta), file(params.pr2_db_tax), file(params.pr2_db_otu), file(params.pr2_db_mscluster), params.dada2_pr2_label)
 
 // Standard primer library
@@ -217,22 +213,23 @@ workflow AMPLICON_PIPELINE_V6 {
                     [ final_meta, final_reads ]                                                                             // FINAL OUTPUT
                   }
 
-    // Run DADA2 ASV generation and annotation + generate Krona plots for each run+amp_region
-    DADA2_KRONA_SILVA(
-        dada2_input,
+    // Run DADA2 ASV generation
+    DADA2_SWF(
+        dada2_input
+    )
+
+    // ASV taxonomic assignments + generate Krona plots for each run+amp_region
+    MAPSEQ_ASV_KRONA_SILVA(
+        DADA2_SWF.out.dada2_out,
         AMP_REGION_INFERENCE.out.concat_var_regions,
         AMP_REGION_INFERENCE.out.extracted_var_path,
-        READS_QC.out.reads,
-        silva_dada2_db,
         dada2_krona_silva_tuple,
     )
 
-    DADA2_KRONA_PR2(
-        dada2_input,
+    MAPSEQ_ASV_KRONA_PR2(
+        DADA2_SWF.out.dada2_out,
         AMP_REGION_INFERENCE.out.concat_var_regions,
         AMP_REGION_INFERENCE.out.extracted_var_path,
-        READS_QC.out.reads,
-        pr2_dada2_db,
         dada2_krona_pr2_tuple,
     )
 

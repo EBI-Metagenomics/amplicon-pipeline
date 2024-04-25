@@ -11,10 +11,8 @@ source("/hps/software/users/rdf/metagenomics/service-team/users/chrisata/asv_gen
 args = commandArgs(trailingOnly=TRUE) # Expects thre arguments, one fastq for each strand (F and R), and a prefix
 
 prefix = args[1] # Prefix
-ref_label = args[2] # Reference DB name
-ref_db = args[3] # Reference DB
-path_f = args[4] # Forward fastq
-path_r = args[5] # Reverse fastq
+path_f = args[2] # Forward fastq
+path_r = args[3] # Reverse fastq
 
 # different tax ranks for silva/pr2
 silva_tax_vec = c("Superkingdom", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
@@ -73,13 +71,6 @@ if (length(merged$sequence) == 0){
   # Remove chimeras
   seqtab.nochim = removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
 
-  # Assign taxonomy (using SILVA)
-  # if (ref_label == "DADA2-SILVA"){
-  #   taxa = assignTaxonomy(seqtab.nochim, ref_db, multithread=TRUE, taxLevels=silva_tax_vec, tryRC=FALSE, outputBootstraps=TRUE)
-  # } else if (ref_label == "DADA2-PR2"){
-  #   taxa = assignTaxonomy(seqtab.nochim, ref_db, multithread=TRUE, taxLevels=pr2_tax_vec, tryRC=FALSE, outputBootstraps=TRUE)
-  # }
-
   chimera_ids = which(colnames(seqtab) %in% colnames(seqtab.nochim) == FALSE)
 
   # Track reads to their ASVs
@@ -130,14 +121,6 @@ if (length(merged$sequence) == 0){
   } else{
     fwrite(final_f_output, file = paste0("./", prefix, "_map.txt"), sep="\n")
   }
-  # Save taxa annotation to file
-  # taxa_ranks = cbind(rownames(taxa$tax), taxa$tax)
-  # if (ref_label == "DADA2-SILVA"){
-  #   colnames(taxa_ranks) = c("ASV", colnames(taxa_ranks)[2:9])
-  # } else if (ref_label == "DADA2-PR2"){
-  #   colnames(taxa_ranks) = c("ASV", colnames(taxa_ranks)[2:10])
-  # }
-  # write.table(taxa_ranks, file = paste0("./", prefix, "_", ref_label, "_taxa.tsv"), sep = "\t", row.names=FALSE)
 
   # Save ASV count table
   write.table(seqtab.nochim, file = paste0("./", prefix, "_asv_counts.tsv"), sep = "\t", row.names=FALSE)
