@@ -4,7 +4,6 @@ process TRIMMING_CONDUCTOR {
     // flags into "trimming_conductor_out.txt"
     tag "$meta.id"
     label 'light'
-    // publishDir "${outdir}/${project}/${sampleId}/primer-identification", mode : "copy" 
 
     input:
     tuple val(meta), path(general_primer_flag), path(std_primer_flag)

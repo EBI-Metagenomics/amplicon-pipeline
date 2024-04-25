@@ -8,7 +8,7 @@ process REV_COMP_SE_PRIMERS {
     tuple val(meta), path(final_concat_primers)
 
     output:
-    tuple val(meta), path("*rev_comp_se_primers.fasta"), optional:true, emit: rev_comp_se_primers_out
+    tuple val(meta), path("*rev_comp_se_primers.fasta"), optional: true, emit: rev_comp_se_primers_out
 
     """
     if [[ -s $final_concat_primers && ${meta.single_end} = true ]]; then
