@@ -3,6 +3,7 @@ import argparse
 from collections import defaultdict
 
 import pandas as pd
+import numpy as np
 
 def parse_args():
 
@@ -48,7 +49,11 @@ def parse_mapseq(mseq_df, short_ranks, long_ranks):
 
     for i in range(len(mseq_df)):
         asv_id = mseq_df.iloc[i, 0]
-        tax_ass = mseq_df.iloc[i, 1].split(';')
+
+        if pd.isna(mseq_df.iloc[i, 1]):
+            tax_ass = [short_ranks[0]]
+        else:
+            tax_ass = mseq_df.iloc[i, 1].split(';')
 
         res_dict['ASV'].append(asv_id)
         
@@ -89,6 +94,8 @@ def process_blank_tax_ends(res_df, ranks):
                 break
         if last_empty_rank != '':
             res_df.iloc[i, last_empty_rank:] = 'NA'
+        if last_empty_rank == 1:
+            res_df.iloc[i, 1] = ranks[0]
 
     return res_df
 
