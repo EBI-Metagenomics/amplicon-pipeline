@@ -4,7 +4,7 @@ process CONCAT_PRIMERS {
     // This is important in case for a run the fwd strand has a known std primer but the reverse
     // strand has an auto primer
     tag "$meta.id"
-    label 'light'
+    label 'extremely_light'
     
     input:
     tuple val(meta), path(std_primers), path(auto_primers)

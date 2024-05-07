@@ -1,7 +1,7 @@
 
 process MAKE_ASV_COUNT_TABLES {
     tag "$meta.id"
-    label 'light'
+    label 'process_long'
     conda "${projectDir}/conf/environment.yml"
 
     input:

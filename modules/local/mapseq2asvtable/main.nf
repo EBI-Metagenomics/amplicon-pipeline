@@ -2,7 +2,7 @@
 process MAPSEQ2ASVTABLE {
     tag "$meta.id"
     // conda "${projectDir}/conf/environment.yml"
-    label 'light' // Will likely need to give this task more CPUs 
+    label 'very_light' // Will likely need to give this task more CPUs 
     
     input:
     tuple val(meta), path(mapseq_out)

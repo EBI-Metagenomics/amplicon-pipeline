@@ -1,7 +1,7 @@
 
 process CLASSIFY_VAR_REGIONS {
     tag "$meta.id"
-    label 'light'
+    label 'very_light'
     conda "${projectDir}/conf/environment.yml"
 
     input:

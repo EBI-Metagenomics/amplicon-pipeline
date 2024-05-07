@@ -1,7 +1,7 @@
 
 process CMSEARCHTBLOUTDEOVERLAP {
     tag "$meta.id"
-    label 'process_single'
+    label 'very_light'
 
     conda "bioconda::cmsearch_tblout_deoverlap=0.09"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

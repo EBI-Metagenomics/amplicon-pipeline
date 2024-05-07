@@ -3,7 +3,7 @@
 
 process SEQTK_SEQ {
     tag "$meta.id"
-    label 'process_single'
+    label 'very_light'
 
     conda "bioconda::seqtk=1.4"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

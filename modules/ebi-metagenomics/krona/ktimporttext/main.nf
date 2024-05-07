@@ -4,7 +4,7 @@
 
 process KRONA_KTIMPORTTEXT {
     tag "$meta.id"
-    label 'process_single'
+    label 'very_light'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

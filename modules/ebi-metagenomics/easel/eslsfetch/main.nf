@@ -1,7 +1,7 @@
 
 process EASEL_ESLSFETCH {
     tag "$meta.id"
-    label 'process_single'
+    label 'very_light'
 
     conda "bioconda::easel=0.49"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

@@ -1,7 +1,7 @@
 
 process PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS {
     tag "$meta.id"
-    label 'light' 
+    label 'very_light' 
 
     input:
     tuple val(meta), path(cmsearch_deoverlap_out), path(concat_primers_fasta)

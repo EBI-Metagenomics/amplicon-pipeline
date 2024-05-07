@@ -1,7 +1,7 @@
 
 process EXTRACT_COORDS {
     tag "$meta.id"
-    label 'light'
+    label 'very_light'
     conda "${projectDir}/conf/environment.yml"
 
     input:

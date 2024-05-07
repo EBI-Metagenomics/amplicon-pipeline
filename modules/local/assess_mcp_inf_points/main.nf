@@ -2,7 +2,7 @@
 process ASSESS_MCP_INF_POINTS {
     // Select inflection points most likely to be primer cutoff points
     tag "$meta.id"
-    label 'light'
+    label 'very_light'
     conda "${projectDir}/conf/environment.yml"
 
     input:

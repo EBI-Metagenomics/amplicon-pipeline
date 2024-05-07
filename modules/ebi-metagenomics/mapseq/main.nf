@@ -1,7 +1,7 @@
 
 process MAPSEQ {
     tag "$meta.id"
-    label 'process_medium'
+    label 'medium'
 
     conda "bioconda::mapseq=2.1.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
