@@ -2,7 +2,7 @@
 process ASSESS_MCP_CONS {
     // Use Most Common Prefix (MCP) method to generate curves of base conservation
     tag "$meta.id"
-    label 'light'
+    label 'very_light'
     conda "${projectDir}/conf/environment.yml"
 
     input:

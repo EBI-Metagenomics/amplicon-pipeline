@@ -3,7 +3,7 @@ process TRIMMING_CONDUCTOR {
     // Parse the outputs of the std and general primer searches and output
     // flags into "trimming_conductor_out.txt"
     tag "$meta.id"
-    label 'light'
+    label 'very_light'
 
     input:
     tuple val(meta), path(general_primer_flag), path(std_primer_flag)

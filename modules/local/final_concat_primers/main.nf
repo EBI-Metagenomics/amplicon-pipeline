@@ -1,7 +1,7 @@
 
 process FINAL_CONCAT_PRIMERS {
     tag "$meta.id"
-    label 'light'
+    label 'very_light'
     
     input:
     tuple val(meta), path(cat_primers)

@@ -2,7 +2,7 @@
 
 process PRIMER_VALIDATION_SEARCH {
 
-    label 'heavy' // Will likely need to give this task more CPUs 
+    label 'high_cpu_low_mem' // Will likely need to give this task more CPUs 
     container = '/hps/nobackup/rdf/metagenomics/service-team/singularity-cache/quay.io-biocontainers-infernal-1.1.4--pl5321hec16e2b_1.img'
 
     input:

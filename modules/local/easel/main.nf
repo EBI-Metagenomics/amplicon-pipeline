@@ -1,7 +1,7 @@
 
 process EASEL {
-
-    label 'light'
+    tag "$meta.id"
+    label 'very_light'
     container = '/hps/nobackup/rdf/metagenomics/service-team/singularity-cache/quay.io-biocontainers-easel-0.48--hec16e2b_1.img'
 
     input:

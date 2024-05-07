@@ -2,7 +2,7 @@
 process FIND_MCP_INF_POINTS {
     // Find inflection points in conservation curves
     tag "$meta.id"
-    label 'light'
+    label 'very_light'
     conda "${projectDir}/conf/environment.yml"
 
     input:

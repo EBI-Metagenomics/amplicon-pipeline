@@ -2,7 +2,7 @@
 process GENERAL_PRIMER_FLAG {
     // Check for the presence of primers in general
     tag "$meta.id"
-    label 'light'
+    label 'very_light'
     conda "${projectDir}/conf/environment.yml"
 
     input:

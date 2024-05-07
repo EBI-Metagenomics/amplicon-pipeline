@@ -1,7 +1,7 @@
 
 process PRIMER_VALIDATION_DEOVERLAP {
 
-    label 'light' 
+    label 'very_light' 
     container = '/hps/nobackup/rdf/metagenomics/service-team/singularity-cache/quay.io-biocontainers-perl-5.22.2.1.img'
 
     input:

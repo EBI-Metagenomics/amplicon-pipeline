@@ -1,7 +1,7 @@
 
 process FORMAT_BEDFILE {
     tag "$meta.id"
-    label 'light'
+    label 'very_light'
 
     input:
     tuple val(meta), path(concat_ssu_lsu_coords)
