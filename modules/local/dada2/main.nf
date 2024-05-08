@@ -3,6 +3,7 @@ process DADA2 {
     // Run DADA2 pipeline including read-tracking
     tag "$meta.id"
     label "medium"
+    conda "${moduleDir}/dada2_environment.yml"
 
     input:
     tuple val(meta), path(reads)

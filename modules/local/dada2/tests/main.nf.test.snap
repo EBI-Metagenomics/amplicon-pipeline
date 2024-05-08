@@ -2,16 +2,23 @@
     "Should run without failures": {
         "content": [
             [
-                "test_1_map.txt:md5,7217dc4dd450c263b5504607573a4d42",
-                "test_2_map.txt:md5,062143a67f75c43ab99ce071aaeecbb5"
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    [
+                        "test_1_map.txt:md5,95af731d6fa626206f9cc99e14f753b9",
+                        "test_2_map.txt:md5,0843e375a960cc79e3a3f7ed3a3dda8e"
+                    ],
+                    "test_asvs.fasta:md5,c2bd49dd4d800233c146e03bf10e7250",
+                    [
+                        "test_1_filt.fastq.gz:md5,a6909a9f9d30ab033b3b1ff5456f4352",
+                        "test_2_filt.fastq.gz:md5,8dff2a0f3928a5753b59f51a2ec27fe1"
+                    ]
+                ]
             ]
         ],
-        "timestamp": "2023-11-07T09:41:27.936806924"
-    },
-    "taxa_tsv_length_eq_20": {
-        "content": [
-            true
-        ],
-        "timestamp": "2023-11-07T09:44:27.663766005"
+        "timestamp": "2024-05-08T15:16:27.863119401"
     }
 }
