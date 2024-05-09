@@ -4,10 +4,10 @@ process INFERNAL_CMSEARCH {
     tag "$meta.id"
     label 'high_cpu_low_mem'
 
-    conda "bioconda::infernal=1.1.4"
+    conda "bioconda::infernal=1.1.5"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/infernal:1.1.4--pl5321hec16e2b_1':
-        'biocontainers/infernal:1.1.4--pl5321hec16e2b_1' }"
+        'https://depot.galaxyproject.org/singularity/infernal:1.1.5--pl5321h031d066_1':
+        'biocontainers/infernal:1.1.5--pl5321h031d066_1' }"
 
     input:
     tuple val(meta), path(seqdb)
@@ -33,10 +33,7 @@ process INFERNAL_CMSEARCH {
 
     cmsearch \\
         --cpu $task.cpus \\
-        --noali \\
-        --hmmonly \\
         $args \\
-        -Z 1000 \\
         -o /dev/null \\
         --tblout ${prefix}.cmsearch_matches.tbl \\
         $covariance_model_database \\
