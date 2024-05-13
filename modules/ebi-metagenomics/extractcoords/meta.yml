@@ -1,0 +1,58 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "extractcoords"
+description: Process output from easel-sfetch to extract SSU and LSU sequences
+keywords:
+  - easel
+  - rrna
+  - ssu
+  - lsu
+tools:
+  - "extractcoords":
+      description: "Process output from easel-sfetch to extract SSU and LSU sequences, uses mgnify-pipelines-toolkit as conda environment"
+      homepage: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
+      documentation: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
+      tool_dev_url: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
+      licence: ["Apache-2.0"]
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'sample1', single_end:false ]`
+  - easel_coords_fasta:
+      type: file
+      description: Fasta file output from running esl-sfetch to extract sequences by name
+      pattern: "*.fasta"
+  - matched_seqs_with_coords:
+      type: file
+      description: Space-separated cmsearchdeoverlap output formatted for use by esl-sfetch
+      pattern: "*.txt"
+
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'sample1', single_end:false ]`
+  - ssu_fasta:
+      type: file
+      description: Fasta file containing the SSU sequences
+      pattern: "*.fasta"
+  - lsu_fasta:
+      type: file
+      description: Fasta file containing the LSU sequences
+      pattern: "*.fasta"
+  - concat_ssu_lsu_coords:
+      type: file
+      description: Space-separated concatenated file of coordinates of matches of both SSU and LSU
+      pattern: "*.txt"
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+authors:
+  - "@chrisata"
+maintainers:
+  - "@chrisata"

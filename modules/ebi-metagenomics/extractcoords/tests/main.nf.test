@@ -1,0 +1,66 @@
+
+nextflow_process {
+
+    name "Test Process EXTRACTCOORDS"
+    script "../main.nf"
+    process "EXTRACTCOORDS"
+
+    tag "modules"
+    tag "modules_nfcore"
+    tag "extractcoords"
+
+    test("extractcoords - should take a fasta file and an easel coordinates file and extract two subunit fasta files for the SSU and LSU, and a concatenated SSU and LSU coordinates file") {
+
+        when {
+            process {
+                """                
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file("${moduleDir}/tests/test.fasta", checkIfExists: true)
+                    ]
+                input[1] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file("${moduleDir}/tests/test.matched_seqs_with_coords.txt", checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("extractcoords - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """                
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file("${moduleDir}/tests/test.fasta", checkIfExists: true)
+                    ]
+                input[1] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file("${moduleDir}/tests/test.matched_seqs_with_coords", checkIfExists: true),
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

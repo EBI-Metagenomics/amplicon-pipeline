@@ -12,6 +12,7 @@ components:
   - infernal/cmsearch
   - cmsearchtbloutdeoverlap
   - easel/eslsfetch
+  - extractcoords
 input:
   - ch_fasta:
       type: file
@@ -32,24 +33,30 @@ input:
         Structure: path(claninfo)
       pattern: "*.claninfo"
 output:
-  - cmsearch_deoverlap:
+  - cmsearch_deoverlap_out:
       type: file
       description: |
         Channel containing cmsearchdeoverlap files
         Structure: [ val(meta), path(deoverlapped) ]
       pattern: "*.deoverlapped"
-  - easel_sfetch:
+  - easel_out:
       type: file
       description: |
         Channel containing extracted rRNA fasta files
         Structure: [ val(meta), path(fasta) ]
       pattern: "*.fasta"
-  - matched_seqs_with_coords:
+  - ssu_fasta:
       type: file
-      description: |
-        Channel containing converted cmsearchdeoverlap files for use by easel
-        Structure: [ val(meta), path(csi) ]
-      pattern: "*.csi"
+      description: Fasta file containing the SSU sequences
+      pattern: "*.fasta"
+  - lsu_fasta:
+      type: file
+      description: Fasta file containing the LSU sequences
+      pattern: "*.fasta"
+  - concat_ssu_lsu_coords:
+      type: file
+      description: Space-separated concatenated file of coordinates of matches of both SSU and LSU
+      pattern: "*.txt"
   - versions:
       type: file
       description: |

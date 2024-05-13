@@ -8,7 +8,7 @@
           "cmsearchtbloutdeoverlap": {
             "branch": "main",
             "git_sha": "f46c82bbdaa9ea8396c6a50c016a1eac64e3fabd",
-            "installed_by": ["rrna_extraction", "modules"]
+            "installed_by": ["modules", "rrna_extraction"]
           },
           "cutadapt": {
             "branch": "main",
@@ -17,7 +17,12 @@
           },
           "easel/eslsfetch": {
             "branch": "main",
-            "git_sha": "09bb39bd80ed68d769f4910500e96b185f0ec4dd",
+            "git_sha": "f1bf089cb679ca1e363aa81c99a512114402472c",
+            "installed_by": ["rrna_extraction"]
+          },
+          "extractcoords": {
+            "branch": "main",
+            "git_sha": "c249cf1afd1b7ceaacde6ba44fd9c919bf688c6d",
             "installed_by": ["rrna_extraction"]
           },
           "fastp": {
@@ -28,7 +33,7 @@
           "infernal/cmsearch": {
             "branch": "main",
             "git_sha": "94f05084eaa29d81245cc8da6380ebfb87856c86",
-            "installed_by": ["rrna_extraction", "modules"]
+            "installed_by": ["modules", "rrna_extraction"]
           },
           "krona/ktimporttext": {
             "branch": "main",
@@ -66,7 +71,7 @@
           },
           "rrna_extraction": {
             "branch": "main",
-            "git_sha": "44196f83ba5f947c95809b142e3084e0935cfacb",
+            "git_sha": "29fd1389152934e9ca5da16d4637fee44764d25d",
             "installed_by": ["subworkflows"]
           }
         }
