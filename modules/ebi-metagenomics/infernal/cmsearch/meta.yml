@@ -13,7 +13,7 @@ tools:
       documentation: "http://eddylab.org/infernal/Userguide.pdf"
       tool_dev_url: "https://github.com/EddyRivasLab/infernal"
       doi: "10.1093/bioinformatics/btt509"
-      licence: "['BSD-3-clause']"
+      licence: ["BSD-3-clause"]
 
 input:
   - meta:
@@ -25,6 +25,10 @@ input:
       type: file
       description: Database of sequences in FASTA format
       pattern: "*.{fasta,fna,fasta.gz,fna.gz}"
+  - covariance_model_database:
+      type: file
+      description: Rfam database to query against
+      pattern: "*.cm"
 
 output:
   - meta:
@@ -33,7 +37,7 @@ output:
         Groovy Map containing sample information
         e.g. `[ id:'test', single_end:false ]`
 
-  - bam:
+  - cmsearch_tbl:
       type: file
       description: Tabular (space-delimited) file summarizing the hits found, with one data line per hit.
       pattern: "*.tbl"

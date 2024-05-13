@@ -32,7 +32,7 @@
           },
           "infernal/cmsearch": {
             "branch": "main",
-            "git_sha": "94f05084eaa29d81245cc8da6380ebfb87856c86",
+            "git_sha": "62e22fb1fd131d27ed043f305f317a0cf741b900",
             "installed_by": ["modules", "rrna_extraction"]
           },
           "krona/ktimporttext": {
