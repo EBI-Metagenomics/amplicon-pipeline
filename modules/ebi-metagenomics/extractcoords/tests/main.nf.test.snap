@@ -1,0 +1,108 @@
+{
+    "extractcoords - stub": {
+        "content": [
+            {
+                "0": [
+                    
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test_concat_SSU_LSU_coords.txt:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    "versions.yml:md5,bb41e1add63c9b89d054972d8f663caf"
+                ],
+                "concat_ssu_lsu_coords": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test_concat_SSU_LSU_coords:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "lsu_fasta": [
+                    
+                ],
+                "ssu_fasta": [
+                    
+                ],
+                "versions": [
+                    "versions.yml:md5,bb41e1add63c9b89d054972d8f663caf"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.04.3"
+        },
+        "timestamp": "2024-05-09T14:32:05.714677142"
+    },
+    "extractcoords - should take a fasta file and an easel coordinates file and extract two subunit fasta files for the SSU and LSU, and a concatenated SSU and LSU coordinates file": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test_SSU.fasta:md5,fb23f13526672a300845b767dbc5fd44"
+                    ]
+                ],
+                "1": [
+                    
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test_concat_SSU_LSU_coords.txt:md5,401222d263116bb145c1a67e6acc4709"
+                    ]
+                ],
+                "3": [
+                    "versions.yml:md5,bb41e1add63c9b89d054972d8f663caf"
+                ],
+                "concat_ssu_lsu_coords": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test_concat_SSU_LSU_coords.txt:md5,401222d263116bb145c1a67e6acc4709"
+                    ]
+                ],
+                "lsu_fasta": [
+                    
+                ],
+                "ssu_fasta": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test_SSU.fasta:md5,fb23f13526672a300845b767dbc5fd44"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,bb41e1add63c9b89d054972d8f663caf"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.04.3"
+        },
+        "timestamp": "2024-05-09T14:31:38.962282816"
+    }
+}

@@ -1,0 +1,42 @@
+nextflow_workflow {
+
+    name "Test Subworkflow RRNA_EXTRACTION"
+    script "../main.nf"
+    workflow "RRNA_EXTRACTION"
+    config "./nextflow.config"
+
+    tag "subworkflows"
+    tag "subworkflows_nfcore"
+    tag "subworkflows/rrna_extraction"
+    tag "infernal"
+    tag "infernal/cmsearch"
+    tag "cmsearchtbloutdeoverlap"
+    tag "easel"
+    tag "easel/eslsfetch"
+    tag "extractcoords"
+
+    test("test_rrna_extraction") {
+
+        when {
+            params {
+                rfam = "${moduleDir}/tests/test.cm"
+                rfam_clan = "${moduleDir}/tests/ribo.claninfo"
+            }
+            workflow {
+                """
+                input[0] = Channel.of( [ [ id:'test', single_end:false ], // meta map
+                    file('${moduleDir}/tests/test.fasta.gz', checkIfExists: true)
+                ])
+                input[1] = file(params.rfam)
+                input[2] = file(params.rfam_clan)
+                """
+            }
+        }
+        then {
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(workflow.out).match() }            
+            )
+        }
+    }
+}

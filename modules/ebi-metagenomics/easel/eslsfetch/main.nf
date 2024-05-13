@@ -1,7 +1,7 @@
 
 process EASEL_ESLSFETCH {
     tag "$meta.id"
-    label 'very_light'
+    label 'process_single'
 
     conda "bioconda::easel=0.49"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -12,9 +12,9 @@ process EASEL_ESLSFETCH {
     tuple val(meta), path(fasta), path(cmsearch_deoverlap_out)
 
     output:
-    tuple val(meta), path("*easel_coords.fasta"),       emit: easel_coords
-    tuple val(meta), path("*matched_seqs_with_coords"), emit: matched_seqs_with_coords
-    path "versions.yml",                                emit: versions
+    tuple val(meta), path("*easel_coords.fasta"),           emit: easel_coords
+    tuple val(meta), path("*matched_seqs_with_coords.txt"), emit: matched_seqs_with_coords
+    path "versions.yml",                                    emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -35,7 +35,7 @@ process EASEL_ESLSFETCH {
     awk \\
         '{print \$1"-"\$3"/"\$8"-"\$9" "\$8" "\$9" "\$1}' \\
         $cmsearch_deoverlap_out \\
-        > ${prefix}.matched_seqs_with_coords
+        > ${prefix}.matched_seqs_with_coords.txt
 
     esl-sfetch \\
         --index \\
@@ -44,7 +44,7 @@ process EASEL_ESLSFETCH {
     esl-sfetch \\
         -Cf \\
         $fasta_name \\
-        ${prefix}.matched_seqs_with_coords \\
+        ${prefix}.matched_seqs_with_coords.txt \\
         > ${prefix}_easel_coords.fasta
 
     cat <<-END_VERSIONS > versions.yml
@@ -57,7 +57,7 @@ process EASEL_ESLSFETCH {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch ${prefix}.matched_seqs_with_coords
+    touch ${prefix}.matched_seqs_with_coords.txt
     touch ${prefix}_easel_extracted.fasta
 
     cat <<-END_VERSIONS > versions.yml

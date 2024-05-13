@@ -1,7 +1,7 @@
 
 include { READS_QC } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { READS_QC as READS_QC_MERGE } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
-include { CMSEARCH_SUBWF } from '../subworkflows/local/cmsearch_swf.nf'
+include { RRNA_EXTRACTION } from '../subworkflows/ebi-metagenomics/rrna_extraction/main'
 include { ITS_SWF } from '../subworkflows/local/its_swf.nf'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_SSU} from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_LSU} from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
@@ -63,8 +63,8 @@ workflow AMPLICON_PIPELINE_V6 {
         false
     )
 
-    // Cmsearch subworkflow to find rRNA reads for SSU+LSU
-    CMSEARCH_SUBWF(
+    // rRNA extraction subworkflow to find rRNA reads for SSU+LSU
+    RRNA_EXTRACTION(
         READS_QC_MERGE.out.reads_fasta,
         file(params.rfam),
         file(params.claninfo)
@@ -73,22 +73,22 @@ workflow AMPLICON_PIPELINE_V6 {
     // Masking subworkflow to find rRNA reads for ITS
     ITS_SWF(
         READS_QC_MERGE.out.reads_fasta,
-        CMSEARCH_SUBWF.out.concat_ssu_lsu_coords
+        RRNA_EXTRACTION.out.concat_ssu_lsu_coords
     )
 
     // Next five subworkflow calls are MapSeq annotation + Krona generation for SSU+LSU+ITS
     MAPSEQ_OTU_KRONA_SSU(
-        CMSEARCH_SUBWF.out.ssu_fasta,
+        RRNA_EXTRACTION.out.ssu_fasta,
         ssu_mapseq_krona_tuple
     )
 
     MAPSEQ_OTU_KRONA_PR2(
-        CMSEARCH_SUBWF.out.ssu_fasta,
+        RRNA_EXTRACTION.out.ssu_fasta,
         pr2_mapseq_krona_tuple
     )  
 
     MAPSEQ_OTU_KRONA_LSU(
-        CMSEARCH_SUBWF.out.lsu_fasta,
+        RRNA_EXTRACTION.out.lsu_fasta,
         lsu_mapseq_krona_tuple
     )     
 
@@ -104,7 +104,7 @@ workflow AMPLICON_PIPELINE_V6 {
 
     // Infer amplified variable regions for SSU, extract reads for each amplified region if there are more than one
     AMP_REGION_INFERENCE(
-        CMSEARCH_SUBWF.out.cmsearch_deoverlap_out,
+        RRNA_EXTRACTION.out.cmsearch_deoverlap_out,
         READS_QC_MERGE.out.reads_se_and_merged
     )
 
