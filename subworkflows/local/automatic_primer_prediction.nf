@@ -1,6 +1,6 @@
 
-include { ASSESS_MCP_CONS } from '../../modules/local/assess_mcp_cons/main.nf'
-include { FIND_MCP_INF_POINTS } from '../../modules/local/find_mcp_inf_points/main.nf'
+include { ASSESS_MCP_CONS       } from '../../modules/local/assess_mcp_cons/main.nf'
+include { FIND_MCP_INF_POINTS   } from '../../modules/local/find_mcp_inf_points/main.nf'
 include { ASSESS_MCP_INF_POINTS } from '../../modules/local/assess_mcp_inf_points/main.nf'
 
 workflow AUTOMATIC_PRIMER_PREDICTION {
@@ -30,7 +30,7 @@ workflow AUTOMATIC_PRIMER_PREDICTION {
                                                  }
         // Join fastq channel and the inf_points channel
         assess_inf_input = FIND_MCP_INF_POINTS.out.inf_points_out
-                           .join(extracted_reads, by: [0])      
+                           .join(extracted_reads, by: [0])
 
         // Select inflection points most likely to be primer cutoff points
         ASSESS_MCP_INF_POINTS(
