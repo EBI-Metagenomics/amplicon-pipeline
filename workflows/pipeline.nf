@@ -1,43 +1,85 @@
 
-include { READS_QC } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
-include { READS_QC as READS_QC_MERGE } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
-include { RRNA_EXTRACTION } from '../subworkflows/ebi-metagenomics/rrna_extraction/main'
-include { ITS_SWF } from '../subworkflows/local/its_swf.nf'
-include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_SSU} from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
-include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_LSU} from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
-include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_PR2} from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
-include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_UNITE} from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
-include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_ITSONEDB} from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
+include { READS_QC                                      } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
+include { READS_QC as READS_QC_MERGE                    } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
+include { RRNA_EXTRACTION                               } from '../subworkflows/ebi-metagenomics/rrna_extraction/main'
+include { MASK_FASTA_SWF                                } from '../subworkflows/local/its_swf.nf'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_SSU      } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_LSU      } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_PR2      } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_UNITE    } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
+include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_ITSONEDB } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
 
-include { AMP_REGION_INFERENCE } from '../subworkflows/local/amp_region_inference_swf.nf'
-include { PRIMER_IDENTIFICATION } from '../subworkflows/local/primer_identification_swf.nf'
-include { AUTOMATIC_PRIMER_PREDICTION } from '../subworkflows/local/automatic_primer_prediction.nf'
-include { CONCAT_PRIMER_CUTADAPT } from '../subworkflows/local/concat_primer_cutadapt.nf'
-include { PRIMER_VALIDATION } from '../subworkflows/local/primer_validation_swf.nf'
-include { DADA2_SWF } from '../subworkflows/local/dada2_swf.nf'
-include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_SILVA } from '../subworkflows/local/mapseq_asv_krona_swf.nf'
-include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_PR2 } from '../subworkflows/local/mapseq_asv_krona_swf.nf'
+include { AMP_REGION_INFERENCE                          } from '../subworkflows/local/amp_region_inference_swf.nf'
+include { PRIMER_IDENTIFICATION                         } from '../subworkflows/local/primer_identification_swf.nf'
+include { AUTOMATIC_PRIMER_PREDICTION                   } from '../subworkflows/local/automatic_primer_prediction.nf'
+include { CONCAT_PRIMER_CUTADAPT                        } from '../subworkflows/local/concat_primer_cutadapt.nf'
+include { PRIMER_VALIDATION                             } from '../subworkflows/local/primer_validation_swf.nf'
+include { DADA2_SWF                                     } from '../subworkflows/local/dada2_swf.nf'
+include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_SILVA    } from '../subworkflows/local/mapseq_asv_krona_swf.nf'
+include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_PR2      } from '../subworkflows/local/mapseq_asv_krona_swf.nf'
 
-include { dada2_input_preparation } from '../modules/local/dada2_input_preparation_function.nf'
+include { dada2_input_preparation_function              } from '../lib/nf/dada2_input_preparation_function.nf'
 
 // Initialise different database inputs for taxonomic assignments with regular taxonomy resolution method
-ssu_mapseq_krona_tuple = Channel.value([file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.ssu_label])
-lsu_mapseq_krona_tuple = Channel.value([file(params.lsu_db_fasta), file(params.lsu_db_tax), file(params.lsu_db_otu), file(params.lsu_db_mscluster), params.lsu_label])
-itsonedb_mapseq_krona_tuple = Channel.value([file(params.itsone_db_fasta), file(params.itsone_db_tax), file(params.itsone_db_otu), file(params.itsone_db_mscluster), params.itsone_label])
-unite_mapseq_krona_tuple = Channel.value([file(params.unite_db_fasta), file(params.unite_db_tax), file(params.unite_db_otu), file(params.unite_db_mscluster), params.unite_label])
-pr2_mapseq_krona_tuple = Channel.value([file(params.pr2_db_fasta), file(params.pr2_db_tax), file(params.pr2_db_otu), file(params.pr2_db_mscluster), params.pr2_label])
+ssu_mapseq_krona_tuple = Channel.value([
+    file(params.ssu_db_fasta, checkIfExists: true),
+    file(params.ssu_db_tax, checkIfExists: true),
+    file(params.ssu_db_otu, checkIfExists: true),
+    file(params.ssu_db_mscluster, checkIfExists: true),
+    params.ssu_label
+])
+lsu_mapseq_krona_tuple = Channel.value([
+    file(params.lsu_db_fasta, checkIfExists: true),
+    file(params.lsu_db_tax, checkIfExists: true),
+    file(params.lsu_db_otu, checkIfExists: true),
+    file(params.lsu_db_mscluster, checkIfExists: true),
+    params.lsu_label
+])
+itsonedb_mapseq_krona_tuple = Channel.value([
+    file(params.itsone_db_fasta, checkIfExists: true),
+    file(params.itsone_db_tax, checkIfExists: true),
+    file(params.itsone_db_otu, checkIfExists: true),
+    file(params.itsone_db_mscluster, checkIfExists: true),
+    params.itsone_label
+])
+unite_mapseq_krona_tuple = Channel.value([
+    file(params.unite_db_fasta, checkIfExists: true),
+    file(params.unite_db_tax, checkIfExists: true),
+    file(params.unite_db_otu, checkIfExists: true),
+    file(params.unite_db_mscluster, checkIfExists: true),
+    params.unite_label
+])
+pr2_mapseq_krona_tuple = Channel.value([
+    file(params.pr2_db_fasta, checkIfExists: true),
+    file(params.pr2_db_tax, checkIfExists: true),
+    file(params.pr2_db_otu, checkIfExists: true),
+    file(params.pr2_db_mscluster, checkIfExists: true),
+    params.pr2_label
+])
 
 // Initialise different database inputs for taxonomic assignments with ASV resolution method
-dada2_krona_silva_tuple = tuple(file(params.ssu_db_fasta), file(params.ssu_db_tax), file(params.ssu_db_otu), file(params.ssu_db_mscluster), params.dada2_silva_label)
-dada2_krona_pr2_tuple = tuple(file(params.pr2_db_fasta), file(params.pr2_db_tax), file(params.pr2_db_otu), file(params.pr2_db_mscluster), params.dada2_pr2_label)
+dada2_krona_silva_tuple = tuple(
+    file(params.ssu_db_fasta, checkIfExists: true),
+    file(params.ssu_db_tax, checkIfExists: true),
+    file(params.ssu_db_otu, checkIfExists: true),
+    file(params.ssu_db_mscluster, checkIfExists: true),
+    params.dada2_silva_label
+)
+dada2_krona_pr2_tuple = tuple(
+    file(params.pr2_db_fasta, checkIfExists: true),
+    file(params.pr2_db_tax, checkIfExists: true),
+    file(params.pr2_db_otu, checkIfExists: true),
+    file(params.pr2_db_mscluster, checkIfExists: true),
+    params.dada2_pr2_label
+)
 
 // Standard primer library
-std_primer_library = file(params.std_primer_library, type: 'dir')
+std_primer_library = file(params.std_primer_library, type: 'dir', checkIfExists: true)
 
 // Read input samplesheet
 samplesheet = Channel.fromSamplesheet( "input" )
 
-workflow AMPLICON_PIPELINE_V6 {
+workflow AMPLICON_PIPELINE {
 
     // Organise input tuple channel
     groupReads = { meta, fq1, fq2 ->
@@ -49,29 +91,28 @@ workflow AMPLICON_PIPELINE_V6 {
         }
     }
 
-    ch_input = samplesheet
-                  .map(groupReads)
+    ch_input = samplesheet.map(groupReads)
 
     // Quality control
     READS_QC_MERGE(
         ch_input,
-        true
+        true // merge
     )
     // Run it again without merging to keep PE files unmerged for primer trimming+DADA2
     READS_QC(
         ch_input,
-        false
+        false // merge
     )
 
     // rRNA extraction subworkflow to find rRNA reads for SSU+LSU
     RRNA_EXTRACTION(
         READS_QC_MERGE.out.reads_fasta,
-        file(params.rfam),
-        file(params.claninfo)
+        file( params.rfam, checkIfExists: true ),
+        file( params.claninfo, checkIfExists: true )
     )
 
     // Masking subworkflow to find rRNA reads for ITS
-    ITS_SWF(
+    MASK_FASTA_SWF(
         READS_QC_MERGE.out.reads_fasta,
         RRNA_EXTRACTION.out.concat_ssu_lsu_coords
     )
@@ -93,12 +134,12 @@ workflow AMPLICON_PIPELINE_V6 {
     )     
 
     MAPSEQ_OTU_KRONA_ITSONEDB(
-        ITS_SWF.out.its_masked_out,
+        MASK_FASTA_SWF.out.masked_out,
         itsonedb_mapseq_krona_tuple
     )    
 
     MAPSEQ_OTU_KRONA_UNITE(
-        ITS_SWF.out.its_masked_out,
+        MASK_FASTA_SWF.out.masked_out,
         unite_mapseq_krona_tuple
     )
 
@@ -149,9 +190,9 @@ workflow AMPLICON_PIPELINE_V6 {
     )
 
     cutadapt_channel = CONCAT_PRIMER_CUTADAPT.out.cutadapt_out
-                       .map{ meta, reads -> 
+                       .map { meta, reads -> 
                          [ meta.subMap('id', 'single_end'), meta['var_region'], meta['var_regions_size'], reads ]
-                        }
+                       }
 
     dada2_input = dada2_input_preparation(concat_input, READS_QC.out.reads, cutadapt_channel)
 

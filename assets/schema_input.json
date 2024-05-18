@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://raw.githubusercontent.com/nf-core/ampliconpipeline/master/assets/schema_input.json",
-  "title": "nf-core/ampliconpipeline pipeline - params.input schema",
+  "$id": "https://raw.githubusercontent.com/ebi-metagenomics/ampliconpipeline/master/assets/schema_input.json",
+  "title": "ebi-metagenomics/ampliconpipeline pipeline - params.input schema",
   "description": "Schema for the file provided with params.input",
   "type": "array",
   "items": {

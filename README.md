@@ -1,4 +1,4 @@
-# asv-gen
+# MGnify Amplicon analysis pipeline
 
 This repository contains the in-progress Nextflow rework of the V5 MGnify amplicon annotation pipeline, which will include the addition of Amplicon Sequence Variant (ASV) annotation as a new major feature under the V6 analysis pipelines.
 
