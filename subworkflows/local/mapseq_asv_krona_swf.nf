@@ -1,8 +1,9 @@
 
-include { MAPSEQ             } from '../../modules/ebi-metagenomics/mapseq/main'
-include { MAPSEQ2ASVTABLE } from '../../modules/local/mapseq2asvtable/main.nf'
+include { MAPSEQ                } from '../../modules/ebi-metagenomics/mapseq/main'
+include { MAPSEQ2ASVTABLE       } from '../../modules/local/mapseq2asvtable/main.nf'
 include { MAKE_ASV_COUNT_TABLES } from '../../modules/local/make_asv_count_tables/main.nf'
-include { KRONA_KTIMPORTTEXT } from '../../modules/ebi-metagenomics/krona/ktimporttext/main'
+include { KRONA_KTIMPORTTEXT    } from '../../modules/ebi-metagenomics/krona/ktimporttext/main'
+
 
 workflow MAPSEQ_ASV_KRONA {
     

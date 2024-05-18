@@ -1,6 +1,6 @@
 
 include { REMOVE_AMBIGUOUS_READS } from '../../modules/local/remove_ambiguous_reads/main.nf'
-include { DADA2 } from '../../modules/local/dada2/main.nf'
+include { DADA2                  } from '../../modules/local/dada2/main.nf'
 
 workflow DADA2_SWF {
     

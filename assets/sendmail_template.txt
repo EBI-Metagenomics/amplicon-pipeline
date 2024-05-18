@@ -1,20 +1,20 @@
 To: $email
 Subject: $subject
 Mime-Version: 1.0
-Content-Type: multipart/related;boundary="nfcoremimeboundary"
+Content-Type: multipart/related;boundary="ebimetagenomicsmimeboundary"
 
---nfcoremimeboundary
+--ebi-ebimetagenomicsmimeboundary
 Content-Type: text/html; charset=utf-8
 
 $email_html
 
---nfcoremimeboundary
-Content-Type: image/png;name="nf-core-ampliconpipeline_logo.png"
+--ebimetagenomicsmimeboundary
+Content-Type: image/png;name="ampliconpipeline_logo.png"
 Content-Transfer-Encoding: base64
 Content-ID: <nfcorepipelinelogo>
-Content-Disposition: inline; filename="nf-core-ampliconpipeline_logo_light.png"
+Content-Disposition: inline; filename="ampliconpipeline_logo_light.png"
 
-<% out << new File("$projectDir/assets/nf-core-ampliconpipeline_logo_light.png").
+<% out << new File("$projectDir/assets/ampliconpipeline_logo_light.png").
     bytes.
     encodeBase64().
     toString().
@@ -30,7 +30,7 @@ if (mqcFile){
 def mqcFileObj = new File("$mqcFile")
 if (mqcFileObj.length() < mqcMaxSize){
 out << """
---nfcoremimeboundary
+--ebimetagenomicsmimeboundary
 Content-Type: text/html; name=\"multiqc_report\"
 Content-Transfer-Encoding: base64
 Content-ID: <mqcreport>
@@ -50,4 +50,4 @@ ${mqcFileObj.
 }}
 %>
 
---nfcoremimeboundary--
+--ebimetagenomicsmimeboundary--

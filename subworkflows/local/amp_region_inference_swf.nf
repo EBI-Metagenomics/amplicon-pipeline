@@ -1,5 +1,5 @@
 
-include { CLASSIFY_VAR_REGIONS } from '../../modules/local/classify_var_regions/main.nf'
+include { CLASSIFY_VAR_REGIONS                } from '../../modules/local/classify_var_regions/main.nf'
 include { SEQTK_SUBSEQ as EXTRACT_VAR_REGIONS } from '../../modules/nf-core/seqtk/subseq/main.nf'
 
 workflow AMP_REGION_INFERENCE {

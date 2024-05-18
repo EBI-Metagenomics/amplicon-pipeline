@@ -1,7 +1,7 @@
 
-include { INFERNAL_CMSEARCH as PRIMER_VALIDATION_SEARCH } from '../../modules/ebi-metagenomics/infernal/cmsearch/main.nf'
+include { INFERNAL_CMSEARCH as PRIMER_VALIDATION_SEARCH          } from '../../modules/ebi-metagenomics/infernal/cmsearch/main.nf'
 include { CMSEARCHTBLOUTDEOVERLAP as PRIMER_VALIDATION_DEOVERLAP } from '../../modules/ebi-metagenomics/cmsearchtbloutdeoverlap/main.nf'
-include { PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS } from '../../modules/local/primer_validation_classify_var_regions/main.nf'
+include { PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS                 } from '../../modules/local/primer_validation_classify_var_regions/main.nf'
 
 workflow PRIMER_VALIDATION {
     
@@ -12,12 +12,12 @@ workflow PRIMER_VALIDATION {
 
         PRIMER_VALIDATION_SEARCH(
             primer_validation_input,
-            file(params.rfam)
+            file(params.rfam, checkIfExists: true)
         )
         
         PRIMER_VALIDATION_DEOVERLAP(
             PRIMER_VALIDATION_SEARCH.out.cmsearch_tbl,
-            file(params.claninfo)
+            file(params.claninfo, checkIfExists: true)
         )
 
         primer_validation_classify_var_regions_input = PRIMER_VALIDATION_DEOVERLAP.out.cmsearch_tblout_deoverlapped

@@ -1,9 +1,9 @@
 
-include { CONCAT_PRIMERS } from '../../modules/local/concat_primers/main.nf'
-include { FINAL_CONCAT_PRIMERS } from '../../modules/local/final_concat_primers/main.nf'
-include { REV_COMP_SE_PRIMERS } from '../../modules/local/rev_comp_se_primers/main.nf'
+include { CONCAT_PRIMERS          } from '../../modules/local/concat_primers/main.nf'
+include { FINAL_CONCAT_PRIMERS    } from '../../modules/local/final_concat_primers/main.nf'
+include { REV_COMP_SE_PRIMERS     } from '../../modules/local/rev_comp_se_primers/main.nf'
 include { SPLIT_PRIMERS_BY_STRAND } from '../../modules/local/split_primers_by_strand.nf'
-include { CUTADAPT } from '../../modules/ebi-metagenomics/cutadapt/main.nf'
+include { CUTADAPT                } from '../../modules/ebi-metagenomics/cutadapt/main.nf'
 
 workflow CONCAT_PRIMER_CUTADAPT {
     
