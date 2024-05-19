@@ -1,6 +1,10 @@
 __pycache__/
 docs/
 old_scripts/
+
 .nf-test/
 .nextflow*
 *.log
+
+work/
+test-workdir/
