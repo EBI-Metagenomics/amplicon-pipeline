@@ -3,13 +3,16 @@ process REV_COMP_SE_PRIMERS {
     tag "$meta.id"
     label 'very_light'
     conda "${projectDir}/conf/environment.yml"
-    
+
+    // TODO add a continer
+
     input:
     tuple val(meta), path(final_concat_primers)
 
     output:
     tuple val(meta), path("*rev_comp_se_primers.fasta"), optional: true, emit: rev_comp_se_primers_out
 
+    script:
     """
     if [[ -s $final_concat_primers && ${meta.single_end} = true ]]; then
         rev_comp_se_primers -i $final_concat_primers -s ${meta.id} -o ./

@@ -5,6 +5,8 @@ process TRIMMING_CONDUCTOR {
     tag "$meta.id"
     label 'very_light'
 
+    // TODO: add a container
+
     input:
     tuple val(meta), path(general_primer_flag), path(std_primer_flag)
 
@@ -12,7 +14,6 @@ process TRIMMING_CONDUCTOR {
     tuple val(meta), path("*trimming_conductor_out*"), emit: trimming_conductor_out
 
     shell:
-
     '''
     gen_fwd_flag="$(sed '1q;d' !{general_primer_flag})"
     gen_rev_flag="$(sed '2q;d' !{general_primer_flag})"
@@ -49,5 +50,4 @@ process TRIMMING_CONDUCTOR {
 
     echo "${fwd_trim_flag}\n${rev_trim_flag}" > !{meta.id}_trimming_conductor_out_!{meta.var_region}.txt
     '''
-
 }

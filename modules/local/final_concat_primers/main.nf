@@ -9,6 +9,7 @@ process FINAL_CONCAT_PRIMERS {
     output:
     tuple val(meta), path("*final_concat_primers.fasta"), optional: true, emit: final_concat_primers_out
 
+    script:
     """
     cat *concat_primers.fasta > temp_concat_primers.fasta
     if [[ -s temp_concat_primers.fasta ]]; then
