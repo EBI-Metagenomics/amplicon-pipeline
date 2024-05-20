@@ -1,10 +1,10 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/nf-core/ampliconpipeline/master/nextflow_schema.json",
   "title": "ebi-metagenomics/ampliconpipeline pipeline parameters",
   "description": "MGnify amplicon pipeline",
   "type": "object",
-  "definitions": {
+  "defs": {
     "input_output_options": {
       "title": "Input/output options",
       "type": "object",
@@ -244,6 +244,11 @@
           "type": "string",
           "format": "file-path",
           "description": "Path to Rfam processed claninfo subset"
+        },
+        "std_primer_library": {
+          "type": "string",
+          "format": "directory-path",
+          "description": "Path to standard primer library"
         }
       }
     },
@@ -285,16 +290,16 @@
   },
   "allOf": [
     {
-      "$ref": "#/definitions/input_output_options"
+      "$ref": "#/defs/input_output_options"
     },
     {
-      "$ref": "#/definitions/generic_options"
+      "$ref": "#/defs/generic_options"
     },
     {
-      "$ref": "#/definitions/ref_dbs"
+      "$ref": "#/defs/ref_dbs"
     },
     {
-      "$ref": "#/definitions/max_job_request_options"
+      "$ref": "#/defs/max_job_request_options"
     }
   ]
 }

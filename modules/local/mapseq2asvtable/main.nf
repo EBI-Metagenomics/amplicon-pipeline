@@ -13,7 +13,7 @@ process MAPSEQ2ASVTABLE {
     tuple val(meta), path("*.tsv"), emit: asvtaxtable
 
     """
-    python mapseq2asvtable.py -i $mapseq_out -l $db_label -s ${meta.id}
+    mapseq2asvtable.py -i $mapseq_out -l $db_label -s ${meta.id}
     """
 
 }

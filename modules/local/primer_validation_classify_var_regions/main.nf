@@ -13,6 +13,6 @@ process PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS {
 
     script:
     """
-    python primer_validation_classify_var_regions.py -i $cmsearch_deoverlap_out -f $concat_primers_fasta -s ${meta.id} 
+    primer_validation_classify_var_regions.py -i $cmsearch_deoverlap_out -f $concat_primers_fasta -s ${meta.id} 
     """
 }
