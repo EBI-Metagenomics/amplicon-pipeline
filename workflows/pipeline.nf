@@ -2,7 +2,7 @@
 include { READS_QC                                      } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { READS_QC as READS_QC_MERGE                    } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { RRNA_EXTRACTION                               } from '../subworkflows/ebi-metagenomics/rrna_extraction/main'
-include { MASK_FASTA_SWF                                } from '../subworkflows/local/its_swf.nf'
+include { MASK_FASTA_SWF                                } from '../subworkflows/local/mask_fasta_swf.nf'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_SSU      } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_LSU      } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_PR2      } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
@@ -19,6 +19,9 @@ include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_SILVA    } from '../subworkflows/
 include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_PR2      } from '../subworkflows/local/mapseq_asv_krona_swf.nf'
 
 include { dada2_input_preparation_function              } from '../lib/nf/dada2_input_preparation_function.nf'
+
+include { samplesheetToList } from 'plugin/nf-schema'
+
 
 // Initialise different database inputs for taxonomic assignments with regular taxonomy resolution method
 ssu_mapseq_krona_tuple = Channel.value([
@@ -77,7 +80,9 @@ dada2_krona_pr2_tuple = tuple(
 std_primer_library = file(params.std_primer_library, type: 'dir', checkIfExists: true)
 
 // Read input samplesheet
-samplesheet = Channel.fromSamplesheet( "input" )
+// samplesheet = Channel.fromSamplesheet( "input" )
+
+samplesheet = Channel.fromList(samplesheetToList(params.input, "./assets/schema_input.json"))
 
 workflow AMPLICON_PIPELINE {
 
@@ -194,7 +199,7 @@ workflow AMPLICON_PIPELINE {
                          [ meta.subMap('id', 'single_end'), meta['var_region'], meta['var_regions_size'], reads ]
                        }
 
-    dada2_input = dada2_input_preparation(concat_input, READS_QC.out.reads, cutadapt_channel)
+    dada2_input = dada2_input_preparation_function(concat_input, READS_QC.out.reads, cutadapt_channel)
 
     // Run DADA2 ASV generation
     DADA2_SWF(

@@ -1,5 +1,5 @@
 
-def dada2_input_preparation( concat_input, reads_qc, cutadapt_channel ) {
+def dada2_input_preparation_function( concat_input, reads_qc, cutadapt_channel ) {
 
     // Monster combination of operators that does multiple things:
     // 1. Groups tuples by sample, splitting meta into variable regions and variable regions size with the expected number of elements
