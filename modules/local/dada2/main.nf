@@ -15,7 +15,7 @@ process DADA2 {
     tuple path("*chimeric.txt"), path("*matched.txt"),                             emit: dada2_stats
     
     script:
-    if ( meta.single_end )
+    if ( meta.single_end ){
         """
         dada2.R ${meta.id} $reads
         """
@@ -23,4 +23,5 @@ process DADA2 {
         """
         dada2.R ${meta.id} ${reads[0]} ${reads[1]}
         """
+    }
 }
