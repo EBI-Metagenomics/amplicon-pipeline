@@ -2,10 +2,8 @@
 process FORMAT_BEDFILE {
     tag "$meta.id"
     label 'very_light'
+    container 'docker://quay.io/biocontainers/mgnify-pipelines-toolkit:0.1.2--pyhdfd78af_0'
 
-    // TODO: this one should include a container, there are several versions of awk
-    // and not all of them have the same flags, this one should be fine but it's
-    // a good practice
     input:
     tuple val(meta), path(concat_ssu_lsu_coords)
 

@@ -80,8 +80,6 @@ dada2_krona_pr2_tuple = tuple(
 std_primer_library = file(params.std_primer_library, type: 'dir', checkIfExists: true)
 
 // Read input samplesheet
-// samplesheet = Channel.fromSamplesheet( "input" )
-
 samplesheet = Channel.fromList(samplesheetToList(params.input, "./assets/schema_input.json"))
 
 workflow AMPLICON_PIPELINE {
@@ -189,7 +187,6 @@ workflow AMPLICON_PIPELINE {
 
     // Verify that any identified primers (both std+auto) actually match to regions of the SSU gene (for Bacteria/Archaea/Eukaryotes)
     // Output of this (a .tsv file) will go to CDCH
-    // TODO THIS SUBWORKFLOW NEEDS REFACTORING
     PRIMER_VALIDATION(
         primer_validation_input
     )

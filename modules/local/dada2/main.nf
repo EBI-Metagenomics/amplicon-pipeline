@@ -3,7 +3,6 @@ process DADA2 {
     // Run DADA2 pipeline including read-tracking
     tag "$meta.id"
     label "medium"
-    // TODO: this env file doesn't exist
     conda "${moduleDir}/dada2_environment.yml"
 
     input:
