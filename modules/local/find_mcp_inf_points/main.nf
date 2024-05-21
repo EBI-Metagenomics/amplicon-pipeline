@@ -3,8 +3,11 @@ process FIND_MCP_INF_POINTS {
     // Find inflection points in conservation curves
     tag "$meta.id"
     label 'very_light'
-    // TODO: don't we have a container for this one?
     conda "${projectDir}/conf/environment.yml"
+    // TODO: uncomment container when you release fix to mpt
+    // container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    //     "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
+    //     "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
 
     input:
     tuple val(meta), path(mcp_cons_out)

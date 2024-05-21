@@ -6,4 +6,4 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - "bioconda::mgnify-pipelines-toolkit=0.1.1"
+  - "bioconda::mgnify-pipelines-toolkit=0.1.2"
