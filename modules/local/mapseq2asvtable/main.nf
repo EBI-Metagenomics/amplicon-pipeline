@@ -8,8 +8,6 @@ process MAPSEQ2ASVTABLE {
     //     "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
     //     "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
 
-    // TODO: add a container please
-
     input:
     tuple val(meta), path(mapseq_out)
     val(db_label)

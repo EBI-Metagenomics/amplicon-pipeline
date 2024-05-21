@@ -4,8 +4,7 @@ process TRIMMING_CONDUCTOR {
     // flags into "trimming_conductor_out.txt"
     tag "$meta.id"
     label 'very_light'
-
-    // TODO: add a container
+    container 'docker://quay.io/biocontainers/mgnify-pipelines-toolkit:0.1.2--pyhdfd78af_0'
 
     input:
     tuple val(meta), path(general_primer_flag), path(std_primer_flag)
