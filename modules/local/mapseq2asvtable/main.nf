@@ -2,6 +2,11 @@
 process MAPSEQ2ASVTABLE {
     tag "$meta.id"
     label 'very_light' // Will likely need to give this task more CPUs 
+    conda "${projectDir}/conf/environment.yml"
+    // TODO: uncomment container when you release fix to mpt
+    // container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    //     "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
+    //     "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
 
     // TODO: add a container please
 
