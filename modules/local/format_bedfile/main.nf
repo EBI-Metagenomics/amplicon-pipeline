@@ -2,7 +2,9 @@
 process FORMAT_BEDFILE {
     tag "$meta.id"
     label 'very_light'
-    container 'docker://quay.io/biocontainers/mgnify-pipelines-toolkit:0.1.2--pyhdfd78af_0'
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
+        "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
 
     input:
     tuple val(meta), path(concat_ssu_lsu_coords)

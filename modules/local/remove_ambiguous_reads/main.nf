@@ -3,11 +3,9 @@ process REMOVE_AMBIGUOUS_READS {
     // Run DADA2 pipeline including read-tracking
     tag "$meta.id"
     label 'process_low'
-    conda "${projectDir}/conf/environment.yml"
-    // TODO: uncomment container when you release fix to mpt
-    // container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-    //     "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
-    //     "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version} }"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
+        "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
 
     input:
     tuple val(meta), path(reads)

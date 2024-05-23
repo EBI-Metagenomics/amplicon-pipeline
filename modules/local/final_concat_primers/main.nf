@@ -2,6 +2,9 @@
 process FINAL_CONCAT_PRIMERS {
     tag "$meta.id"
     label 'very_light'
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
+        "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
     
     input:
     tuple val(meta), path(cat_primers)
