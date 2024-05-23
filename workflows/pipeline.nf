@@ -20,7 +20,7 @@ include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_PR2      } from '../subworkflows/
 
 include { dada2_input_preparation_function              } from '../lib/nf/dada2_input_preparation_function.nf'
 
-include { samplesheetToList } from 'plugin/nf-schema'
+include { samplesheetToList                             } from 'plugin/nf-schema'
 
 
 // Initialise different database inputs for taxonomic assignments with regular taxonomy resolution method

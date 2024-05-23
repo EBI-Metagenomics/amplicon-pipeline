@@ -5,7 +5,10 @@ process CONCAT_PRIMERS {
     // strand has an auto primer
     tag "$meta.id"
     label 'extremely_light'
-    
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
+        "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
+
     input:
     tuple val(meta), path(std_primers), path(auto_primers)
 

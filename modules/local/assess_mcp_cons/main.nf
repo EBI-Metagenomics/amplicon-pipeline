@@ -3,7 +3,6 @@ process ASSESS_MCP_CONS {
     // Use Most Common Prefix (MCP) method to generate curves of base conservation
     tag "$meta.id"
     label 'very_light'
-    conda "${projectDir}/conf/environment.yml"
     // TODO: uncomment container when you release fix to mpt
     // container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
     //     "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":

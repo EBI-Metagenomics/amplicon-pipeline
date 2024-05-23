@@ -3,6 +3,9 @@ process SPLIT_PRIMERS_BY_STRAND {
     // Split the concatenated primer files into two, one containing the fwd primers, and one for the rev
     tag "$meta.id"
     label 'very_light'
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
+        "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
     
     input:
     tuple val(meta), path(concat_primers)
