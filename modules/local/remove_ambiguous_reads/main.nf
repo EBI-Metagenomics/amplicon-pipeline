@@ -12,6 +12,7 @@ process REMOVE_AMBIGUOUS_READS {
 
     output:
     tuple val(meta), path("*noambig*fastq.gz"), emit: noambig_out
+    path "versions.yml"                       , emit: versions
 
     script:
     """
@@ -20,5 +21,10 @@ process REMOVE_AMBIGUOUS_READS {
     else 
         remove_ambiguous_reads -f ${reads[0]} -r ${reads[1]} -s ${meta.id}
     fi
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        mgnify-pipelines-toolkit: ${params.mpt_version}
+    END_VERSIONS
     """
 }

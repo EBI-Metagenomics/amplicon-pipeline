@@ -14,15 +14,23 @@ process CONCAT_PRIMERS {
 
     output:
     tuple val(meta), path("*concat_primers.fasta") , optional: true, emit: concat_primers_out
+    path "versions.yml"                            , emit: versions
 
-    shell:
-    '''
-    if [[ -s !{auto_primers} ]]; then
-        cat !{std_primers} > ./!{meta.id}_!{meta.var_region}_concat_primers.fasta
-        echo '\n' >> ./!{meta.id}_!{meta.var_region}_concat_primers.fasta
-        cat !{auto_primers} >>./!{meta.id}_!{meta.var_region}_concat_primers.fasta
+    script:
+    """
+    if [[ -s ${auto_primers} ]]
+    then
+        cat ${std_primers} > ${meta.id}_${meta.var_region}_concat_primers.fasta
+        echo -en "\\n" >> ${meta.id}_${meta.var_region}_concat_primers.fasta
+        cat ${auto_primers} >> ${meta.id}_${meta.var_region}_concat_primers.fasta
     else
-        cat !{std_primers} > ./!{meta.id}_!{meta.var_region}_concat_primers.fasta
+        cat ${std_primers} > ${meta.id}_${meta.var_region}_concat_primers.fasta
     fi
-    '''
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        mgnify-pipelines-toolkit: ${params.mpt_version}
+    END_VERSIONS
+    """
+
 }

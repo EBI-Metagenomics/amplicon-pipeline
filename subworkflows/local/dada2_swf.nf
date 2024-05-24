@@ -9,15 +9,20 @@ workflow DADA2_SWF {
 
     main:
 
+        ch_versions = Channel.empty()
+
         REMOVE_AMBIGUOUS_READS(
             dada2_input
         )
+        ch_versions = ch_versions.mix(REMOVE_AMBIGUOUS_READS.out.versions.first())
 
         DADA2(
             REMOVE_AMBIGUOUS_READS.out.noambig_out
         )
+        ch_versions = ch_versions.mix(DADA2.out.versions.first())
 
     emit:
         dada2_out = DADA2.out.dada2_out
+        versions = ch_versions
     
 }

@@ -16,16 +16,21 @@ workflow PRIMER_IDENTIFICATION {
         reads_merged
         std_primer_library
     main:
+
+        ch_versions = Channel.empty()
+
         // Standard Library primers
         STD_PRIMER_FLAG(
             reads_merged,
             std_primer_library
-        ) 
+        )
+        ch_versions = ch_versions.mix(STD_PRIMER_FLAG.out.versions.first())
 
         // Primers in general
         GENERAL_PRIMER_FLAG(
             reads_merged
         )
+        ch_versions = ch_versions.mix(GENERAL_PRIMER_FLAG.out.versions.first())
 
         // Combining std and general primer outputs and parsing them to guide 
         // samples through automatic primer identification and trimming by cutadapt
@@ -36,14 +41,17 @@ workflow PRIMER_IDENTIFICATION {
         TRIMMING_CONDUCTOR(
             comb_flags
         )
+        ch_versions = ch_versions.mix(TRIMMING_CONDUCTOR.out.versions.first())
         
         // Parse flags file into env variables
         PARSE_CONDUCTOR(
             TRIMMING_CONDUCTOR.out.trimming_conductor_out
         )
+        ch_versions = ch_versions.mix(PARSE_CONDUCTOR.out.versions.first())
 
     emit:
         conductor_out = PARSE_CONDUCTOR.out.conductor_out
         std_primer_out = STD_PRIMER_FLAG.out.std_primer_out
+        versions = ch_versions
     
 }

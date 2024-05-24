@@ -15,15 +15,19 @@ workflow AUTOMATIC_PRIMER_PREDICTION {
     take:
         auto_trimming_input
     main:
+
+        ch_versions = Channel.empty()
         // Use Most Common Prefix (MCP) method to generate curves of base conservation
         ASSESS_MCP_CONS(
             auto_trimming_input
         )
+        ch_versions = ch_versions.mix(ASSESS_MCP_CONS.out.versions.first())
 
         // Find inflection points in conservation curves
         FIND_MCP_INF_POINTS(
             ASSESS_MCP_CONS.out.mcp_cons_out
         )
+        ch_versions = ch_versions.mix(FIND_MCP_INF_POINTS.out.versions.first())
 
         extracted_reads = auto_trimming_input.map{ meta, fwd_flag, rev_flag, extracted_reads ->
                                                     [ meta, extracted_reads ]
@@ -36,10 +40,12 @@ workflow AUTOMATIC_PRIMER_PREDICTION {
         ASSESS_MCP_INF_POINTS(
             assess_inf_input
         )
+        ch_versions = ch_versions.mix(ASSESS_MCP_INF_POINTS.out.versions.first())
 
         ASSESS_MCP_INF_POINTS.out.auto_primer_out
 
    emit:
         auto_primer_trimming_out = ASSESS_MCP_INF_POINTS.out.auto_primer_out
+        versions = ch_versions
 
 }

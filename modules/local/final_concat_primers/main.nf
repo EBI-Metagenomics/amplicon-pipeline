@@ -11,6 +11,7 @@ process FINAL_CONCAT_PRIMERS {
 
     output:
     tuple val(meta), path("*final_concat_primers.fasta"), optional: true, emit: final_concat_primers_out
+    path "versions.yml"                                 , emit: versions
 
     script:
     """
@@ -20,6 +21,11 @@ process FINAL_CONCAT_PRIMERS {
     else
        touch ${meta.id}_final_concat_primers.fasta
     fi
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        mgnify-pipelines-toolkit: ${params.mpt_version}
+    END_VERSIONS
     """
 
 }
