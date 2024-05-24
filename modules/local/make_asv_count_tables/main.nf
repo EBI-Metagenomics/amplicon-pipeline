@@ -12,6 +12,7 @@ process MAKE_ASV_COUNT_TABLES {
 
     output:
     tuple val(meta), path("*asv_krona_counts.txt"), emit: asv_count_tables_out
+    path "versions.yml"                           , emit: versions
 
     script:
     """
@@ -22,5 +23,10 @@ process MAKE_ASV_COUNT_TABLES {
         zcat ${reads[0]} | sed -n "1~4p" > headers.txt
         make_asv_count_table.py -t $asvtaxtable -f ${maps[0]} -r ${maps[1]} -a $extracted_var_path -hd ./headers.txt  -s ${meta.id}
     fi
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        mgnify-pipelines-toolkit: ${params.mpt_version}
+    END_VERSIONS
     """
 }

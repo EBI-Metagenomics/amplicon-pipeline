@@ -11,10 +11,16 @@ process FORMAT_BEDFILE {
 
     output:
     tuple val(meta), path("*maskfile.bed"), emit: format_bedfile_out
+    path "versions.yml"                   , emit: versions
 
     script:
     """
     awk '\$2 > \$3 { var = \$3; \$3 = \$2; \$2 = var } 1 {print \$4,\$2,\$3}' OFS='\t' $concat_ssu_lsu_coords > ${meta.id}_maskfile.bed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        mgnify-pipelines-toolkit: ${params.mpt_version}
+    END_VERSIONS
     """
 
 }

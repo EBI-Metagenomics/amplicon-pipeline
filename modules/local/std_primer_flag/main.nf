@@ -15,10 +15,17 @@ process STD_PRIMER_FLAG {
     output:
     tuple val(meta), path("*std_primers.fasta"), emit: std_primer_out
     path "*std_primer_out.txt"
+    path "versions.yml"                        , emit: versions
+
 
     script:
     """
     standard_primer_matching -i $reads_merged -p $std_primer_library -s ${meta.id}_${meta.var_region} -o ./
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        mgnify-pipelines-toolkit: ${params.mpt_version}
+    END_VERSIONS
     """
 
 }

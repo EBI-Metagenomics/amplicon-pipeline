@@ -11,9 +11,15 @@ process PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS {
 
     output:
     tuple val(meta), path("*primer_validation.tsv"), emit: primer_validation_out
+    path "versions.yml"                            , emit: versions
 
     script:
     """
     primer_validation_classify_var_regions.py -i $cmsearch_deoverlap_out -f $concat_primers_fasta -s ${meta.id} 
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        mgnify-pipelines-toolkit: ${params.mpt_version}
+    END_VERSIONS
     """
 }

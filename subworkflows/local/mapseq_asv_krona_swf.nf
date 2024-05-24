@@ -15,6 +15,8 @@ workflow MAPSEQ_ASV_KRONA {
 
     main:
 
+        ch_versions = Channel.empty()
+
         mapseq_input = dada2_output
                        .map { meta, maps, asv_seqs, filt_reads ->
                             [ meta, asv_seqs ]
@@ -23,11 +25,13 @@ workflow MAPSEQ_ASV_KRONA {
             mapseq_input,
             tuple(krona_tuple[0], krona_tuple[1], krona_tuple[3])
         )
+        ch_versions = ch_versions.mix(MAPSEQ.out.versions.first())
 
         MAPSEQ2ASVTABLE(
             MAPSEQ.out.mseq,
             krona_tuple[4] // db_label
         )
+        ch_versions = ch_versions.mix(MAPSEQ2ASVTABLE.out.versions.first())
 
         // Transpose by var region in case any samples have more than one
         split_mapseq2asvtable = MAPSEQ2ASVTABLE.out.asvtaxtable
@@ -68,13 +72,16 @@ workflow MAPSEQ_ASV_KRONA {
         MAKE_ASV_COUNT_TABLES(
             final_asv_count_table_input
         )
+        ch_versions = ch_versions.mix(MAKE_ASV_COUNT_TABLES.out.versions.first())
 
         KRONA_KTIMPORTTEXT(
             MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out,
         )
+        ch_versions = ch_versions.mix(KRONA_KTIMPORTTEXT.out.versions.first())
 
     emit:
         asv_count_tables_out = MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out
         krona_out = KRONA_KTIMPORTTEXT.out.html
+        versions = ch_versions
     
 }

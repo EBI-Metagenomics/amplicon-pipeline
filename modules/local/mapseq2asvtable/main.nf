@@ -12,9 +12,16 @@ process MAPSEQ2ASVTABLE {
 
     output:
     tuple val(meta), path("*.tsv"), emit: asvtaxtable
+    path "versions.yml"           , emit: versions
 
+    script:
     """
     mapseq2asvtable.py -i $mapseq_out -l $db_label -s ${meta.id}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        mgnify-pipelines-toolkit: ${params.mpt_version}
+    END_VERSIONS
     """
 
 }

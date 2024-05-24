@@ -9,9 +9,12 @@ workflow AMP_REGION_INFERENCE {
         reads_merged
     main:
 
+        ch_versions = Channel.empty()
+
         CLASSIFY_VAR_REGIONS(
             cmsearch_deoverlap_out,
         )
+        ch_versions = ch_versions.mix(CLASSIFY_VAR_REGIONS.out.versions.first())
 
         extract_var_input = CLASSIFY_VAR_REGIONS.out.classify_var_regions
                             .map { meta, var_regions -> 
@@ -26,6 +29,7 @@ workflow AMP_REGION_INFERENCE {
         EXTRACT_VAR_REGIONS(
             extract_var_input,
         )
+        ch_versions = ch_versions.mix(EXTRACT_VAR_REGIONS.out.versions.first())
 
         final_var_out = EXTRACT_VAR_REGIONS.out.extracted_var_out
                     .map { meta, var_region, extracted_reads ->
@@ -36,5 +40,6 @@ workflow AMP_REGION_INFERENCE {
         concat_var_regions = CLASSIFY_VAR_REGIONS.out.concat_var_regions
         extracted_var_out = final_var_out
         extracted_var_path = EXTRACT_VAR_REGIONS.out.extracted_var_path
+        versions = ch_versions
     
 }

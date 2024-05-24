@@ -12,6 +12,7 @@ process FIND_MCP_INF_POINTS {
 
     output:
     tuple val(meta), path("*inf_points.tsv"), emit: inf_points_out
+    path "versions.yml"                     , emit: versions
 
     script:
     """
@@ -20,5 +21,10 @@ process FIND_MCP_INF_POINTS {
     else
         touch ${meta.id}_${meta.var_region}_inf_points.tsv
     fi
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        mgnify-pipelines-toolkit: ${params.mpt_version}
+    END_VERSIONS
     """
 }

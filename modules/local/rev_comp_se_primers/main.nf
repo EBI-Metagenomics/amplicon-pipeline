@@ -11,6 +11,7 @@ process REV_COMP_SE_PRIMERS {
 
     output:
     tuple val(meta), path("*rev_comp_se_primers.fasta"), optional: true, emit: rev_comp_se_primers_out
+    path "versions.yml"                                , emit: versions
 
     script:
     """
@@ -21,6 +22,11 @@ process REV_COMP_SE_PRIMERS {
     else
         touch ./${meta.id}_rev_comp_se_primers.fasta
     fi
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        mgnify-pipelines-toolkit: ${params.mpt_version}
+    END_VERSIONS
     """
 
 }

@@ -18,6 +18,7 @@ include { DADA2_SWF                                     } from '../subworkflows/
 include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_SILVA    } from '../subworkflows/local/mapseq_asv_krona_swf.nf'
 include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_PR2      } from '../subworkflows/local/mapseq_asv_krona_swf.nf'
 
+include { CUSTOM_DUMPSOFTWAREVERSIONS                   } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { dada2_input_preparation_function              } from '../lib/nf/dada2_input_preparation_function.nf'
 
 include { samplesheetToList                             } from 'plugin/nf-schema'
@@ -84,6 +85,8 @@ samplesheet = Channel.fromList(samplesheetToList(params.input, "./assets/schema_
 
 workflow AMPLICON_PIPELINE {
 
+    ch_versions = Channel.empty()
+
     // Organise input tuple channel
     groupReads = { meta, fq1, fq2 ->
         if (fq2 == []) {
@@ -101,11 +104,14 @@ workflow AMPLICON_PIPELINE {
         ch_input,
         true // merge
     )
+    ch_versions = ch_versions.mix(READS_QC_MERGE.out.versions)
+
     // Run it again without merging to keep PE files unmerged for primer trimming+DADA2
     READS_QC(
         ch_input,
         false // merge
     )
+    ch_versions = ch_versions.mix(READS_QC.out.versions)
 
     // rRNA extraction subworkflow to find rRNA reads for SSU+LSU
     RRNA_EXTRACTION(
@@ -113,50 +119,59 @@ workflow AMPLICON_PIPELINE {
         file( params.rfam, checkIfExists: true ),
         file( params.claninfo, checkIfExists: true )
     )
+    ch_versions = ch_versions.mix(RRNA_EXTRACTION.out.versions)
 
     // Masking subworkflow to find rRNA reads for ITS
     MASK_FASTA_SWF(
         READS_QC_MERGE.out.reads_fasta,
         RRNA_EXTRACTION.out.concat_ssu_lsu_coords
     )
+    ch_versions = ch_versions.mix(MASK_FASTA_SWF.out.versions)
 
     // Next five subworkflow calls are MapSeq annotation + Krona generation for SSU+LSU+ITS
     MAPSEQ_OTU_KRONA_SSU(
         RRNA_EXTRACTION.out.ssu_fasta,
         ssu_mapseq_krona_tuple
     )
+    ch_versions = ch_versions.mix(MAPSEQ_OTU_KRONA_SSU.out.versions)
 
     MAPSEQ_OTU_KRONA_PR2(
         RRNA_EXTRACTION.out.ssu_fasta,
         pr2_mapseq_krona_tuple
-    )  
+    )
+    ch_versions = ch_versions.mix(MAPSEQ_OTU_KRONA_PR2.out.versions)
 
     MAPSEQ_OTU_KRONA_LSU(
         RRNA_EXTRACTION.out.lsu_fasta,
         lsu_mapseq_krona_tuple
-    )     
+    )
+    ch_versions = ch_versions.mix(MAPSEQ_OTU_KRONA_LSU.out.versions)
 
     MAPSEQ_OTU_KRONA_ITSONEDB(
         MASK_FASTA_SWF.out.masked_out,
         itsonedb_mapseq_krona_tuple
-    )    
+    )
+    ch_versions = ch_versions.mix(MAPSEQ_OTU_KRONA_ITSONEDB.out.versions)
 
     MAPSEQ_OTU_KRONA_UNITE(
         MASK_FASTA_SWF.out.masked_out,
         unite_mapseq_krona_tuple
     )
+    ch_versions = ch_versions.mix(MAPSEQ_OTU_KRONA_UNITE.out.versions)
 
     // Infer amplified variable regions for SSU, extract reads for each amplified region if there are more than one
     AMP_REGION_INFERENCE(
         RRNA_EXTRACTION.out.cmsearch_deoverlap_out,
         READS_QC_MERGE.out.reads_se_and_merged
     )
+    ch_versions = ch_versions.mix(AMP_REGION_INFERENCE.out.versions)
 
     // Identify whether primers exist or not in reads, separated by different amplified regions if more than one exists in a run
     PRIMER_IDENTIFICATION(
         AMP_REGION_INFERENCE.out.extracted_var_out,
         std_primer_library
     )
+    ch_versions = ch_versions.mix(PRIMER_IDENTIFICATION.out.versions)
 
     // Join primer identification flags with reads belonging to each run+amp_region
     auto_trimming_input = PRIMER_IDENTIFICATION.out.conductor_out
@@ -167,6 +182,7 @@ workflow AMPLICON_PIPELINE {
     AUTOMATIC_PRIMER_PREDICTION(
         auto_trimming_input
     )
+    ch_versions = ch_versions.mix(AUTOMATIC_PRIMER_PREDICTION.out.versions)
 
     // Concatenate the different combinations of stranded std/auto primers for each run+amp_region
     concat_input = PRIMER_IDENTIFICATION.out.std_primer_out
@@ -177,6 +193,7 @@ workflow AMPLICON_PIPELINE {
         concat_input,
         READS_QC.out.reads
     )
+    ch_versions = ch_versions.mix(CONCAT_PRIMER_CUTADAPT.out.versions)
 
     primer_validation_input = CONCAT_PRIMER_CUTADAPT.out.final_concat_primers_out
                               .map{ meta, primers ->
@@ -190,6 +207,7 @@ workflow AMPLICON_PIPELINE {
     PRIMER_VALIDATION(
         primer_validation_input
     )
+    ch_versions = ch_versions.mix(PRIMER_VALIDATION.out.versions)
 
     cutadapt_channel = CONCAT_PRIMER_CUTADAPT.out.cutadapt_out
                        .map { meta, reads -> 
@@ -202,6 +220,7 @@ workflow AMPLICON_PIPELINE {
     DADA2_SWF(
         dada2_input
     )
+    ch_versions = ch_versions.mix(DADA2_SWF.out.versions)
 
     // ASV taxonomic assignments + generate Krona plots for each run+amp_region
     MAPSEQ_ASV_KRONA_SILVA(
@@ -210,12 +229,18 @@ workflow AMPLICON_PIPELINE {
         AMP_REGION_INFERENCE.out.extracted_var_path,
         dada2_krona_silva_tuple,
     )
+    ch_versions = ch_versions.mix(MAPSEQ_ASV_KRONA_SILVA.out.versions)
 
     MAPSEQ_ASV_KRONA_PR2(
         DADA2_SWF.out.dada2_out,
         AMP_REGION_INFERENCE.out.concat_var_regions,
         AMP_REGION_INFERENCE.out.extracted_var_path,
         dada2_krona_pr2_tuple,
+    )
+    ch_versions = ch_versions.mix(MAPSEQ_ASV_KRONA_PR2.out.versions)
+
+    CUSTOM_DUMPSOFTWAREVERSIONS (
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
 
 }

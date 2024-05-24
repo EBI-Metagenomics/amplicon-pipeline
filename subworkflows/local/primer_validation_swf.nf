@@ -10,15 +10,19 @@ workflow PRIMER_VALIDATION {
 
     main:
 
+        ch_versions = Channel.empty()
+
         PRIMER_VALIDATION_SEARCH(
             primer_validation_input,
             file(params.rfam, checkIfExists: true)
         )
+        ch_versions = ch_versions.mix(PRIMER_VALIDATION_SEARCH.out.versions.first())
         
         PRIMER_VALIDATION_DEOVERLAP(
             PRIMER_VALIDATION_SEARCH.out.cmsearch_tbl,
             file(params.claninfo, checkIfExists: true)
         )
+        ch_versions = ch_versions.mix(PRIMER_VALIDATION_DEOVERLAP.out.versions.first())
 
         primer_validation_classify_var_regions_input = PRIMER_VALIDATION_DEOVERLAP.out.cmsearch_tblout_deoverlapped
                                                        .map{ tuple(["id":it[0].id, "single_end":it[0].single_end], it[0].var_region, it[1]) }
@@ -28,8 +32,10 @@ workflow PRIMER_VALIDATION {
         PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS(
             primer_validation_classify_var_regions_input
         )
+        ch_versions = ch_versions.mix(PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS.out.versions.first())
 
     emit:
         primer_validation_out = PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS.out.primer_validation_out
+        versions = ch_versions
     
 }
