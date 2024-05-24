@@ -16,7 +16,7 @@ process MAPSEQ2ASVTABLE {
 
     script:
     """
-    mapseq2asvtable.py -i $mapseq_out -l $db_label -s ${meta.id}
+    mapseq_to_asv_table -i $mapseq_out -l $db_label -s ${meta.id}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
