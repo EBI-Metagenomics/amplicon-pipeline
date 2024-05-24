@@ -19,9 +19,7 @@ The new subworkflows consist of:
 
 ## Requirements
 
-At the moment the prerequisites are Singularity and a micromamba environment located at:
-
-`/hps/software/users/rdf/metagenomics/service-team/software/micromamba/envs/asv-test`
+At the moment the only prerequisites for running it are Singularity and Nextflow
 
 ## Input shape
 
