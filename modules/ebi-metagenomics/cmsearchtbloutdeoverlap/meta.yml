@@ -12,7 +12,7 @@ tools:
       homepage: "https://github.com/nawrockie/cmsearch_tblout_deoverlap/"
       documentation: "https://github.com/nawrockie/cmsearch_tblout_deoverlap/wiki"
       tool_dev_url: "https://github.com/nawrockie/cmsearch_tblout_deoverlap/"
-      licence: "['Public Domain']"
+      licence: ["Public Domain"]
 
 input:
   - meta:
@@ -23,8 +23,13 @@ input:
 
   - cmsearch_tblout:
       type: file
-      description: Sorted BAM/CRAM/SAM file
-      pattern: "*.tblout"
+      description: Tabular file from cmsearch
+      pattern: "*.{tblout, tblout.gz}"
+
+  - clanin:
+      type: file
+      description: Text file containing the Rfam clans to deoverlap on
+      pattern: "*.claninfo"
 
 output:
   - meta:
@@ -40,7 +45,7 @@ output:
 
   - cmsearch_tblout_deoverlapped:
       type: file
-      description: Sorted BAM/CRAM/SAM file
+      description: Deoverlapped .tblout file
       pattern: "*.tblout.deoverlapped"
 
 authors:

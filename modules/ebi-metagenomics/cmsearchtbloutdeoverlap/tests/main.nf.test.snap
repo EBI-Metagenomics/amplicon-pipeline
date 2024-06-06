@@ -1,0 +1,142 @@
+{
+    "cmsearchtbloutdeoverlap - decompress": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.tblout.deoverlapped:md5,c68f9407a07e6b056025ca97001b5ef8"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,86775aca65189c456e0982d1bbd95ace"
+                ],
+                "cmsearch_tblout_deoverlapped": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.tblout.deoverlapped:md5,c68f9407a07e6b056025ca97001b5ef8"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,86775aca65189c456e0982d1bbd95ace"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.04.3"
+        },
+        "timestamp": "2024-05-09T13:36:16.134340556"
+    },
+    "cmsearchtbloutdeoverlap - primer validation": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.tblout.deoverlapped:md5,9cd7612a1fbf53ccbe29c8b8875e3559"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,86775aca65189c456e0982d1bbd95ace"
+                ],
+                "cmsearch_tblout_deoverlapped": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.tblout.deoverlapped:md5,9cd7612a1fbf53ccbe29c8b8875e3559"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,86775aca65189c456e0982d1bbd95ace"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.04.3"
+        },
+        "timestamp": "2024-05-09T13:40:13.316000216"
+    },
+    "stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.tblout.deoverlapped:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,86775aca65189c456e0982d1bbd95ace"
+                ],
+                "cmsearch_tblout_deoverlapped": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.tblout.deoverlapped:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,86775aca65189c456e0982d1bbd95ace"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.04.3"
+        },
+        "timestamp": "2024-05-09T13:36:25.527946847"
+    },
+    "cmsearchtbloutdeoverlap": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.tblout.deoverlapped:md5,c68f9407a07e6b056025ca97001b5ef8"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,86775aca65189c456e0982d1bbd95ace"
+                ],
+                "cmsearch_tblout_deoverlapped": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.tblout.deoverlapped:md5,c68f9407a07e6b056025ca97001b5ef8"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,86775aca65189c456e0982d1bbd95ace"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.8.4",
+            "nextflow": "23.04.3"
+        },
+        "timestamp": "2024-05-09T13:35:53.001130738"
+    }
+}

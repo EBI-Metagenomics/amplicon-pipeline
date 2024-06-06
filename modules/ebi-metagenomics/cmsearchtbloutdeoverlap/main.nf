@@ -1,7 +1,7 @@
 
 process CMSEARCHTBLOUTDEOVERLAP {
     tag "$meta.id"
-    label 'very_light'
+    label 'process_single'
 
     conda "bioconda::cmsearch_tblout_deoverlap=0.09"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -22,14 +22,19 @@ process CMSEARCHTBLOUTDEOVERLAP {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def cmsearch_tblout_unzipped = cmsearch_tblout.name.replace(".gz", "")
+    def is_compressed = cmsearch_tblout.getExtension() == "gz"
+    def cmsearch_tblout_name = cmsearch_tblout.name.replace(".gz", "")
+
     """
-    gzip -c -d $cmsearch_tblout > $cmsearch_tblout_unzipped
+    if [ "$is_compressed" == "true" ]; then
+        gzip -c -d $cmsearch_tblout > $cmsearch_tblout_name
+    fi
+
     cmsearch-deoverlap.pl $args \
         --clanin $clanin \
-        $cmsearch_tblout_unzipped
+        $cmsearch_tblout_name
 
-    mv ${cmsearch_tblout_unzipped}.deoverlapped ${prefix}.tblout.deoverlapped
+    mv ${cmsearch_tblout_name}.deoverlapped ${prefix}.tblout.deoverlapped
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

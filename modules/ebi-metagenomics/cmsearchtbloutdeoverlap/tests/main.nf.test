@@ -1,0 +1,105 @@
+nextflow_process {
+
+    name "Test Process CMSEARCHTBLOUTDEOVERLAP"
+    script "../main.nf"
+    process "CMSEARCHTBLOUTDEOVERLAP"
+
+    tag "modules"
+    tag "modules_nfcore"
+    tag "cmsearchtbloutdeoverlap"
+
+    test("cmsearchtbloutdeoverlap") {
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ],                                       // meta map
+                    file("${moduleDir}/tests/1.cmscan.clan.tblout", checkIfExists: true)   // cmsearch out
+                    ]
+                input[1] = [file("${moduleDir}/tests/ribo.claninfo", checkIfExists: true)] // claninfo
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+                
+
+    }
+
+    test("cmsearchtbloutdeoverlap - decompress") {
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ],                                          // meta map
+                    file("${moduleDir}/tests/1.cmscan.clan.tblout.gz", checkIfExists: true)   // cmsearch out
+                    ]
+                input[1] = [file("${moduleDir}/tests/ribo.claninfo", checkIfExists: true)]    // claninfo
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+                
+
+    }
+
+    test("cmsearchtbloutdeoverlap - primer validation") {
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ],                                          // meta map
+                    file("${moduleDir}/tests/f_and_r_primers.tblout", checkIfExists: true)   // cmsearch out
+                    ]
+                input[1] = [file("${moduleDir}/tests/ribo.claninfo", checkIfExists: true)]    // claninfo
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+                
+
+    }
+
+    test("stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ],                                       // meta map
+                    file("${moduleDir}/tests/1.cmscan.clan.tblout", checkIfExists: true)   // cmsearch out
+                    ]
+                input[1] = [file("${moduleDir}/tests/ribo.claninfo", checkIfExists: true)] // claninfo
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}
