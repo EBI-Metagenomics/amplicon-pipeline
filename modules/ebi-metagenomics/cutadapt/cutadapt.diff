@@ -1,0 +1,75 @@
+Changes in module 'ebi-metagenomics/cutadapt'
+--- modules/ebi-metagenomics/cutadapt/main.nf
++++ modules/ebi-metagenomics/cutadapt/main.nf
+@@ -1,7 +1,7 @@
+ 
+ process CUTADAPT {
+     tag "$meta.id"
+-    label 'process_medium'
++    label 'very_light'
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+@@ -42,19 +42,47 @@
+ 
+     def primer_arg = "$fwd_primer $rev_primer"
+ 
+-    """
+-    cutadapt \\
+-        --cores $task.cpus \\
+-        $args \\
+-        $trimmed \\
+-        $primer_arg \\
+-        $reads \\
+-        > ${prefix}.cutadapt.log
+-    cat <<-END_VERSIONS > versions.yml
+-    "${task.process}":
+-        cutadapt: \$(cutadapt --version)
+-    END_VERSIONS
+-    """
++    if(fwd_primer == "" && rev_primer == ""){
++        if (!meta.single_end){
++            """
++            touch ${prefix}.cutadapt.log
++            touch ${prefix}_1.trim.fastq.gz
++            touch ${prefix}_2.trim.fastq.gz
++
++            cat <<-END_VERSIONS > versions.yml
++            "${task.process}":
++                cutadapt: \$(cutadapt --version)
++            END_VERSIONS
++            """
++        }
++        else{
++            """
++            touch ${prefix}.cutadapt.log
++            touch ${prefix}.trim.fastq.gz
++
++            cat <<-END_VERSIONS > versions.yml
++            "${task.process}":
++                cutadapt: \$(cutadapt --version)
++            END_VERSIONS
++            """
++
++        }
++    }
++    else{
++        """
++        cutadapt \\
++            --cores $task.cpus \\
++            $args \\
++            $trimmed \\
++            $primer_arg \\
++            $reads \\
++            > ${prefix}.cutadapt.log
++        cat <<-END_VERSIONS > versions.yml
++        "${task.process}":
++            cutadapt: \$(cutadapt --version)
++        END_VERSIONS
++        """
++    }
+ 
+     stub:
+     def prefix  = task.ext.prefix ?: "${meta.id}"
+
+************************************************************

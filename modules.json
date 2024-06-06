@@ -7,13 +7,15 @@
         "ebi-metagenomics": {
           "cmsearchtbloutdeoverlap": {
             "branch": "main",
-            "git_sha": "f46c82bbdaa9ea8396c6a50c016a1eac64e3fabd",
-            "installed_by": ["modules", "rrna_extraction"]
+            "git_sha": "696324c637a7e0cf06fe331faffee42e36826898",
+            "installed_by": ["modules", "rrna_extraction"],
+            "patch": "modules/ebi-metagenomics/cmsearchtbloutdeoverlap/cmsearchtbloutdeoverlap.diff"
           },
           "cutadapt": {
             "branch": "main",
             "git_sha": "09af8ca976af68d2b82da95eb62416a10ed75613",
-            "installed_by": ["modules"]
+            "installed_by": ["modules"],
+            "patch": "modules/ebi-metagenomics/cutadapt/cutadapt.diff"
           },
           "easel/eslsfetch": {
             "branch": "main",
@@ -23,7 +25,8 @@
           "extractcoords": {
             "branch": "main",
             "git_sha": "c249cf1afd1b7ceaacde6ba44fd9c919bf688c6d",
-            "installed_by": ["rrna_extraction"]
+            "installed_by": ["rrna_extraction"],
+            "patch": "modules/ebi-metagenomics/extractcoords/extractcoords.diff"
           },
           "fastp": {
             "branch": "main",
@@ -38,7 +41,8 @@
           "krona/ktimporttext": {
             "branch": "main",
             "git_sha": "172e93318ac2e2db5f9885b07ffb80443e67848a",
-            "installed_by": ["mapseq_otu_krona"]
+            "installed_by": ["mapseq_otu_krona"],
+            "patch": "modules/ebi-metagenomics/krona/ktimporttext/krona-ktimporttext.diff"
           },
           "mapseq": {
             "branch": "main",
@@ -48,7 +52,8 @@
           "mapseq2biom": {
             "branch": "main",
             "git_sha": "fe16b0221649bc7ca3bfa69f722e8a89fab1de16",
-            "installed_by": ["mapseq_otu_krona"]
+            "installed_by": ["mapseq_otu_krona"],
+            "patch": "modules/ebi-metagenomics/mapseq2biom/mapseq2biom.diff"
           },
           "seqtk/seq": {
             "branch": "main",
