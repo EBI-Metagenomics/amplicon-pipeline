@@ -47,7 +47,7 @@ Example output directory structure for one run:
 │   ├── ERR4334351_16S-V3-V4_extracted.fastq.gz
 │   ├── ERR4334351.16S.V3-V4.txt
 │   └── ERR4334351.tsv
-├── asv-gen
+├── asv
 │   ├── 16S-V3-V4
 │   ├── ERR4334351_asvs.fasta
 │   ├── ERR4334351_proportion_chimeric.txt
