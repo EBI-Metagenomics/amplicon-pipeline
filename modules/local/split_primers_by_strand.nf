@@ -18,17 +18,17 @@ process SPLIT_PRIMERS_BY_STRAND {
     """
     if [[ -s ${concat_primers} ]]; then
 
-        fwd_flag="\$(grep -A 1 --no-group-separator '^>.*F' ${concat_primers} || true)"
-        rev_flag="\$(grep -A 1 --no-group-separator '^>.*R' ${concat_primers} || true)"
+        fwd_flag="\$(grep -A 1 '^>.*F' ${concat_primers} | grep -v -- '^--\$' || true)"
+        rev_flag="\$(grep -A 1 '^>.*R' ${concat_primers} | grep -v -- '^--\$' || true)"
 
         if [[ ! -z \$fwd_flag ]]; then
-            grep -A 1 --no-group-separator '^>.*F' ${concat_primers} > ./fwd_primer.fasta
+            grep -A 1 '^>.*F' ${concat_primers} | grep -v -- '^--\$' > ./fwd_primer.fasta
         else
             touch ./fwd_primer.fasta
         fi
 
         if [[ ! -z \$rev_flag ]]; then
-            grep -A 1 --no-group-separator '^>.*R' ${concat_primers} > ./rev_primer.fasta
+            grep -A 1 '^>.*R' ${concat_primers} | grep -v -- '^--\$' > ./rev_primer.fasta
         else
             touch ./rev_primer.fasta
         fi
