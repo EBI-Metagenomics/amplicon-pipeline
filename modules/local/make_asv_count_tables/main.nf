@@ -11,6 +11,8 @@ process MAKE_ASV_COUNT_TABLES {
 
     output:
     tuple val(meta), path("*asv_krona_counts.txt"), emit: asv_count_tables_out
+    tuple val(meta), path("*asv_read_counts.tsv") , emit: asv_read_counts_out
+    tuple val(meta), path("*asvs_left.txt")       , emit: asvs_left
     path "versions.yml"                           , emit: versions
 
     script:
@@ -18,9 +20,11 @@ process MAKE_ASV_COUNT_TABLES {
     if [[ ${meta.single_end} = true ]]; then
         zcat $reads | awk 'NR % 4 == 1' > headers.txt
         make_asv_count_table -t $asvtaxtable -f $maps -a $extracted_var_path -hd ./headers.txt  -s ${meta.id}
+        tail -n +2 *_asv_read_counts.tsv | cut -f1 > ${meta.id}_${meta.var_region}_asvs_left.txt
     else
         zcat ${reads[0]} | awk 'NR % 4 == 1' > headers.txt
         make_asv_count_table -t $asvtaxtable -f ${maps[0]} -r ${maps[1]} -a $extracted_var_path -hd ./headers.txt  -s ${meta.id}
+        tail -n +2 *_asv_read_counts.tsv | cut -f1 > ${meta.id}_${meta.var_region}_asvs_left.txt
     fi
 
     cat <<-END_VERSIONS > versions.yml

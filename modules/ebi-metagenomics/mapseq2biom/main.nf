@@ -1,7 +1,7 @@
 
 process MAPSEQ2BIOM {
     tag "$meta.id"
-    label 'very_light'
+    label 'light'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

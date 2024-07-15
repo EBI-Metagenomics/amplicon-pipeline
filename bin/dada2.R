@@ -118,10 +118,10 @@ if (length(merged$sequence) == 0){
         unmatched_asvs = append(unmatched_asvs, i)
       }
     }
-    
-    final_f_output[[i]] = paste(f_map_list, collapse = ",")
+
+    final_f_output[[i]] = f_map_list[1]
     if (!is.na(path_r)){
-      final_r_output[[i]] = paste(r_map_list, collapse = ",")
+      final_r_output[[i]] = f_map_list[1]
     }
     
   }
@@ -149,11 +149,15 @@ if (length(merged$sequence) == 0){
   proportion_chimeric = 1 - (seqtab.nochim_read_count / seqtab_read_count)
   write(proportion_chimeric, paste0("./", prefix, "_proportion_chimeric.txt"))
 
+  # Get count of unique ASVs left after all types of filtering
+  asvs_left = sort(as.numeric(unique(unlist(final_f_output))))
+  asvs_left = asvs_left[2:length(asvs_left)]
+
   # Save ASV sequences to FASTA file
-  seqtab.nochim.length = length(seqtab.nochim)
-  num_list = as.character(1:seqtab.nochim.length)
-  id_list = paste("seq", num_list, sep="_")
-  unqs = getUniques(seqtab.nochim)
+  seqtab.length = length(seqtab)
+  num_list = as.character(1:seqtab.length)
+  id_list = paste("seq", asvs_left, sep="_")
+  unqs = getUniques(seqtab)[asvs_left]
   uniquesToFasta(unqs, paste0("./", prefix, "_asvs.fasta"), id_list)
 
 }

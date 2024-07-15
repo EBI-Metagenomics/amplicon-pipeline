@@ -5,8 +5,8 @@ process MAPSEQ {
 
     conda "bioconda::mapseq=2.1.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mapseq:2.1.1--ha34dc8c_0':
-        'biocontainers/mapseq:2.1.1--ha34dc8c_0' }"
+        'https://depot.galaxyproject.org/singularity/mapseq:2.1.1b--h3ab3c3b_0':
+        'biocontainers/mapseq:2.1.1b--h3ab3c3b_0' }"
 
     input:
     tuple val(meta), path(subunit_reads)
@@ -25,6 +25,7 @@ process MAPSEQ {
 
     """
     mapseq \\
+        -seed 12 \\
         $subunit_reads \\
         $db_fasta \\
         $db_tax \\

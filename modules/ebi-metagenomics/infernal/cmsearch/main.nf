@@ -2,7 +2,7 @@
 process INFERNAL_CMSEARCH {
 
     tag "$meta.id"
-    label 'high_cpu_low_mem'
+    label 'medium'
 
     conda "bioconda::infernal=1.1.5"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
