@@ -47,10 +47,10 @@ if (!is.na(path_r)){
   filt_r =  paste0("./", prefix, "_2", "_filt.fastq.gz")
   print(paste0("The forward strand truncation point is: ", final_where_to_cut_f))
   print(paste0("The reverse strand truncation point is: ", final_where_to_cut_r))
-  out = filterAndTrim(path_f, filt_f, path_r, filt_r, rm.phix=TRUE, maxEE=c(1,1), truncQ=2, truncLen=c(final_where_to_cut_f,final_where_to_cut_r), compress=TRUE, multithread=TRUE)
+  out = filterAndTrim(path_f, filt_f, path_r, filt_r, rm.phix=TRUE, maxEE=c(2,5), truncQ=2, truncLen=c(final_where_to_cut_f,final_where_to_cut_r), compress=TRUE, multithread=TRUE)
 } else{
   print(paste0("The forward strand truncation point is: ", final_where_to_cut_f))
-  out = filterAndTrim(path_f, filt_f, rm.phix=TRUE, maxEE=1, truncQ=2, truncLen=final_where_to_cut_f, compress=TRUE, multithread=TRUE)
+  out = filterAndTrim(path_f, filt_f, rm.phix=TRUE, maxEE=2, truncQ=2, truncLen=final_where_to_cut_f, compress=TRUE, multithread=TRUE)
 }
 
 # Learn error model
