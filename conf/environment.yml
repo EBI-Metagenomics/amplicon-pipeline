@@ -4,6 +4,5 @@ name: "mgnify-pipelines-toolkit"
 channels:
   - conda-forge
   - bioconda
-  - defaults
 dependencies:
   - "bioconda::mgnify-pipelines-toolkit=0.1.2"
