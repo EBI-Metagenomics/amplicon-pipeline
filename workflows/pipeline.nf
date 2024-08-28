@@ -113,9 +113,16 @@ workflow AMPLICON_PIPELINE {
     )
     ch_versions = ch_versions.mix(READS_QC.out.versions)
 
+    // removes reads that are empty after QC
+    non_empty_reads_fasta = READS_QC_MERGE.out.reads_fasta.map{ meta, reads ->
+                                if ( reads.countFasta() > 0){
+                                    [ meta, reads ]
+                                }
+                            }
+
     // rRNA extraction subworkflow to find rRNA reads for SSU+LSU
     RRNA_EXTRACTION(
-        READS_QC_MERGE.out.reads_fasta,
+        non_empty_reads_fasta,
         file( params.rfam, checkIfExists: true ),
         file( params.claninfo, checkIfExists: true )
     )
@@ -123,7 +130,7 @@ workflow AMPLICON_PIPELINE {
 
     // Masking subworkflow to find rRNA reads for ITS
     MASK_FASTA_SWF(
-        READS_QC_MERGE.out.reads_fasta,
+        non_empty_reads_fasta,
         RRNA_EXTRACTION.out.concat_ssu_lsu_coords
     )
     ch_versions = ch_versions.mix(MASK_FASTA_SWF.out.versions)
@@ -201,13 +208,6 @@ workflow AMPLICON_PIPELINE {
                                     [ meta, primers ]
                                 }    
                               }
-
-    // Verify that any identified primers (both std+auto) actually match to regions of the SSU gene (for Bacteria/Archaea/Eukaryotes)
-    // Output of this (a .tsv file) will go to CDCH
-    PRIMER_VALIDATION(
-        primer_validation_input
-    )
-    ch_versions = ch_versions.mix(PRIMER_VALIDATION.out.versions)
 
     cutadapt_channel = CONCAT_PRIMER_CUTADAPT.out.cutadapt_out
                        .map { meta, reads -> 

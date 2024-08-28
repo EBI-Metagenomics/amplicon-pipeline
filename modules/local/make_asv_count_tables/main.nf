@@ -1,7 +1,7 @@
 
 process MAKE_ASV_COUNT_TABLES {
     tag "$meta.id"
-    label 'process_long'
+    label 'medium'
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
         "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"

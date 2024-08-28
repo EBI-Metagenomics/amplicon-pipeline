@@ -3,6 +3,8 @@ include { CONCAT_PRIMERS          } from '../../modules/local/concat_primers/mai
 include { FINAL_CONCAT_PRIMERS    } from '../../modules/local/final_concat_primers/main.nf'
 include { REV_COMP_SE_PRIMERS     } from '../../modules/local/rev_comp_se_primers/main.nf'
 include { SPLIT_PRIMERS_BY_STRAND } from '../../modules/local/split_primers_by_strand.nf'
+include { PRIMER_VALIDATION       } from '../../subworkflows/local/primer_validation_swf.nf'
+
 include { CUTADAPT                } from '../../modules/ebi-metagenomics/cutadapt/main.nf'
 
 workflow CONCAT_PRIMER_CUTADAPT {
@@ -34,8 +36,48 @@ workflow CONCAT_PRIMER_CUTADAPT {
         )
         ch_versions = ch_versions.mix(FINAL_CONCAT_PRIMERS.out.versions.first())
 
+        primer_validation_input = FINAL_CONCAT_PRIMERS.out.final_concat_primers_out
+                              .map{ meta, primers ->
+                                if (primers.size() > 0){
+                                    [ meta, primers ]
+                                }
+                              }
+
+        runs_without_primers = FINAL_CONCAT_PRIMERS.out.final_concat_primers_out
+                              .map{ meta, primers ->
+                                if (primers.size() == 0){
+                                    [ meta, primers ]
+                                }
+                              }
+    // Verify that any identified primers (both std+auto) actually match to regions of the SSU gene (for Bacteria/Archaea/Eukaryotes)
+    // Output of this (a .tsv file) will go to CDCH
+        PRIMER_VALIDATION(
+            primer_validation_input
+        )
+        ch_versions = ch_versions.mix(PRIMER_VALIDATION.out.versions)
+
+
+        post_primer_val_filter = PRIMER_VALIDATION.out.primer_validation_out
+                                 .map{ meta, primer_val ->
+                                    [ meta.subMap('id', 'single_end'), primer_val ]
+                                 }
+
+        rev_comp_se_primers_input = primer_validation_input.map{ meta, primers ->
+                                    [meta.subMap('id', 'single_end'), primers ]
+                                }
+                                .join(post_primer_val_filter, by:0)
+                                .map{ meta, primers, primer_val ->
+                                    if (primer_val.countLines() == 0){
+                                        [ meta, primer_val ]
+                                    }
+                                    else {
+                                        [ meta, primers ]
+                                    }
+                                }
+                                .mix(runs_without_primers)
+
         REV_COMP_SE_PRIMERS(
-            FINAL_CONCAT_PRIMERS.out.final_concat_primers_out
+            rev_comp_se_primers_input
         )
         ch_versions = ch_versions.mix(REV_COMP_SE_PRIMERS.out.versions.first())
 
@@ -43,6 +85,7 @@ workflow CONCAT_PRIMER_CUTADAPT {
             REV_COMP_SE_PRIMERS.out.rev_comp_se_primers_out
         )
         ch_versions = ch_versions.mix(SPLIT_PRIMERS_BY_STRAND.out.versions.first())
+
 
         // Join concatenated primers to the fastp-cleaned paired reads files and run cutadapt on them
         cutadapt_input = SPLIT_PRIMERS_BY_STRAND.out.stranded_primer_out
