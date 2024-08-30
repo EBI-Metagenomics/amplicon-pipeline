@@ -4,9 +4,11 @@ This repository contains the **beta version** of the v6.0 MGnify amplicon analys
 
 ![V6 Schema](assets/v6_amplicon_schema.png)
 
-## Pipeline features
+## Pipeline description
 
-The amplicon analysis pipeline v6.0 reimplements all of the existing features from v5.0:
+### Features
+
+The amplicon analysis pipeline v6.0 re-implements all of the existing features from v5.0:
 
 - Reads quality control
 - rRNA sequence extraction using [Infernal/cmsearch](https://github.com/EddyRivasLab/infernal/tree/master)
@@ -23,7 +25,7 @@ The amplicon analysis pipeline v6.0 also contains multiple significant changes:
 - Addition of [PR2](https://pr2-database.org/) as a reference database
 - Updating of existing reference databases ([SILVA](https://www.arb-silva.de/), [UNITE](https://unite.ut.ee/), [ITSoneDB](https://itsonedb.cloud.ba.infn.it), [Rfam](https://rfam.org/))
 
-## Valid amplicons
+### Valid amplicons
 
 At this stage, the only sequence amplicons that this pipeline is built for are:
 
@@ -35,7 +37,7 @@ At this stage, the only sequence amplicons that this pipeline is built for are:
 |    ITS   	|             ✓             	|       ✗      	|
 
 
-## Tools
+### Tools
 
 | Tool                      	| Version  	| Purpose                                                	|
 |---------------------------	|----------	|--------------------------------------------------------	|
@@ -52,7 +54,7 @@ At this stage, the only sequence amplicons that this pipeline is built for are:
 | [DADA2](https://benjjneb.github.io/dada2/index.html)                     	| 1.30.0   	| ASV calling                                            	|
 | [mgnify-pipelines-toolkit](https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit)  	| 0.1.5    	| Toolkit containing various in-house processing scripts 	|
 
-## Reference databases
+### Reference databases
 
 This pipeline uses five different reference databases. The files the pipeline uses are processed from the raw files available on each database's website, for use by MAPseq and cmsearch. We provide ready-made versions of these processed files on our FTP, which you can find here:
 
@@ -64,11 +66,13 @@ This pipeline uses five different reference databases. The files the pipeline us
 | [ITSoneDB](https://itsonedb.cloud.ba.infn.it)           	| 1.141   	| ITS database                          	| https://ftp.ebi.ac.uk/pub/databases/metagenomics/pipelines/tool-dbs/itsonedb/                                                                                 	|
 | [Rfam](https://rfam.org/)               	| 14.10   	| RNA family profile database           	| https://ftp.ebi.ac.uk/pub/databases/metagenomics/pipelines/tool-dbs/rfam/                                                                                     	|
 
-## Requirements
+## How to run
+
+### Requirements
 
 At the moment the only prerequisites for running it are Nextflow and [Docker](https://www.docker.com/)/[Singularity](https://docs.sylabs.io/guides/3.5/user-guide/introduction.html), since all of the Nextflow processes use pre-built containers.
 
-## Input shape
+### Input shape
 
 The input data for the pipeline is amplicon sequencing reads (either paired-end or single-end) in the form of FASTQ files. These files should be specified using a `.csv` samplesheet file with this format:
 
@@ -78,13 +82,13 @@ SRR9674618,/path/to/reads/SRR9674618.fastq.gz,,true
 SRR17062740,/path/to/reads/SRR17062740_1.fastq.gz,/path/to/reads/SRR17062740_2.fastq.gz,false
 ```
 
-## How to run
+### Execution
 
 You can run the current version of the pipeline on SLURM like this:
 
 `nextflow run -profile codon_slurm main.nf --input /path/to/samplesheet --outdir /path/to/outdir`
 
-## Output directory structure
+### Output directory structure
 
 Example output directory structure for one run:
 
