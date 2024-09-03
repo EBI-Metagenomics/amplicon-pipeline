@@ -86,7 +86,7 @@ SRR17062740,/path/to/reads/SRR17062740_1.fastq.gz,/path/to/reads/SRR17062740_2.f
 
 You can run the current version of the pipeline on SLURM like this:
 
-`nextflow run -profile codon_slurm main.nf --input /path/to/samplesheet.csv --outdir /path/to/outdir`
+`nextflow run -profile codon_slurm main.nf --input /path/to/samplesheet.csv --outdir /path/to/outdir main.nf`
 
 ### Output directory structure
 
