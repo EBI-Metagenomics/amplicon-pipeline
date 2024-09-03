@@ -122,17 +122,6 @@ workflow AMPLICON_PIPELINE {
                                 }
                             }
 
-    multiqc_input = READS_QC_MERGE.out.fastp_summary_json.map{ meta, json ->
-                                                                [ json ]
-                                                             }
-
-    MULTIQC(multiqc_input,
-            [],
-            [],
-            [],
-            [],
-            [])
-
     // rRNA extraction subworkflow to find rRNA reads for SSU+LSU
     RRNA_EXTRACTION(
         non_empty_reads_fasta,
@@ -255,5 +244,22 @@ workflow AMPLICON_PIPELINE {
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
+
+    multiqc_input = CONCAT_PRIMER_CUTADAPT.out.cutadapt_json.map{ meta, json ->
+                    [['id':meta.id, 'single_end':meta.single_end], json]
+                    }
+                    .join(READS_QC_MERGE.out.fastp_summary_json)
+                    .map{ meta, cutadapt_json, fastp_json ->
+                        [ fastp_json, cutadapt_json ]
+                    }
+                    .combine(ch_versions.unique().collectFile(name: 'collated_versions.yml'))
+
+    MULTIQC(multiqc_input,
+            [],
+            [],
+            [],
+            [],
+            []
+            )
 
 }
