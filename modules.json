@@ -101,6 +101,11 @@
             "git_sha": "d497a4868ace3302016ea8ed4b395072d5e833cd",
             "installed_by": ["modules"]
           },
+          "multiqc": {
+            "branch": "master",
+            "git_sha": "19ca321db5d8bd48923262c2eca6422359633491",
+            "installed_by": ["modules"]
+          },
           "seqtk/subseq": {
             "branch": "master",
             "git_sha": "8fc1d24c710ebe1d5de0f2447ec9439fd3d9d66a",
