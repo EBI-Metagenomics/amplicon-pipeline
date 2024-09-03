@@ -1,8 +1,3 @@
-params.reads_fwd = '/Users/vkale/Downloads/pipelines/amplicon-pipeline/fastp_run_out/ERR2639105_1.fastp.fastq.gz'
-params.reads_rev = '/Users/vkale/Downloads/pipelines/amplicon-pipeline/fastp_run_out/ERR2639105_2.fastp.fastq.gz'
-params.primers_fwd = '/Users/vkale/Downloads/pipelines/amplicon-pipeline/primers/fwd_primer.fasta'
-params.primers_rev = '/Users/vkale/Downloads/pipelines/amplicon-pipeline/primers/rev_primer.fasta'
-
 
 process CUTADAPT {
     tag "$meta.id"
@@ -103,9 +98,4 @@ process CUTADAPT {
         cutadapt: \$(cutadapt --version)
     END_VERSIONS
     """
-}
-
-workflow {
-
-    results_ch = CUTADAPT([["id" : "test", "single": false], [params.reads_fwd, params.reads_rev], [params.primers_fwd, params.primers_rev]])
 }
