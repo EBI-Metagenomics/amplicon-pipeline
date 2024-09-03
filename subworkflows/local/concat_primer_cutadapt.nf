@@ -105,6 +105,7 @@ workflow CONCAT_PRIMER_CUTADAPT {
     emit:
         final_concat_primers_out = FINAL_CONCAT_PRIMERS.out.final_concat_primers_out
         cutadapt_out = CUTADAPT.out.reads
+        cutadapt_json = CUTADAPT.out.json
         versions = ch_versions
 
 }
