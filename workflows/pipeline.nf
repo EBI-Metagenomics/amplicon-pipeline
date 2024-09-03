@@ -23,6 +23,8 @@ include { dada2_input_preparation_function              } from '../lib/nf/dada2_
 
 include { samplesheetToList                             } from 'plugin/nf-schema'
 
+include { MULTIQC                                       } from '../modules/nf-core/multiqc/main.nf'
+
 
 // Initialise different database inputs for taxonomic assignments with regular taxonomy resolution method
 ssu_mapseq_krona_tuple = Channel.value([
@@ -119,6 +121,17 @@ workflow AMPLICON_PIPELINE {
                                     [ meta, reads ]
                                 }
                             }
+
+    multiqc_input = READS_QC_MERGE.out.fastp_summary_json.map{ meta, json ->
+                                                                [ json ]
+                                                             }
+
+    MULTIQC(multiqc_input,
+            [],
+            [],
+            [],
+            [],
+            [])
 
     // rRNA extraction subworkflow to find rRNA reads for SSU+LSU
     RRNA_EXTRACTION(
