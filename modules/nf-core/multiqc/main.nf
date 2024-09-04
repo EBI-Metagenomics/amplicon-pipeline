@@ -1,11 +1,13 @@
 process MULTIQC {
     label 'process_single'
+    tag "$meta.id"
 
     conda "${moduleDir}/environment.yml"
     container 'docker://quay.io/microbiome-informatics/multiqc-with-dada2:latest'
 
     input:
-    path  multiqc_files, stageAs: "?/*"
+    tuple val(meta), path(multiqc_files, stageAs: "?/*")
+    path(multiqc_base_files, stageAs: "?/*")
     path(multiqc_config)
     path(extra_multiqc_config)
     path(multiqc_logo)

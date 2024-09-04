@@ -23,7 +23,8 @@ include { dada2_input_preparation_function              } from '../lib/nf/dada2_
 
 include { samplesheetToList                             } from 'plugin/nf-schema'
 
-include { MULTIQC                                       } from '../modules/nf-core/multiqc/main.nf'
+include { MULTIQC as MULTIQC_RUN                        } from '../modules/nf-core/multiqc/main.nf'
+include { MULTIQC as MULTIQC_STUDY                      } from '../modules/nf-core/multiqc/main.nf'
 
 
 // Initialise different database inputs for taxonomic assignments with regular taxonomy resolution method
@@ -251,16 +252,31 @@ workflow AMPLICON_PIPELINE {
                     .join(READS_QC_MERGE.out.fastp_summary_json)
                     .join(DADA2_SWF.out.dada2_report.map{ meta, tsv ->
                         [['id':meta.id, 'single_end':meta.single_end], tsv]})
-                    .map{ meta, cutadapt_json, fastp_json, dada2_report ->
-                        [ fastp_json, cutadapt_json, dada2_report ]
-                    }
-                    .combine(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml)
 
-    MULTIQC(multiqc_input,
+    MULTIQC_RUN(multiqc_input,
+            CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.first(),
             params.multiqc_config,
             [],
             [],
             [],
             []
             )
+
+    // MutliQC for study !! assuming we do not have multiple studies in one samplesheet !!
+
+    multiqc_study = multiqc_input.flatten().collect()
+        .map{ item ->item.findAll { !(it instanceof Map) }}
+        .map { dataList ->
+            [['id': 'study_report'], dataList ]
+        }
+
+    MULTIQC_STUDY(multiqc_study,
+            CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml,
+            params.multiqc_config,
+            [],
+            [],
+            [],
+            []
+            )
+
 }
