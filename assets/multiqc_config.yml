@@ -11,3 +11,10 @@ report_section_order:
     order: -1002
 skip_versions_section: true
 export_plots: true
+module_order:
+  - fastp
+  - cutadapt
+  - custom_content
+top_modules:
+  - fastp
+  - cutadapt
