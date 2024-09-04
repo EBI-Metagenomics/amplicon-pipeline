@@ -253,10 +253,10 @@ workflow AMPLICON_PIPELINE {
                     .map{ meta, cutadapt_json, fastp_json, dada2_report ->
                         [ fastp_json, cutadapt_json, dada2_report ]
                     }
-                    .combine(ch_versions.unique().collectFile(name: 'collated_versions.yml'))
+                    .combine(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml)
 
     MULTIQC(multiqc_input,
-            [],
+            params.multiqc_config,
             [],
             [],
             [],
