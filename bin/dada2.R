@@ -130,7 +130,6 @@ if (length(merged$sequence) == 0){
   traced_remainder = length(final_f_map) - length(unmatched_asvs)
   total_dada2_reads = sum(seqtab.nochim)
   final_matched_perc = traced_remainder / total_dada2_reads
-  write(final_matched_perc, paste0("./", prefix, "_proportion_matched.txt"))
 
   # Save map to file, with each line representing an ASV's read
   if (!is.na(path_r)){
@@ -147,7 +146,6 @@ if (length(merged$sequence) == 0){
   seqtab_read_count = sum(seqtab)
   seqtab.nochim_read_count = sum(seqtab.nochim)
   proportion_chimeric = 1 - (seqtab.nochim_read_count / seqtab_read_count)
-  write(proportion_chimeric, paste0("./", prefix, "_proportion_chimeric.txt"))
 
   # Get count of unique ASVs left after all types of filtering
   asvs_left = sort(as.numeric(unique(unlist(final_f_output))))
@@ -160,4 +158,9 @@ if (length(merged$sequence) == 0){
   unqs = getUniques(seqtab)[asvs_left]
   uniquesToFasta(unqs, paste0("./", prefix, "_asvs.fasta"), id_list)
 
+  output_report_df <- data.frame(
+    names = c("initial_number_of_reads", "proportion_matched", "proportion_chimeric", "final_number_of_reads"),
+    values = c(length(final_f_map), final_matched_perc, proportion_chimeric, total_dada2_reads)
+  )
+  write.table(output_report_df, file = paste0("./", prefix, "_report.tsv"), sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
 }
