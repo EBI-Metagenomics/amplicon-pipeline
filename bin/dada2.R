@@ -162,5 +162,5 @@ if (length(merged$sequence) == 0){
     names = c("initial_number_of_reads", "proportion_matched", "proportion_chimeric", "final_number_of_reads"),
     values = c(length(final_f_map), final_matched_perc, proportion_chimeric, total_dada2_reads)
   )
-  write.table(output_report_df, file = paste0("./", prefix, "_report.tsv"), sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
+  write.table(output_report_df, file = paste0("./", prefix, "_dada2_stats.tsv"), sep = "\t", row.names = FALSE, col.names = FALSE, quote = FALSE)
 }

@@ -246,10 +246,11 @@ workflow AMPLICON_PIPELINE {
     )
 
     multiqc_input = CONCAT_PRIMER_CUTADAPT.out.cutadapt_json.map{ meta, json ->
-                    [['id':meta.id, 'single_end':meta.single_end], json]
+                        [['id':meta.id, 'single_end':meta.single_end], json]
                     }
                     .join(READS_QC_MERGE.out.fastp_summary_json)
-                    .join(DADA2_SWF.out.dada2_report.map{ meta, tsv -> [['id':meta.id, 'single_end':meta.single_end], tsv]})
+                    .join(DADA2_SWF.out.dada2_report.map{ meta, tsv ->
+                        [['id':meta.id, 'single_end':meta.single_end], tsv]})
                     .map{ meta, cutadapt_json, fastp_json, dada2_report ->
                         [ fastp_json, cutadapt_json, dada2_report ]
                     }
