@@ -3,7 +3,7 @@ process MULTIQC {
     tag "$meta.id"
 
     conda "${moduleDir}/environment.yml"
-    container 'docker://quay.io/microbiome-informatics/multiqc-with-dada2:latest'
+    container 'docker://quay.io/microbiome-informatics/multiqc-with-dada2:a1935b0'
 
     input:
     tuple val(meta), path(multiqc_files, stageAs: "?/*")
