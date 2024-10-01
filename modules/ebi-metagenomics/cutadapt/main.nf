@@ -14,6 +14,7 @@ process CUTADAPT {
     output:
     tuple val(meta), path('*.trim.fastq.gz'), emit: reads
     tuple val(meta), path('*.log')          , emit: log
+    tuple val(meta), path('*.json')         , emit: json
     path "versions.yml"                     , emit: versions
 
     when:
@@ -76,6 +77,7 @@ process CUTADAPT {
             $trimmed \\
             $primer_arg \\
             $reads \\
+            --json ${prefix}.cutadapt.json \\
             > ${prefix}.cutadapt.log
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
