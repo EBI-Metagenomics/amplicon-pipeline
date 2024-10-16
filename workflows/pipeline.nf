@@ -252,6 +252,9 @@ workflow AMPLICON_PIPELINE {
                     .join(READS_QC_MERGE.out.fastp_summary_json)
                     .join(DADA2_SWF.out.dada2_report.map{ meta, tsv ->
                         [['id':meta.id, 'single_end':meta.single_end], tsv]})
+                    .map{ meta, cutadapt, fastp, dada2 ->
+                            [meta, [cutadapt, fastp, dada2]]
+                        }
 
     MULTIQC_RUN(multiqc_input,
             CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.first(),
@@ -267,7 +270,7 @@ workflow AMPLICON_PIPELINE {
     multiqc_study = multiqc_input.flatten().collect()
         .map{ item ->item.findAll { !(it instanceof Map) }}
         .map { dataList ->
-            [['id': 'study_report'], dataList ]
+            [['id': 'study_multiqc_report'], dataList ]
         }
 
     MULTIQC_STUDY(multiqc_study,
