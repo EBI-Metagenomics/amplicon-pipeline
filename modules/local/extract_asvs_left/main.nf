@@ -16,7 +16,8 @@ process EXTRACT_ASVS_LEFT {
     script:
     """
     cat ${asvs_left} > concatenated_asvs_left.txt
-    grep -A 1 -wFf concatenated_asvs_left.txt ${fasta} > ${meta.id}_asv_seqs.fasta
+    grep -A 1 -wFf concatenated_asvs_left.txt ${fasta} > ${meta.id}_asv_seqs_temp.fasta
+    grep -v '-' ${meta.id}_asv_seqs_temp.fasta > ${meta.id}_asv_seqs.fasta
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
