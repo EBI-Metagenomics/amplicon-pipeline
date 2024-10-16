@@ -83,8 +83,8 @@ def main():
 
     versions_mqc = {
         "id": "software_versions",
-        "section_name": "Pipeline Software Versions",
-        "section_href": "https://github.com/ebi-metagenomics/amplicon-pipeline",
+        "section_name": "${workflow.manifest.name} Software Versions",
+        "section_href": "https://github.com/${workflow.manifest.name}",
         "plot_type": "html",
         "description": "are collected at run time from the software output.",
         "data": _make_versions_html(versions_by_module)
