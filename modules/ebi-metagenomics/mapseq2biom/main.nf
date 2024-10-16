@@ -5,18 +5,18 @@ process MAPSEQ2BIOM {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:0.1.1--pyhdfd78af_0' :
-        'biocontainers/mgnify-pipelines-toolkit:0.1.3--pyhdfd78af_0' }"
+        "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
+        "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
 
     input:
     tuple val(meta), path(msq)
     tuple path(db_otu), val(db_label)
 
     output:
-    tuple val(meta), path("${meta.id}.txt")         , emit: krona_input
-    tuple val(meta), path("${meta.id}.tsv")         , emit: biom_out
-    tuple val(meta), path("${meta.id}.notaxid.tsv") , emit: biom_notaxid_out
-    path "versions.yml"                             , emit: versions
+    tuple val(meta), path("${meta.id}.txt")              , emit: krona_input
+    tuple val(meta), path("${meta.id}_biom.tsv")         , emit: biom_out
+    tuple val(meta), path("${meta.id}.notaxid.tsv")      , emit: biom_notaxid_out
+    path "versions.yml"                                  , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -33,7 +33,7 @@ process MAPSEQ2BIOM {
         --label ${db_label} \
         --query ${msq} \
         --otu-table ${db_otu} \
-        --out-file ${prefix}.tsv
+        --out-file ${prefix}_biom.tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

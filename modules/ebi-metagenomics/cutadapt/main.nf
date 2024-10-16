@@ -49,6 +49,7 @@ process CUTADAPT {
             touch ${prefix}.cutadapt.log
             touch ${prefix}_1.trim.fastq.gz
             touch ${prefix}_2.trim.fastq.gz
+            touch ${prefix}.cutadapt.json
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
@@ -60,6 +61,7 @@ process CUTADAPT {
             """
             touch ${prefix}.cutadapt.log
             touch ${prefix}.trim.fastq.gz
+            touch ${prefix}.cutadapt.json
 
             cat <<-END_VERSIONS > versions.yml
             "${task.process}":
@@ -91,6 +93,7 @@ process CUTADAPT {
     def trimmed = meta.single_end ? "${prefix}.trim.fastq.gz" : "${prefix}_1.trim.fastq.gz ${prefix}_2.trim.fastq.gz"
     """
     touch ${prefix}.cutadapt.log
+    touch ${prefix}.cutadapt.json
     touch ${trimmed}
 
     cat <<-END_VERSIONS > versions.yml
