@@ -10,7 +10,6 @@ process DADA2 {
 
     output:
     tuple val(meta), path("*map.txt"), path("*asvs.fasta"), path("*_filt.fastq.gz"), emit: dada2_out
-    path("*asv_counts.tsv")                                                        , emit: dada2_asv_counts
     tuple val(meta), path("*_dada2_stats.tsv")                                     , emit: dada2_stats
     path "versions.yml"                                                            , emit: versions
     
