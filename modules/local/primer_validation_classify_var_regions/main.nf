@@ -11,6 +11,7 @@ process PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS {
 
     output:
     tuple val(meta), path("*primer_validation.tsv"), emit: primer_validation_out
+    tuple val(meta), path("*_primers.fasta")       , emit: final_concat_primers
     path "versions.yml"                            , emit: versions
 
     script:
@@ -21,10 +22,13 @@ process PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS {
     num_lines=\$(wc -l ${meta.id}_primer_validation.tsv | cut -d' ' -f1)
     num_lines=\$((\$num_lines - 1))
 
+    cp ${concat_primers_fasta} ${meta.id}_primers.fasta
+
     if [ \$num_primers -lt 2 ] || [ \$num_lines -ne \$num_primers ]
     then
         echo "Primer validation didn't pass. Outputting empty file."
         echo -n > ${meta.id}_primer_validation.tsv
+        echo -n > ${meta.id}_primers.fasta
     fi
 
     cat <<-END_VERSIONS > versions.yml
