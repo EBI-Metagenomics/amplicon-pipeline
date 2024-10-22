@@ -1,4 +1,4 @@
-include { validateParameters; paramsHelp; paramsSummaryLog; samplesheetToList } from 'plugin/nf-schema'
+include { validateParameters; paramsHelp; paramsSummaryLog; } from 'plugin/nf-schema'
 
 // Print help message, supply typical command line usage for the pipeline
 if (params.help) {

@@ -40,9 +40,9 @@ workflow  READS_QC {
         assess_mcp_proportions_input = passed_suffixheader_reads
                         .map { meta, fastq ->
                             if ( meta.single_end ) {
-                                [ meta, "auto", "auto", fastq ]
+                                [ meta, "auto", "none", fastq ]
                             } else {
-                                [ meta, "auto", "auto", fastq[0] ]
+                                [ meta, "auto", "none", fastq[0] ]
                             }
                         }
 
