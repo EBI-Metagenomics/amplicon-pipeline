@@ -1,33 +1,56 @@
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT EBI-METAGENOMICS MODULES/SUBWORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
 
 include { READS_QC                                      } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { READS_QC as READS_QC_MERGE                    } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { RRNA_EXTRACTION                               } from '../subworkflows/ebi-metagenomics/rrna_extraction/main'
-include { MASK_FASTA_SWF                                } from '../subworkflows/local/mask_fasta_swf.nf'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_SSU      } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_LSU      } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_PR2      } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_UNITE    } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_ITSONEDB } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
 
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT LOCAL MODULES/SUBWORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+include { MASK_FASTA_SWF                                } from '../subworkflows/local/mask_fasta_swf.nf'
 include { AMP_REGION_INFERENCE                          } from '../subworkflows/local/amp_region_inference_swf.nf'
 include { PRIMER_IDENTIFICATION                         } from '../subworkflows/local/primer_identification_swf.nf'
 include { AUTOMATIC_PRIMER_PREDICTION                   } from '../subworkflows/local/automatic_primer_prediction.nf'
 include { CONCAT_PRIMER_CUTADAPT                        } from '../subworkflows/local/concat_primer_cutadapt.nf'
-include { PRIMER_VALIDATION                             } from '../subworkflows/local/primer_validation_swf.nf'
 include { DADA2_SWF                                     } from '../subworkflows/local/dada2_swf.nf'
 include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_SILVA    } from '../subworkflows/local/mapseq_asv_krona_swf.nf'
 include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_PR2      } from '../subworkflows/local/mapseq_asv_krona_swf.nf'
 
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT NF-CORE MODULES
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
 include { CUSTOM_DUMPSOFTWAREVERSIONS                   } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-include { dada2_input_preparation_function              } from '../lib/nf/dada2_input_preparation_function.nf'
-
-include { samplesheetToList                             } from 'plugin/nf-schema'
-
 include { MULTIQC as MULTIQC_RUN                        } from '../modules/nf-core/multiqc/main.nf'
 include { MULTIQC as MULTIQC_STUDY                      } from '../modules/nf-core/multiqc/main.nf'
 
+// Import dada2 input preparation function (it's very big and deserved to be in its own file) //
+include { dada2_input_preparation_function              } from '../lib/nf/dada2_input_preparation_function.nf'
 
-// Initialise different database inputs for taxonomic assignments with regular taxonomy resolution method
+
+// Import samplesheetToList from nf-schema //
+include { samplesheetToList                             } from 'plugin/nf-schema'
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    INITIALISE REFERENCE DATABASE INPUT TUPLES
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+// Regular taxonomy resolution method //
 ssu_mapseq_krona_tuple = Channel.value([
     file(params.ssu_db_fasta, checkIfExists: true),
     file(params.ssu_db_tax, checkIfExists: true),
@@ -64,7 +87,7 @@ pr2_mapseq_krona_tuple = Channel.value([
     params.pr2_label
 ])
 
-// Initialise different database inputs for taxonomic assignments with ASV resolution method
+// Regular ASV resolution method //
 dada2_krona_silva_tuple = tuple(
     file(params.ssu_db_fasta, checkIfExists: true),
     file(params.ssu_db_tax, checkIfExists: true),
@@ -80,17 +103,23 @@ dada2_krona_pr2_tuple = tuple(
     params.dada2_pr2_label
 )
 
-// Standard primer library
+// Initialiase standard primer library //
 std_primer_library = file(params.std_primer_library, type: 'dir', checkIfExists: true)
 
-// Read input samplesheet
+// Read input samplesheet and validate it using schema_input.json //
 samplesheet = Channel.fromList(samplesheetToList(params.input, "./assets/schema_input.json"))
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    RUN MAIN WORKFLOW
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
 
 workflow AMPLICON_PIPELINE {
 
     ch_versions = Channel.empty()
 
-    // Organise input tuple channel
+    // Organise input tuple channel //
     groupReads = { meta, fq1, fq2 ->
         if (fq2 == []) {
             return tuple(meta, [fq1])
@@ -102,7 +131,7 @@ workflow AMPLICON_PIPELINE {
 
     ch_input = samplesheet.map(groupReads)
 
-    // Quality control
+    // Sanity checking and quality control of reads //
     READS_QC_MERGE(
         true, // check if amplicon
         ch_input,
@@ -110,7 +139,7 @@ workflow AMPLICON_PIPELINE {
     )
     ch_versions = ch_versions.mix(READS_QC_MERGE.out.versions)
 
-    // Run it again without merging to keep PE files unmerged for primer trimming+DADA2
+    // Run it again without merging to keep PE files unmerged for primer trimming+DADA2 //
     READS_QC(
         false, // check if amplicon
         ch_input,
@@ -118,29 +147,29 @@ workflow AMPLICON_PIPELINE {
     )
     ch_versions = ch_versions.mix(READS_QC.out.versions)
 
-    // removes reads that are empty after QC
-    non_empty_reads_fasta = READS_QC_MERGE.out.reads_fasta.map{ meta, reads ->
-                                if ( reads.countFasta() > 0){
-                                    [ meta, reads ]
-                                }
+    // Removes reads that passed sanity checks but are empty after QC with fastp //
+    READS_QC_MERGE.out.reads_fasta.branch{ meta, reads ->
+                                qc_pass: reads.countFasta() > 0
+                                qc_empty: reads.countFasta() == 0
                             }
+                            .set { extended_reads_qc }
 
-    // rRNA extraction subworkflow to find rRNA reads for SSU+LSU
+    // rRNA extraction subworkflow to find rRNA reads for SSU+LSU //
     RRNA_EXTRACTION(
-        non_empty_reads_fasta,
+        extended_reads_qc.qc_pass,
         file( params.rfam, checkIfExists: true ),
         file( params.claninfo, checkIfExists: true )
     )
     ch_versions = ch_versions.mix(RRNA_EXTRACTION.out.versions)
 
-    // Masking subworkflow to find rRNA reads for ITS
+    // Masking subworkflow to find rRNA reads for ITS //
     MASK_FASTA_SWF(
-        non_empty_reads_fasta,
+        extended_reads_qc.qc_pass,
         RRNA_EXTRACTION.out.concat_ssu_lsu_coords
     )
     ch_versions = ch_versions.mix(MASK_FASTA_SWF.out.versions)
 
-    // Next five subworkflow calls are MapSeq annotation + Krona generation for SSU+LSU+ITS
+    // Next five subworkflow calls are MAPseq annotation + Krona generation for SSU+LSU+ITS //
     MAPSEQ_OTU_KRONA_SSU(
         RRNA_EXTRACTION.out.ssu_fasta,
         ssu_mapseq_krona_tuple
@@ -171,49 +200,44 @@ workflow AMPLICON_PIPELINE {
     )
     ch_versions = ch_versions.mix(MAPSEQ_OTU_KRONA_UNITE.out.versions)
 
-    // Infer amplified variable regions for SSU, extract reads for each amplified region if there are more than one
+    // Infer amplified variable regions for SSU, extract reads for each amplified region if there are more than one //
     AMP_REGION_INFERENCE(
         RRNA_EXTRACTION.out.cmsearch_deoverlap_out,
         READS_QC_MERGE.out.reads_se_and_merged
     )
     ch_versions = ch_versions.mix(AMP_REGION_INFERENCE.out.versions)
 
-    // Identify whether primers exist or not in reads, separated by different amplified regions if more than one exists in a run
+    // Identify whether primers exist or not in reads, separated by different amplified regions if more than one exists in a run //
     PRIMER_IDENTIFICATION(
         AMP_REGION_INFERENCE.out.extracted_var_out,
         std_primer_library
     )
     ch_versions = ch_versions.mix(PRIMER_IDENTIFICATION.out.versions)
 
-    // Join primer identification flags with reads belonging to each run+amp_region
+    // Join primer identification flags with reads belonging to each run+amp_region //
     auto_trimming_input = PRIMER_IDENTIFICATION.out.conductor_out
                           .join(AMP_REGION_INFERENCE.out.extracted_var_out, by: [0])
 
-    // Run subworkflow for automatic primer prediction
-    // Outputs empty fasta file if no primers, or fasta file containing predicted primers
+    /* Run subworkflow for automatic primer prediction
+       Outputs empty fasta file if no primers, or fasta file containing predicted primers */
     AUTOMATIC_PRIMER_PREDICTION(
         auto_trimming_input
     )
     ch_versions = ch_versions.mix(AUTOMATIC_PRIMER_PREDICTION.out.versions)
 
-    // Concatenate the different combinations of stranded std/auto primers for each run+amp_region
+    // Concatenate the different combinations of stranded std/auto primers for each run+amp_region //
     concat_input = PRIMER_IDENTIFICATION.out.std_primer_out
                    .join(AUTOMATIC_PRIMER_PREDICTION.out.auto_primer_trimming_out, by: [0])
 
-    // Concatenate all primers for for a run, send them to cutadapt with original QCd reads for primer trimming
+    // Concatenate all primers for for a run, send them to cutadapt with original QCd reads for primer trimming //
     CONCAT_PRIMER_CUTADAPT(
         concat_input,
         READS_QC.out.reads
     )
     ch_versions = ch_versions.mix(CONCAT_PRIMER_CUTADAPT.out.versions)
 
-    primer_validation_input = CONCAT_PRIMER_CUTADAPT.out.final_concat_primers_out
-                              .map{ meta, primers ->
-                                if (primers.size() > 0){
-                                    [ meta, primers ]
-                                }    
-                              }
 
+    // Run the large dada2 imput preparation function //
     cutadapt_channel = CONCAT_PRIMER_CUTADAPT.out.cutadapt_out
                        .map { meta, reads -> 
                          [ meta.subMap('id', 'single_end'), meta['var_region'], meta['var_regions_size'], reads ]
@@ -221,13 +245,13 @@ workflow AMPLICON_PIPELINE {
 
     dada2_input = dada2_input_preparation_function(concat_input, READS_QC.out.reads, cutadapt_channel)
 
-    // Run DADA2 ASV generation
+    // Run DADA2 ASV generation //
     DADA2_SWF(
         dada2_input
     )
     ch_versions = ch_versions.mix(DADA2_SWF.out.versions)
 
-    // ASV taxonomic assignments + generate Krona plots for each run+amp_region
+    // ASV taxonomic assignments + generate Krona plots for each run+amp_region //
     MAPSEQ_ASV_KRONA_SILVA(
         DADA2_SWF.out.dada2_out,
         AMP_REGION_INFERENCE.out.concat_var_regions,
@@ -244,6 +268,12 @@ workflow AMPLICON_PIPELINE {
     )
     ch_versions = ch_versions.mix(MAPSEQ_ASV_KRONA_PR2.out.versions)
 
+
+    /*****************************/
+    /* MultiQC reports */
+    /****************************/
+
+    // Version collating //
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
@@ -258,6 +288,7 @@ workflow AMPLICON_PIPELINE {
                             [meta, [cutadapt, fastp, dada2]]
                         }
 
+    // MultiQC for individual runs //
     MULTIQC_RUN(multiqc_input,
             CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.first(),
             params.multiqc_config,
@@ -267,8 +298,7 @@ workflow AMPLICON_PIPELINE {
             []
             )
 
-    // MutliQC for study !! assuming we do not have multiple studies in one samplesheet !!
-
+    // MultiQC for study !! assuming we do not have multiple studies in one samplesheet !! //
     multiqc_study = multiqc_input.flatten().collect()
         .map{ item ->item.findAll { !(it instanceof Map) }}
         .map { dataList ->
@@ -284,4 +314,64 @@ workflow AMPLICON_PIPELINE {
             []
             )
 
+    /*****************************/
+    /* End of execution reports */
+    /****************************/
+
+    // Extract runs that failed SeqFu check //
+    READS_QC.out.seqfu_check
+        .splitCsv(sep: "\t", elem: 1)
+        .filter { meta, seqfu_res ->
+            seqfu_res[0] != "OK"
+        }
+        .map { meta, _ -> "${meta.id},seqfu_fail" }
+        .set { seqfu_fails }
+
+    // Extract runs that failed Suffix Header check //
+    READS_QC.out.suffix_header_check
+        .filter { meta, sfxhd_res ->
+            sfxhd_res.countLines() != 0
+        }
+        .map { meta, _ -> "${meta.id},sfxhd_fail"  }
+        .set { sfxhd_fails }
+
+    // Extract runs that failed Library Strategy check //
+    READS_QC_MERGE.out.amplicon_check
+        .filter { meta, strategy ->
+            strategy != "AMPLICON"
+        }
+        .map { meta, _ -> "${meta.id},libstrat_fail" }
+        .set { libstrat_fails }
+
+    // Extract runs that had zero reads after fastp //
+    extended_reads_qc.qc_empty.map { meta, _ -> "${meta.id},no_reads"  }
+        .set { no_reads_fails }
+
+    // Save all failed runs to file //
+    all_failed_runs = seqfu_fails.concat( sfxhd_fails, libstrat_fails, no_reads_fails )
+    all_failed_runs.collectFile(name: "qc_failed_runs.csv", storeDir: "${params.outdir}", newLine: true, cache: false)
+
+    // Extract passed runs, describe whether those passed runs also ASV results //
+    DADA2_SWF.out.dada2_report.map { meta, dada2_report -> [ ["id": meta.id, "single_end": meta.single_end], dada2_report ] }
+    .concat(extended_reads_qc.qc_pass)
+    .groupTuple()
+    .map { meta, results ->
+        if ( results.size() == 2 ) {
+            return "${meta.id},all_results"
+        }
+        else if ( results.size() == 1 ) {
+            return "${meta.id},no_asvs"
+        }
+        error "Unexpected. meta: ${meta}, results: ${results}"
+    }
+    .set { final_passed_runs }
+
+    // Save all passed runs to file //
+    final_passed_runs.collectFile(name: "qc_passed_runs.csv", storeDir: "${params.outdir}", newLine: true, cache: false)
 }
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    THE END
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
