@@ -1,0 +1,743 @@
+{
+    "test_reads_fail_seqfu": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "ERR4674038",
+                            "single_end": false
+                        },
+                        "ERR4674038.tsv:md5,3aa17b2bca2980dbaad41ba5e54c0b44"
+                    ],
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.tsv:md5,008673dad4dd80a742cc11669f24d6e8"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853_suffix_header_err.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "AMPLICON"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        [
+                            "SRR21814853_1.fastp.fastq.gz:md5,ab81a64d069ed8876432d8e3bad0b847",
+                            "SRR21814853_2.fastp.fastq.gz:md5,f8bf866d116205baa454b7a501a67b62"
+                        ]
+                    ]
+                ],
+                "4": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.merged.fastq.gz:md5,58ededca56f023aa625f51ec241ba849"
+                    ]
+                ],
+                "5": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.fastp.json:md5,f2fa2740350c702e0f7d6adec47858c4"
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.seqtk-seq.fasta.gz:md5,a14b76b1e8c24d3f9d98e61d03a62a53"
+                    ]
+                ],
+                "7": [
+                    "versions.yml:md5,20bda9fb4ab57e076a6db1b8cf72cb67",
+                    "versions.yml:md5,8d811725182283301014b4f776199d82",
+                    "versions.yml:md5,a5fd01ddb43380f5a73a5fcdb4dde637",
+                    "versions.yml:md5,caf2b2e3fac12c4d49e72d81275628ce",
+                    "versions.yml:md5,d2730aa327e9fd88847006cdcccc7df0"
+                ],
+                "amplicon_check": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "AMPLICON"
+                    ]
+                ],
+                "fastp_summary_json": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.fastp.json:md5,f2fa2740350c702e0f7d6adec47858c4"
+                    ]
+                ],
+                "reads": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        [
+                            "SRR21814853_1.fastp.fastq.gz:md5,ab81a64d069ed8876432d8e3bad0b847",
+                            "SRR21814853_2.fastp.fastq.gz:md5,f8bf866d116205baa454b7a501a67b62"
+                        ]
+                    ]
+                ],
+                "reads_fasta": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.seqtk-seq.fasta.gz:md5,a14b76b1e8c24d3f9d98e61d03a62a53"
+                    ]
+                ],
+                "reads_se_and_merged": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.merged.fastq.gz:md5,58ededca56f023aa625f51ec241ba849"
+                    ]
+                ],
+                "seqfu_check": [
+                    [
+                        {
+                            "id": "ERR4674038",
+                            "single_end": false
+                        },
+                        "ERR4674038.tsv:md5,3aa17b2bca2980dbaad41ba5e54c0b44"
+                    ],
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.tsv:md5,008673dad4dd80a742cc11669f24d6e8"
+                    ]
+                ],
+                "suffix_header_check": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853_suffix_header_err.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,20bda9fb4ab57e076a6db1b8cf72cb67",
+                    "versions.yml:md5,8d811725182283301014b4f776199d82",
+                    "versions.yml:md5,a5fd01ddb43380f5a73a5fcdb4dde637",
+                    "versions.yml:md5,caf2b2e3fac12c4d49e72d81275628ce",
+                    "versions.yml:md5,d2730aa327e9fd88847006cdcccc7df0"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2024-10-18T16:49:36.445528195"
+    },
+    "test_reads_onlyfail": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "ERR4674038",
+                            "single_end": false
+                        },
+                        "ERR4674038.tsv:md5,e56475d0fee9cdc4fb3eda621f924af9"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "ERR4674038",
+                            "single_end": false
+                        },
+                        "ERR4674038_suffix_header_err.json:md5,735222eb9c22d4d81b312a9682d55679"
+                    ]
+                ],
+                "2": [
+                    
+                ],
+                "3": [
+                    
+                ],
+                "4": [
+                    
+                ],
+                "5": [
+                    
+                ],
+                "6": [
+                    
+                ],
+                "7": [
+                    "versions.yml:md5,8d811725182283301014b4f776199d82",
+                    "versions.yml:md5,d2730aa327e9fd88847006cdcccc7df0"
+                ],
+                "amplicon_check": [
+                    
+                ],
+                "fastp_summary_json": [
+                    
+                ],
+                "reads": [
+                    
+                ],
+                "reads_fasta": [
+                    
+                ],
+                "reads_se_and_merged": [
+                    
+                ],
+                "seqfu_check": [
+                    [
+                        {
+                            "id": "ERR4674038",
+                            "single_end": false
+                        },
+                        "ERR4674038.tsv:md5,e56475d0fee9cdc4fb3eda621f924af9"
+                    ]
+                ],
+                "suffix_header_check": [
+                    [
+                        {
+                            "id": "ERR4674038",
+                            "single_end": false
+                        },
+                        "ERR4674038_suffix_header_err.json:md5,735222eb9c22d4d81b312a9682d55679"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,8d811725182283301014b4f776199d82",
+                    "versions.yml:md5,d2730aa327e9fd88847006cdcccc7df0"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2024-10-18T16:50:34.898179189"
+    },
+    "test_reads_qc_success": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.tsv:md5,008673dad4dd80a742cc11669f24d6e8"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853_suffix_header_err.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "AMPLICON"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        [
+                            "SRR21814853_1.fastp.fastq.gz:md5,ab81a64d069ed8876432d8e3bad0b847",
+                            "SRR21814853_2.fastp.fastq.gz:md5,f8bf866d116205baa454b7a501a67b62"
+                        ]
+                    ]
+                ],
+                "4": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.merged.fastq.gz:md5,58ededca56f023aa625f51ec241ba849"
+                    ]
+                ],
+                "5": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.fastp.json:md5,f2fa2740350c702e0f7d6adec47858c4"
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.seqtk-seq.fasta.gz:md5,a14b76b1e8c24d3f9d98e61d03a62a53"
+                    ]
+                ],
+                "7": [
+                    "versions.yml:md5,20bda9fb4ab57e076a6db1b8cf72cb67",
+                    "versions.yml:md5,8d811725182283301014b4f776199d82",
+                    "versions.yml:md5,a5fd01ddb43380f5a73a5fcdb4dde637",
+                    "versions.yml:md5,caf2b2e3fac12c4d49e72d81275628ce",
+                    "versions.yml:md5,d2730aa327e9fd88847006cdcccc7df0"
+                ],
+                "amplicon_check": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "AMPLICON"
+                    ]
+                ],
+                "fastp_summary_json": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.fastp.json:md5,f2fa2740350c702e0f7d6adec47858c4"
+                    ]
+                ],
+                "reads": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        [
+                            "SRR21814853_1.fastp.fastq.gz:md5,ab81a64d069ed8876432d8e3bad0b847",
+                            "SRR21814853_2.fastp.fastq.gz:md5,f8bf866d116205baa454b7a501a67b62"
+                        ]
+                    ]
+                ],
+                "reads_fasta": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.seqtk-seq.fasta.gz:md5,a14b76b1e8c24d3f9d98e61d03a62a53"
+                    ]
+                ],
+                "reads_se_and_merged": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.merged.fastq.gz:md5,58ededca56f023aa625f51ec241ba849"
+                    ]
+                ],
+                "seqfu_check": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.tsv:md5,008673dad4dd80a742cc11669f24d6e8"
+                    ]
+                ],
+                "suffix_header_check": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853_suffix_header_err.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,20bda9fb4ab57e076a6db1b8cf72cb67",
+                    "versions.yml:md5,8d811725182283301014b4f776199d82",
+                    "versions.yml:md5,a5fd01ddb43380f5a73a5fcdb4dde637",
+                    "versions.yml:md5,caf2b2e3fac12c4d49e72d81275628ce",
+                    "versions.yml:md5,d2730aa327e9fd88847006cdcccc7df0"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2024-10-18T16:48:51.208364188"
+    },
+    "test_reads_fail_suffixheader": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "ERR4674038",
+                            "single_end": false
+                        },
+                        "ERR4674038.tsv:md5,e56475d0fee9cdc4fb3eda621f924af9"
+                    ],
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.tsv:md5,008673dad4dd80a742cc11669f24d6e8"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "ERR4674038",
+                            "single_end": false
+                        },
+                        "ERR4674038_suffix_header_err.json:md5,735222eb9c22d4d81b312a9682d55679"
+                    ],
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853_suffix_header_err.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "AMPLICON"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        [
+                            "SRR21814853_1.fastp.fastq.gz:md5,ab81a64d069ed8876432d8e3bad0b847",
+                            "SRR21814853_2.fastp.fastq.gz:md5,f8bf866d116205baa454b7a501a67b62"
+                        ]
+                    ]
+                ],
+                "4": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.merged.fastq.gz:md5,58ededca56f023aa625f51ec241ba849"
+                    ]
+                ],
+                "5": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.fastp.json:md5,f2fa2740350c702e0f7d6adec47858c4"
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.seqtk-seq.fasta.gz:md5,a14b76b1e8c24d3f9d98e61d03a62a53"
+                    ]
+                ],
+                "7": [
+                    "versions.yml:md5,20bda9fb4ab57e076a6db1b8cf72cb67",
+                    "versions.yml:md5,8d811725182283301014b4f776199d82",
+                    "versions.yml:md5,a5fd01ddb43380f5a73a5fcdb4dde637",
+                    "versions.yml:md5,caf2b2e3fac12c4d49e72d81275628ce",
+                    "versions.yml:md5,d2730aa327e9fd88847006cdcccc7df0"
+                ],
+                "amplicon_check": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "AMPLICON"
+                    ]
+                ],
+                "fastp_summary_json": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.fastp.json:md5,f2fa2740350c702e0f7d6adec47858c4"
+                    ]
+                ],
+                "reads": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        [
+                            "SRR21814853_1.fastp.fastq.gz:md5,ab81a64d069ed8876432d8e3bad0b847",
+                            "SRR21814853_2.fastp.fastq.gz:md5,f8bf866d116205baa454b7a501a67b62"
+                        ]
+                    ]
+                ],
+                "reads_fasta": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.seqtk-seq.fasta.gz:md5,a14b76b1e8c24d3f9d98e61d03a62a53"
+                    ]
+                ],
+                "reads_se_and_merged": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.merged.fastq.gz:md5,58ededca56f023aa625f51ec241ba849"
+                    ]
+                ],
+                "seqfu_check": [
+                    [
+                        {
+                            "id": "ERR4674038",
+                            "single_end": false
+                        },
+                        "ERR4674038.tsv:md5,e56475d0fee9cdc4fb3eda621f924af9"
+                    ],
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.tsv:md5,008673dad4dd80a742cc11669f24d6e8"
+                    ]
+                ],
+                "suffix_header_check": [
+                    [
+                        {
+                            "id": "ERR4674038",
+                            "single_end": false
+                        },
+                        "ERR4674038_suffix_header_err.json:md5,735222eb9c22d4d81b312a9682d55679"
+                    ],
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853_suffix_header_err.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,20bda9fb4ab57e076a6db1b8cf72cb67",
+                    "versions.yml:md5,8d811725182283301014b4f776199d82",
+                    "versions.yml:md5,a5fd01ddb43380f5a73a5fcdb4dde637",
+                    "versions.yml:md5,caf2b2e3fac12c4d49e72d81275628ce",
+                    "versions.yml:md5,d2730aa327e9fd88847006cdcccc7df0"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2024-10-18T16:50:22.371602861"
+    },
+    "test_reads_qc_notamplicon": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.tsv:md5,008673dad4dd80a742cc11669f24d6e8"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853_suffix_header_err.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "2": [
+                    
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        [
+                            "SRR21814853_1.fastp.fastq.gz:md5,ab81a64d069ed8876432d8e3bad0b847",
+                            "SRR21814853_2.fastp.fastq.gz:md5,f8bf866d116205baa454b7a501a67b62"
+                        ]
+                    ]
+                ],
+                "4": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.merged.fastq.gz:md5,58ededca56f023aa625f51ec241ba849"
+                    ]
+                ],
+                "5": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.fastp.json:md5,f2fa2740350c702e0f7d6adec47858c4"
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.seqtk-seq.fasta.gz:md5,a14b76b1e8c24d3f9d98e61d03a62a53"
+                    ]
+                ],
+                "7": [
+                    "versions.yml:md5,8d811725182283301014b4f776199d82",
+                    "versions.yml:md5,a5fd01ddb43380f5a73a5fcdb4dde637",
+                    "versions.yml:md5,caf2b2e3fac12c4d49e72d81275628ce",
+                    "versions.yml:md5,d2730aa327e9fd88847006cdcccc7df0"
+                ],
+                "amplicon_check": [
+                    
+                ],
+                "fastp_summary_json": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.fastp.json:md5,f2fa2740350c702e0f7d6adec47858c4"
+                    ]
+                ],
+                "reads": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        [
+                            "SRR21814853_1.fastp.fastq.gz:md5,ab81a64d069ed8876432d8e3bad0b847",
+                            "SRR21814853_2.fastp.fastq.gz:md5,f8bf866d116205baa454b7a501a67b62"
+                        ]
+                    ]
+                ],
+                "reads_fasta": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.seqtk-seq.fasta.gz:md5,a14b76b1e8c24d3f9d98e61d03a62a53"
+                    ]
+                ],
+                "reads_se_and_merged": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.merged.fastq.gz:md5,58ededca56f023aa625f51ec241ba849"
+                    ]
+                ],
+                "seqfu_check": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853.tsv:md5,008673dad4dd80a742cc11669f24d6e8"
+                    ]
+                ],
+                "suffix_header_check": [
+                    [
+                        {
+                            "id": "SRR21814853",
+                            "single_end": false
+                        },
+                        "SRR21814853_suffix_header_err.json:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,8d811725182283301014b4f776199d82",
+                    "versions.yml:md5,a5fd01ddb43380f5a73a5fcdb4dde637",
+                    "versions.yml:md5,caf2b2e3fac12c4d49e72d81275628ce",
+                    "versions.yml:md5,d2730aa327e9fd88847006cdcccc7df0"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2024-10-18T16:51:03.87281995"
+    }
+}

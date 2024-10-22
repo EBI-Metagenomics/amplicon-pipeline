@@ -1,0 +1,2 @@
+subworkflows/reads_qc:
+  - subworkflows/ebi-metagenomics/reads_qc/**

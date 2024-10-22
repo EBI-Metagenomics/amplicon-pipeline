@@ -1,5 +1,5 @@
 
-include { ASSESS_MCP_CONS       } from '../../modules/local/assess_mcp_cons/main.nf'
+include { ASSESSMCPPROPORTIONS   } from '../../modules/ebi-metagenomics/assessmcpproportions/main'
 include { FIND_MCP_INF_POINTS   } from '../../modules/local/find_mcp_inf_points/main.nf'
 include { ASSESS_MCP_INF_POINTS } from '../../modules/local/assess_mcp_inf_points/main.nf'
 
@@ -18,14 +18,15 @@ workflow AUTOMATIC_PRIMER_PREDICTION {
 
         ch_versions = Channel.empty()
         // Use Most Common Prefix (MCP) method to generate curves of base conservation
-        ASSESS_MCP_CONS(
-            auto_trimming_input
+        ASSESSMCPPROPORTIONS(
+            auto_trimming_input,
+            false
         )
-        ch_versions = ch_versions.mix(ASSESS_MCP_CONS.out.versions.first())
+        ch_versions = ch_versions.mix(ASSESSMCPPROPORTIONS.out.versions.first())
 
         // Find inflection points in conservation curves
         FIND_MCP_INF_POINTS(
-            ASSESS_MCP_CONS.out.mcp_cons_out
+            ASSESSMCPPROPORTIONS.out.tsv
         )
         ch_versions = ch_versions.mix(FIND_MCP_INF_POINTS.out.versions.first())
 

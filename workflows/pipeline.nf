@@ -104,6 +104,7 @@ workflow AMPLICON_PIPELINE {
 
     // Quality control
     READS_QC_MERGE(
+        true, // check if amplicon
         ch_input,
         true // merge
     )
@@ -111,6 +112,7 @@ workflow AMPLICON_PIPELINE {
 
     // Run it again without merging to keep PE files unmerged for primer trimming+DADA2
     READS_QC(
+        false, // check if amplicon
         ch_input,
         false // merge
     )

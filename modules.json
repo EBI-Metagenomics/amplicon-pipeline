@@ -5,6 +5,11 @@
     "git@github.com:EBI-Metagenomics/nf-modules.git": {
       "modules": {
         "ebi-metagenomics": {
+          "assessmcpproportions": {
+            "branch": "main",
+            "git_sha": "2c10a5c506ad200076d5fcc4581feb340e351e2f",
+            "installed_by": ["reads_qc"]
+          },
           "cmsearchtbloutdeoverlap": {
             "branch": "main",
             "git_sha": "696324c637a7e0cf06fe331faffee42e36826898",
@@ -33,6 +38,11 @@
             "git_sha": "d4edb49a9072e8dcfd0fd4bfb85be6c005f86409",
             "installed_by": ["reads_qc"]
           },
+          "fastqsuffixheadercheck": {
+            "branch": "main",
+            "git_sha": "67a02223d9bd9f38750255250035dc1a8da0b5db",
+            "installed_by": ["reads_qc"]
+          },
           "infernal/cmsearch": {
             "branch": "main",
             "git_sha": "62e22fb1fd131d27ed043f305f317a0cf741b900",
@@ -55,6 +65,11 @@
             "installed_by": ["mapseq_otu_krona"],
             "patch": "modules/ebi-metagenomics/mapseq2biom/mapseq2biom.diff"
           },
+          "seqfu/check": {
+            "branch": "main",
+            "git_sha": "d1f512bffa29ba7a89468ce29e0153e11b57cc94",
+            "installed_by": ["reads_qc"]
+          },
           "seqtk/seq": {
             "branch": "main",
             "git_sha": "d4edb49a9072e8dcfd0fd4bfb85be6c005f86409",
@@ -71,7 +86,7 @@
           },
           "reads_qc": {
             "branch": "main",
-            "git_sha": "a14f9be3abfce30feef356226458a3907bb556d7",
+            "git_sha": "c6917c7d1ae059968317c6315f503a6e85d7aa2e",
             "installed_by": ["subworkflows"]
           },
           "rrna_extraction": {

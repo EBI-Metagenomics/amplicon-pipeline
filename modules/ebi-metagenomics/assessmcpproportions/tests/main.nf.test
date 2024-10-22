@@ -1,0 +1,164 @@
+
+nextflow_process {
+
+    name "Test Process ASSESSMCPPROPORTIONS"
+    script "../main.nf"
+    process "ASSESSMCPPROPORTIONS"
+
+    tag "modules"
+    tag "modules_ebimetagenomics"
+    tag "assessmcpproportions"
+
+    test("assessmcpproportions - FR") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
+                    "auto",
+                    "auto",
+                    file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
+                    ]
+                input[1] = false
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("assessmcpproportions - F") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
+                    "auto",
+                    "none",
+                    file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
+                    ]
+                input[1] = false
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("assessmcpproportions - R") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
+                    "none",
+                    "auto",
+                    file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
+                    ]
+                input[1] = false
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("assessmcpproportions - none") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
+                    "none",
+                    "none",
+                    file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
+                    ]
+                input[1] = false
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("assessmcpproportions - FR - library_check") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
+                    "auto",
+                    "auto",
+                    file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
+                    ]
+                input[1] = true
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("assessmcpproportions - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
+                    "auto",
+                    "auto",
+                    file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
+                    ]
+                input[1] = false
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

@@ -1,0 +1,46 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "fastqsuffixheadercheck"
+description: Sanity check for FASTQ suffixes and headers
+keywords:
+  - fastq
+  - qc
+  - reads
+tools:
+  - "fastqsuffixheadercheck":
+      description: "Sanity check for FASTQ suffixes and headers, uses mgnify-pipelines-toolkit as conda environment"
+      homepage: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
+      documentation: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
+      tool_dev_url: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
+      licence: ["Apache-2.0"]
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'sample1', single_end:false ]`
+  - fastq:
+      type: file
+      description: Either a single-end FASTQ file, or two paired-end FASTQ files
+      pattern: "*.{fastq,fastq.gz}"
+
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'sample1', single_end:false ]`
+  - json:
+      type: file
+      description: JSON log file that is empty if no errors were found, or that contains which reads had mismatches if there were errors
+      pattern: "*.json"
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+
+authors:
+  - "@chrisata"
+maintainers:
+  - "@chrisata"

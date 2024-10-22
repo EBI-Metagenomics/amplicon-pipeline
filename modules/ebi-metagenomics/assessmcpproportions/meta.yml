@@ -1,0 +1,72 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "assessmcpproportions"
+description: Assess proportions of Most Common Prefixes (MCP) in reads
+keywords:
+  - fastq
+  - reads
+  - qc
+tools:
+  - "assessmcpproportions":
+      description: "Assess proportions of MCPs in reads, uses mgnify-pipelines-toolkit
+        as conda environment"
+      homepage: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
+      documentation: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
+      tool_dev_url: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
+      licence: ["Apache-2.0"]
+      identifier: ""
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - fwd_flag:
+        type: string
+        description: String that controls whether the forward strand of a merged fastq
+          file | should have its MCP proportions assessed. If it should, | string value
+          should be "auto"
+        pattern: "{auto,none}"
+    - rev_flag:
+        type: string
+        description: String that controls whether the reverse strand of a merged fastq
+          file | should have its MCP proportions assessed. If it should, | string value
+          should be "auto"
+        pattern: "{auto,none}"
+    - fastq:
+        type: file
+        description: Merged or single-end FASTQ file
+        pattern: "*.fastq.gz"
+  - - library_check:
+        type: boolean
+        description: Boolean flag to control for whether library strategy | being amplicon
+          should be checked
+output:
+  - tsv:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - "*.tsv":
+          type: file
+          description: .tsv file containing MCP proportion results for all given strands
+          pattern: "*.tsv"
+  - library_check_out:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - check_out:
+          type: string
+          description: Optional env variable containing either "AMPLICON", empty otherwise
+  - versions:
+      - versions.yml:
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@chrisata"
+maintainers:
+  - "@chrisata"

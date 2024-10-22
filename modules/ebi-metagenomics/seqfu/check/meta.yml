@@ -1,0 +1,44 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "seqfu_check"
+description: Evaluates the integrity of DNA FASTQ files
+keywords:
+  - fastq
+  - reads
+  - qc
+tools:
+  - "seqfu":
+      description: "DNA sequence utilities for FASTX files"
+      homepage: "https://telatin.github.io/seqfu2/"
+      documentation: "https://telatin.github.io/seqfu2/"
+      tool_dev_url: "https://telatin.github.io/seqfu2/tools/check.html"
+      doi: "10.3390/bioengineering8050059"
+      licence: ["GPL v3"]
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'sample1', single_end:false ]`
+  - fastq:
+      type: file
+      description: Either a single-end FASTQ file, or two paired-end FASTQ files
+      pattern: "*.{fastq,fastq.gz,fq,fq.gz}"
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'sample1', single_end:false ]`
+  - tsv:
+      type: file
+      description: TSV file containing output from seqfu/check, first column is either OK or ERR depending on if anything is wrong with the file(s)
+      pattern: "*.tsv"
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+authors:
+  - "@chrisata"
+maintainers:
+  - "@chrisata"

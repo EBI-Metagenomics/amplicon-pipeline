@@ -1,0 +1,106 @@
+
+nextflow_process {
+
+    name "Test Process FASTQSUFFIXHEADERCHECK"
+    script "../main.nf"
+    process "FASTQSUFFIXHEADERCHECK"
+
+    tag "modules"
+    tag "modules_nfcore"
+    tag "fastqsuffixheadercheck"
+
+    test("fastqsuffixheadercheck - pass - SE") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:true ], // meta map
+                    file("${moduleDir}/tests/fixtures/ERR4334351.fastq.gz", checkIfExists: true)
+                    ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("fastqsuffixheadercheck - pass - PE") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    [ file("${moduleDir}/tests/fixtures/ERR4674038_1.fastq.gz", checkIfExists: true),
+                      file("${moduleDir}/tests/fixtures/ERR4674038_2.fastq.gz", checkIfExists: true)
+                    ]
+                    ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("fastqsuffixheadercheck - fail - PE") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    [ file("${moduleDir}/tests/fixtures/ERR4674038witherror_1.fastq.gz", checkIfExists: true),
+                      file("${moduleDir}/tests/fixtures/ERR4674038witherror_2.fastq.gz", checkIfExists: true)
+                    ]
+                    ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("fastqsuffixheadercheck - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file("${moduleDir}/tests/fixtures/ERR4334351.fastq.gz", checkIfExists: true)
+                    ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

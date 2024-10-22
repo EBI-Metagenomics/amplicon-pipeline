@@ -1,0 +1,174 @@
+nextflow_workflow {
+
+    name "Test Subworkflow READS_QC"
+    script "../main.nf"
+    workflow "READS_QC"
+    config "./nextflow.config"
+
+    tag "subworkflows"
+    tag "subworkflows_nfcore"
+    tag "subworkflows/reads_qc"
+    tag "seqfu/check"
+    tag "fastqsuffixheadercheck"
+    tag "assessmcpproportions"
+    tag "fastp"
+    tag "seqtk"
+    tag "seqtk/seq"
+
+    test("test_reads_qc_success") {
+
+        when {
+            params {
+                save_trimmed_fail = true
+            }
+            workflow {
+                """
+                input[0] = true
+                input[1] = Channel.fromList([
+                        [
+                            [ id:'SRR21814853', single_end:false ], // meta map
+                            [ file("${moduleDir}/tests/fixtures/SRR21814853_1.fastq.gz", checkIfExists: true),
+                            file("${moduleDir}/tests/fixtures/SRR21814853_2.fastq.gz", checkIfExists: true)
+                            ]
+                        ]
+                    ])
+                input[2] = true
+                """
+            }
+        }
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+
+    test("test_reads_fail_seqfu") {
+
+        when {
+            params {
+                save_trimmed_fail = true
+            }
+            workflow {
+                """
+                input[0] = true
+                input[1] = Channel.fromList([
+                    [
+                        [ id:'SRR21814853', single_end:false ], // meta map
+                        [ file("${moduleDir}/tests/fixtures/SRR21814853_1.fastq.gz", checkIfExists: true),
+                        file("${moduleDir}/tests/fixtures/SRR21814853_2.fastq.gz", checkIfExists: true)
+                        ]
+                    ],
+                    [
+                        [ id:'ERR4674038', single_end:false ], // meta map
+                        [ file("${moduleDir}/tests/fixtures/ERR4674038_test_readcount_1.fastq", checkIfExists: true),
+                        file("${moduleDir}/tests/fixtures/ERR4674038_test_readcount_2.fastq", checkIfExists: true)
+                        ]
+                    ]
+                ])
+                input[2] = true
+                """
+            }
+        }
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+
+    test("test_reads_fail_suffixheader") {
+
+        when {
+            params {
+                save_trimmed_fail = true
+            }
+            workflow {
+                """
+                input[0] = true
+                input[1] = Channel.fromList([
+                    [
+                        [ id:'SRR21814853', single_end:false ], // meta map
+                        [ file("${moduleDir}/tests/fixtures/SRR21814853_1.fastq.gz", checkIfExists: true),
+                        file("${moduleDir}/tests/fixtures/SRR21814853_2.fastq.gz", checkIfExists: true)
+                        ]
+                    ],
+                    [
+                        [ id:'ERR4674038', single_end:false ], // meta map
+                        [ file("${moduleDir}/tests/fixtures/ERR4674038witherror_1.fastq.gz", checkIfExists: true),
+                        file("${moduleDir}/tests/fixtures/ERR4674038witherror_2.fastq.gz", checkIfExists: true)
+                        ]
+                    ]
+                ])
+                input[2] = true
+                """
+            }
+        }
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+
+    test("test_reads_onlyfail") {
+
+        when {
+            params {
+                save_trimmed_fail = true
+            }
+            workflow {
+                """
+                input[0] = true
+                input[1] = Channel.fromList([
+                    [
+                        [ id:'ERR4674038', single_end:false ], // meta map
+                        [ file("${moduleDir}/tests/fixtures/ERR4674038witherror_1.fastq.gz", checkIfExists: true),
+                        file("${moduleDir}/tests/fixtures/ERR4674038witherror_2.fastq.gz", checkIfExists: true)
+                        ]
+                    ]
+                ])
+                input[2] = true
+                """
+            }
+        }
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+
+    test("test_reads_qc_notamplicon") {
+
+        when {
+            params {
+                save_trimmed_fail = true
+            }
+            workflow {
+                """
+                input[0] = false
+                input[1] = Channel.fromList([
+                        [
+                            [ id:'SRR21814853', single_end:false ], // meta map
+                            [ file("${moduleDir}/tests/fixtures/SRR21814853_1.fastq.gz", checkIfExists: true),
+                            file("${moduleDir}/tests/fixtures/SRR21814853_2.fastq.gz", checkIfExists: true)
+                            ]
+                        ]
+                    ])
+                input[2] = true
+                """
+            }
+        }
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+}
