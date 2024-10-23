@@ -27,6 +27,9 @@ include { CONCAT_PRIMER_CUTADAPT                        } from '../subworkflows/
 include { DADA2_SWF                                     } from '../subworkflows/local/dada2_swf.nf'
 include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_SILVA    } from '../subworkflows/local/mapseq_asv_krona_swf.nf'
 include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_PR2      } from '../subworkflows/local/mapseq_asv_krona_swf.nf'
+include { EXTRACT_ASV_READ_COUNTS                       } from '../modules/local/extract_asv_read_counts/main'
+include { EXTRACT_ASVS_LEFT as EXTRACT_ASVS_LEFT_SILVA  } from '../modules/local/extract_asvs_left/main'
+include { EXTRACT_ASVS_LEFT as EXTRACT_ASVS_LEFT_PR2    } from '../modules/local/extract_asvs_left/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -268,6 +271,41 @@ workflow AMPLICON_PIPELINE {
     )
     ch_versions = ch_versions.mix(MAPSEQ_ASV_KRONA_PR2.out.versions)
 
+    extract_asv_read_counts_input = MAPSEQ_ASV_KRONA_SILVA.out.asvs_left
+        .join(MAPSEQ_ASV_KRONA_PR2.out.asvs_left)
+
+    EXTRACT_ASV_READ_COUNTS(extract_asv_read_counts_input)
+    ch_versions = ch_versions.mix(EXTRACT_ASV_READ_COUNTS.out.versions)
+
+    extract_asvs_input = EXTRACT_ASV_READ_COUNTS.out.asvs_left
+                    .map{ meta, asvs_left ->
+                        if (meta.var_region != "concat"){
+                            key = groupKey(meta.subMap('id'), meta.var_regions_size)
+                            [ key, asvs_left ]
+                        }
+                    }
+                    .groupTuple(by:0)
+                    .join(DADA2_SWF.out.dada2_out.map{meta, maps, asv_seqs, filt_reads ->
+                                        [['id':meta.id], asv_seqs]
+                                        }
+                            )
+
+    extract_asvs_input_silva = extract_asvs_input
+                    .join(MAPSEQ_ASV_KRONA_SILVA.out.asvtaxtable.map{meta, asvtaxtable ->
+                                        [['id':meta.id], asvtaxtable]
+                                        }
+                        )
+    extract_asvs_input_pr2 = extract_asvs_input
+                    .join(MAPSEQ_ASV_KRONA_PR2.out.asvtaxtable.map{meta, asvtaxtable ->
+                                        [['id':meta.id], asvtaxtable]
+                                        }
+                        )
+
+    EXTRACT_ASVS_LEFT_SILVA(extract_asvs_input_silva, dada2_krona_silva_tuple[4])
+    ch_versions = ch_versions.mix(EXTRACT_ASVS_LEFT_SILVA.out.versions.first())
+
+    EXTRACT_ASVS_LEFT_PR2(extract_asvs_input_pr2, dada2_krona_pr2_tuple[4])
+    ch_versions = ch_versions.mix(EXTRACT_ASVS_LEFT_PR2.out.versions.first())
 
     /*****************************/
     /* MultiQC reports */

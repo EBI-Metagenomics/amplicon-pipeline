@@ -70,7 +70,8 @@ workflow MAPSEQ_ASV_KRONA {
                                       }
         
         MAKE_ASV_COUNT_TABLES(
-            final_asv_count_table_input
+            final_asv_count_table_input,
+            krona_tuple[4]
         )
         ch_versions = ch_versions.mix(MAKE_ASV_COUNT_TABLES.out.versions.first())
 
@@ -79,24 +80,10 @@ workflow MAPSEQ_ASV_KRONA {
         )
         ch_versions = ch_versions.mix(KRONA_KTIMPORTTEXT.out.versions.first())
 
-        extract_asvs_input = MAKE_ASV_COUNT_TABLES.out.asvs_left
-                        .map{ meta, asvs_left ->
-                            if (meta.var_region != "concat"){
-                                key = groupKey(meta.subMap('id'), meta.var_regions_size)
-                                [ key, asvs_left ]
-                            }
-                        }
-                        .groupTuple(by:0)
-                        .join(dada2_output.map{meta, maps, asv_seqs, filt_reads ->
-                                            [['id':meta.id], asv_seqs]
-                                            }
-                             )
-
-        EXTRACT_ASVS_LEFT(extract_asvs_input)
-        ch_versions = ch_versions.mix(EXTRACT_ASVS_LEFT.out.versions.first())
-
     emit:
         asv_count_tables_out = MAKE_ASV_COUNT_TABLES.out.asv_count_tables_out
+        asvs_left = MAKE_ASV_COUNT_TABLES.out.asv_read_counts_out
+        asvtaxtable = MAPSEQ2ASVTABLE.out.asvtaxtable
         krona_out = KRONA_KTIMPORTTEXT.out.html
         versions = ch_versions
 }
