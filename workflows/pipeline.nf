@@ -47,6 +47,10 @@ include { dada2_input_preparation_function              } from '../lib/nf/dada2_
 // Import samplesheetToList from nf-schema //
 include { samplesheetToList                             } from 'plugin/nf-schema'
 
+// Import JsonBuilder//
+import groovy.json.JsonBuilder
+
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     INITIALISE REFERENCE DATABASE INPUT TUPLES
@@ -406,6 +410,43 @@ workflow AMPLICON_PIPELINE {
 
     // Save all passed runs to file //
     final_passed_runs.collectFile(name: "qc_passed_runs.csv", storeDir: "${params.outdir}", newLine: true, cache: false)
+
+    // Summarise primer validation information into study-wide JSON file //
+    CONCAT_PRIMER_CUTADAPT.out.primer_validation_out
+        .splitCsv(sep: "\t", elem: 1, skip: 1)
+        .groupTuple()
+        .map { meta, primer_val ->
+
+            json_map = ["id": "${meta.id}", "primers": []]
+
+            for(primer in primer_val){
+                primer_region = primer[4]
+                primer_name = primer[5]
+                primer_strand = primer[6]
+                primer_seq = primer[7]
+
+                new_primer = [
+                    "name": primer_name,
+                    "region": primer_region,
+                    "strand": primer_strand,
+                    "sequence": primer_seq
+                    ]
+
+                if( primer_name.contains("_auto" )){
+                    new_primer["identification_strategy"] = "auto"
+                }
+                else{
+                    new_primer["identification_strategy"] = "std"
+                }
+
+                json_map["primers"].add(new_primer)
+            }
+
+            json_map
+         }
+        .collect()
+        .map{ collected_json_maps -> json_content = new JsonBuilder(collected_json_maps).toPrettyString() }
+        .collectFile(name: "primer_validation_summary.json", storeDir: "${params.outdir}", newLine: true, cache: false)
 }
 
 /*
