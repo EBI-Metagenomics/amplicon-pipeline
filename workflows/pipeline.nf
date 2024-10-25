@@ -50,7 +50,6 @@ include { samplesheetToList                             } from 'plugin/nf-schema
 // Import JsonBuilder//
 import groovy.json.JsonBuilder
 
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     INITIALISE REFERENCE DATABASE INPUT TUPLES
@@ -225,8 +224,10 @@ workflow AMPLICON_PIPELINE {
     auto_trimming_input = PRIMER_IDENTIFICATION.out.conductor_out
                           .join(AMP_REGION_INFERENCE.out.extracted_var_out, by: [0])
 
-    /* Run subworkflow for automatic primer prediction
-       Outputs empty fasta file if no primers, or fasta file containing predicted primers */
+    /* 
+    Run subworkflow for automatic primer prediction
+    Outputs empty fasta file if no primers, or fasta file containing predicted primers
+    */
     AUTOMATIC_PRIMER_PREDICTION(
         auto_trimming_input
     )
@@ -275,6 +276,11 @@ workflow AMPLICON_PIPELINE {
     )
     ch_versions = ch_versions.mix(MAPSEQ_ASV_KRONA_PR2.out.versions)
 
+    /*  
+    Multiple steps in ASV calling + annotation can result in lost ASVs
+    These final modules make sure the set of ASVs being reported in the different outputs
+    are consistent i.e. ASVs in read count files, ASV sequences in FASTA files, etc.
+    */
     extract_asv_read_counts_input = MAPSEQ_ASV_KRONA_SILVA.out.asvs_left
         .join(MAPSEQ_ASV_KRONA_PR2.out.asvs_left)
 
@@ -445,7 +451,7 @@ workflow AMPLICON_PIPELINE {
             json_map
          }
         .collect()
-        .map{ collected_json_maps -> json_content = new JsonBuilder(collected_json_maps).toPrettyString() }
+        .map { collected_json_maps -> json_content = new JsonBuilder(collected_json_maps).toPrettyString() }
         .collectFile(name: "primer_validation_summary.json", storeDir: "${params.outdir}", newLine: true, cache: false)
 }
 
