@@ -426,27 +426,15 @@ workflow AMPLICON_PIPELINE {
 
             json_map = ["id": "${meta.id}", "primers": []]
 
-            for(primer in primer_val){
-                primer_region = primer[4]
-                primer_name = primer[5]
-                primer_strand = primer[6]
-                primer_seq = primer[7]
-
-                new_primer = [
-                    "name": primer_name,
-                    "region": primer_region,
-                    "strand": primer_strand,
-                    "sequence": primer_seq
-                    ]
-
-                if( primer_name.contains("_auto" )){
-                    new_primer["identification_strategy"] = "auto"
-                }
-                else{
-                    new_primer["identification_strategy"] = "std"
-                }
-
-                json_map["primers"].add(new_primer)
+            primer_val.each { run_id, ev, met, gene, region, name, strand, sequence ->
+                def new_primer = [
+                    "name": name,
+                    "region": region,
+                    "strand": strand,
+                    "sequence": sequence,
+                    "identification_strategy": name.contains("_auto") ? "auto" : "std"
+                ]
+                json_map["primers"] << new_primer
             }
 
             json_map
