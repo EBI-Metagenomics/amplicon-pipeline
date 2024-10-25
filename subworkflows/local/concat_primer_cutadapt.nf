@@ -37,17 +37,13 @@ workflow CONCAT_PRIMER_CUTADAPT {
         ch_versions = ch_versions.mix(FINAL_CONCAT_PRIMERS.out.versions.first())
 
         primer_validation_input = FINAL_CONCAT_PRIMERS.out.final_concat_primers_out
-                              .map{ meta, primers ->
-                                if (primers.size() > 0){
-                                    [ meta, primers ]
-                                }
+                              .filter{ meta, primers ->
+                                primers.size() > 0
                               }
 
         runs_without_primers = FINAL_CONCAT_PRIMERS.out.final_concat_primers_out
-                              .map{ meta, primers ->
-                                if (primers.size() == 0){
-                                    [ meta, primers ]
-                                }
+                              .filter{ meta, primers ->
+                                primers.size() == 0
                               }
     // Verify that any identified primers (both std+auto) actually match to regions of the SSU gene (for Bacteria/Archaea/Eukaryotes)
     // Output of this (a .tsv file) will go to CDCH

@@ -288,11 +288,12 @@ workflow AMPLICON_PIPELINE {
     ch_versions = ch_versions.mix(EXTRACT_ASV_READ_COUNTS.out.versions)
 
     extract_asvs_input = EXTRACT_ASV_READ_COUNTS.out.asvs_left
+                    .filter { meta, asvs_left ->
+                        meta.var_region != "concat"
+                     }
                     .map{ meta, asvs_left ->
-                        if (meta.var_region != "concat"){
-                            key = groupKey(meta.subMap('id'), meta.var_regions_size)
-                            [ key, asvs_left ]
-                        }
+                        key = groupKey(meta.subMap('id'), meta.var_regions_size)
+                        [ key, asvs_left ]
                     }
                     .groupTuple(by:0)
                     .join(DADA2_SWF.out.dada2_out.map{meta, maps, asv_seqs, filt_reads ->
