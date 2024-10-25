@@ -1,0 +1,30 @@
+nextflow_pipeline {
+
+    name "Test Workflow AMPLICON_PIPELINE"
+    script "main.nf"
+
+    test("Samplesheet amplicon-pipeline") {
+
+        tag "samplesheet"
+
+        when {
+            params {
+                input  = "${projectDir}/tests/samplesheets/test_samplesheet.csv"
+                outdir = "tests/results"
+            }
+        }
+
+        then {
+            with(workflow) {
+                assertAll(
+                    { assert success }, 
+                    { assert trace.succeeded().count{ task -> task.name.contains("SEQFU_CHECK") } == 6 },
+                    { assert trace.succeeded().count{ task -> task.name.contains("FASTQSUFFIXHEADERCHECK") } == 4 },
+                    { assert trace.succeeded().count{ task -> task.name.contains("ASSESSMCPPROPORTIONS") } == 1 },
+                    { assert trace.succeeded().count{ task -> task.name.contains("FASTP") } == 2 },
+                    { assert trace.succeeded().count{ task -> task.name.contains("SEQTK_SEQ") } == 1 }
+                )
+            }
+        }
+    }
+}
