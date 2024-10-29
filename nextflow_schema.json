@@ -128,7 +128,7 @@
         },
         "ssu_label": {
           "type": "string",
-          "default": "SSU",
+          "default": "SILVA-SSU",
           "description": "SILVA SU Label"
         },
         "lsu_db_fasta": {
@@ -153,7 +153,7 @@
         },
         "lsu_label": {
           "type": "string",
-          "default": "LSU",
+          "default": "SILVA-LSU",
           "description": "SILVA LSU Label"
         },
         "dada2_silva_label": {
