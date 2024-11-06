@@ -164,6 +164,8 @@ Example output directory structure for one run (`ERR4334351`):
 └── manifest.json
 ```
 
+For a more detailed description of the different output files, see the `OUTPUTS_DESCRIPTION.md` file.
+
 ### Top-level reports
 
 #### MultiQC
