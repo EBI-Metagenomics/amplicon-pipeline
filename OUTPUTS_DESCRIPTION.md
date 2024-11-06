@@ -230,14 +230,14 @@ The two different subdirectories have the same three categories of files, two of
 
 The pipeline generated four different per-study output files that aggregate and summarise data, from failed runs to primer validation metadata.
 
-#### MultiQC
+### MultiQC
 
 The pipeline generates two [MultiQC](https://seqera.io/multiqc/) reports: one per-study (`study_multiqc_report.html`), and one per-run (`qc/${id}_multiqc_report.html`). These reports aggregate a few QC statistics from some of the tools run by the pipeline, including:
 - fastp
 - cutadapt
 - DADA2 (as a custom report)
 
-#### QC failed runs
+### QC failed runs
 
 The pipeline runs a couple of sanity and QC checks on every input run. In the case where a run fails, it will be added to a top-level report (`qc_failed_runs.csv`) that aggregates the IDs of any other run that failed, along with the particular reason it failed. For example:
 
@@ -257,7 +257,7 @@ The different exclusion messages are:
 | `libstrat_fail`     	| Run was predicted to likely not be of AMPLICON sequencing based on base-conservation patterns at the beginning of reads                                                                   	|
 | `no_reads`          	| Run had no reads left after running `fastp`                                                                                                                                               	|
 
-#### QC passed runs
+### QC passed runs
 
 Similarly to runs that fail QC, runs that pass QC are guaranteed to generate results. The IDs of such runs is aggregated into a top-level file (`qc_passed_runs.csv`). For example:
 
@@ -272,7 +272,7 @@ An important thing to note is that while a run might succeed at generating resul
 - `all_results` - if results for both methods could be generated
 - `no_asvs` - if ASV results could not be generated
 
-#### Primer validation summary
+### Primer validation summary
 
 The pipeline performs inferrence of primer presence and sequence. For any runs where a primer was detected, metadata about it will be aggregated into a top-level primer validation summary file (`primer_validation_summary.json`), including its sequence, region, and identification strategy. For example:
 
