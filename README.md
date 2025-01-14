@@ -29,42 +29,44 @@ The amplicon analysis pipeline v6.0 also contains multiple significant changes:
 
 At this stage, the only sequence amplicons that this pipeline is built for are:
 
-| Amplicon 	| Closed-reference analysis 	| ASV analysis 	|
-|:--------:	|:-------------------------:	|:------------:	|
-|    16S   	|             ✓             	|       ✓      	|
-|    18S   	|             ✓             	|       ✓      	|
-|    LSU   	|             ✓             	|       ✗      	|
-|    ITS   	|             ✓             	|       ✗      	|
-
+| Amplicon | Closed-reference analysis | ASV analysis |
+| :------: | :-----------------------: | :----------: |
+|   16S    |             ✓             |      ✓       |
+|   18S    |             ✓             |      ✓       |
+|   LSU    |             ✓             |      ✗       |
+|   ITS    |             ✓             |      ✗       |
 
 ### Tools
 
-| Tool                      	| Version  	| Purpose                                                	|
-|---------------------------	|----------	|--------------------------------------------------------	|
-| [fastp](https://github.com/OpenGene/fastp)                     	| 0.23.4   	| Read quality control                                   	|
-| [seqtk](https://github.com/lh3/seqtk)                     	| 1.3-r106 	| FASTQ file manipulation                                	|
-| [easel](https://github.com/EddyRivasLab/easel)                     	| 0.49     	| FASTA file manipulation                                	|
-| [bedtools](https://bedtools.readthedocs.io/en/latest/)                  	| 2.30.0   	| FASTA sequence masking                                 	|
-| [Infernal/cmsearch](https://github.com/EddyRivasLab/infernal/tree/master)                  	| 1.1.5    	| rRNA sequence searching                                	|
-| [cmsearch_tblout_deoverlap](https://github.com/nawrockie/cmsearch_tblout_deoverlap/tree/master) 	| 0.09     	| Deoverlapping of cmsearch results                      	|
-| [MAPseq](https://github.com/meringlab/MAPseq)                    	| 2.1.1b   	| Reference-based taxonomic classification of rRNA       	|
-| [Krona](https://github.com/marbl/Krona)                    	| 2.8.1    	| Krona chart visualisation                              	|
-| [cutadapt](https://cutadapt.readthedocs.io/en/stable/)                  	| 4.6      	| Primer trimming                                        	|
-| [R](https://www.r-project.org/)                         	| 4.3.3    	| R programming language (runs DADA2)                    	|
-| [DADA2](https://benjjneb.github.io/dada2/index.html)                     	| 1.30.0   	| ASV calling                                            	|
-| [mgnify-pipelines-toolkit](https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit)  	| 0.1.8    	| Toolkit containing various in-house processing scripts 	|
+| Tool                                                                                            | Version  | Purpose                                                |
+| ----------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------ |
+| [fastp](https://github.com/OpenGene/fastp)                                                      | 0.23.4   | Read quality control                                   |
+| [seqtk](https://github.com/lh3/seqtk)                                                           | 1.3-r106 | FASTQ file manipulation                                |
+| [easel](https://github.com/EddyRivasLab/easel)                                                  | 0.49     | FASTA file manipulation                                |
+| [bedtools](https://bedtools.readthedocs.io/en/latest/)                                          | 2.30.0   | FASTA sequence masking                                 |
+| [Infernal/cmsearch](https://github.com/EddyRivasLab/infernal/tree/master)                       | 1.1.5    | rRNA sequence searching                                |
+| [cmsearch_tblout_deoverlap](https://github.com/nawrockie/cmsearch_tblout_deoverlap/tree/master) | 0.09     | Deoverlapping of cmsearch results                      |
+| [MAPseq](https://github.com/meringlab/MAPseq)                                                   | 2.1.1b   | Reference-based taxonomic classification of rRNA       |
+| [Krona](https://github.com/marbl/Krona)                                                         | 2.8.1    | Krona chart visualisation                              |
+| [cutadapt](https://cutadapt.readthedocs.io/en/stable/)                                          | 4.6      | Primer trimming                                        |
+| [R](https://www.r-project.org/)                                                                 | 4.3.3    | R programming language (runs DADA2)                    |
+| [DADA2](https://benjjneb.github.io/dada2/index.html)                                            | 1.30.0   | ASV calling                                            |
+| [mgnify-pipelines-toolkit](https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit)        | 0.1.8    | Toolkit containing various in-house processing scripts |
 
 ### Reference databases
 
 This pipeline uses five different reference databases. The files the pipeline uses are processed from the raw files available on each database's website, for use by MAPseq and cmsearch. We provide ready-made versions of these processed files on our FTP, which you can find here:
 
-| Reference database 	| Version 	| Purpose                               	| Processed file paths                                                                                                                                          	|
-|--------------------	|---------	|---------------------------------------	|---------------------------------------------------------------------------------------------------------------------------------------------------------------	|
-| [SILVA](https://www.arb-silva.de/)              	| 138.1   	| 16S+18S+LSU rRNA database                 	| https://ftp.ebi.ac.uk/pub/databases/metagenomics/pipelines/tool-dbs/silva-ssu/ https://ftp.ebi.ac.uk/pub/databases/metagenomics/pipelines/tool-dbs/silva-lsu/ 	|
-| [PR2](https://pr2-database.org/)                	| 5.0     	| Protist-focused 18S+16S rRNA database 	| https://ftp.ebi.ac.uk/pub/databases/metagenomics/pipelines/tool-dbs/pr2/                                                                                      	|
-| [UNITE](https://unite.ut.ee/)              	| 9.0     	| ITS database                          	| https://ftp.ebi.ac.uk/pub/databases/metagenomics/pipelines/tool-dbs/unite/                                                                                    	|
-| [ITSoneDB](https://itsonedb.cloud.ba.infn.it)           	| 1.141   	| ITS database                          	| https://ftp.ebi.ac.uk/pub/databases/metagenomics/pipelines/tool-dbs/itsonedb/                                                                                 	|
-| [Rfam](https://rfam.org/)               	| 14.10   	| RNA family profile database           	| https://ftp.ebi.ac.uk/pub/databases/metagenomics/pipelines/tool-dbs/rfam/                                                                                     	|
+| Reference database                            | Version | Purpose                               | Processed file paths                                                                                                                                          |
+| --------------------------------------------- | ------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [SILVA](https://www.arb-silva.de/)            | 138.1   | 16S+18S+LSU rRNA database             | https://ftp.ebi.ac.uk/pub/databases/metagenomics/pipelines/tool-dbs/silva-ssu/ https://ftp.ebi.ac.uk/pub/databases/metagenomics/pipelines/tool-dbs/silva-lsu/ |
+| [PR2](https://pr2-database.org/)              | 5.0     | Protist-focused 18S+16S rRNA database | https://ftp.ebi.ac.uk/pub/databases/metagenomics/pipelines/tool-dbs/pr2/                                                                                      |
+| [UNITE](https://unite.ut.ee/)                 | 9.0     | ITS database                          | https://ftp.ebi.ac.uk/pub/databases/metagenomics/pipelines/tool-dbs/unite/                                                                                    |
+| [ITSoneDB](https://itsonedb.cloud.ba.infn.it) | 1.141   | ITS database                          | https://ftp.ebi.ac.uk/pub/databases/metagenomics/pipelines/tool-dbs/itsonedb/                                                                                 |
+| [Rfam](https://rfam.org/)                     | 14.10   | rRNA covariance models                | https://ftp.ebi.ac.uk/pub/databases/metagenomics/pipelines/tool-dbs/rfam/                                                                                     |
+
+> [!NOTE]  
+> The preprocessed databases are generated with the [Microbiome Informatics tax_db_generation_nf pipeline](https://github.com/EBI-Metagenomics/taxdb_generation_nf).
 
 ## How to run
 
@@ -99,6 +101,7 @@ nextflow run ebi-metagenomics/amplicon-pipeline \
 ### Output directory structure
 
 Example output directory structure for one run (`ERR4334351`):
+
 ```
 ├── pipeline_info
 │   └── software_versions.yml
