@@ -240,15 +240,15 @@
           "default": "PR2",
           "description": "PR2 label"
         },
-        "rfam": {
+        "rrnas_rfam_covariance_model": {
           "type": "string",
           "format": "file-path",
-          "description": "Path to Rfam processed covariance model file"
+          "description": "Path to the Rfam rRNA covariance models file. This file is generated with https://github.com/EBI-Metagenomics/taxdb_generation_nf and is available in our team FTP."
         },
-        "claninfo": {
+        "rrnas_rfam_claninfo": {
           "type": "string",
           "format": "file-path",
-          "description": "Path to Rfam processed claninfo subset"
+          "description": "Path to the Rfam rRNA covariance models claninfo subset. This file is generated with https://github.com/EBI-Metagenomics/taxdb_generation_nf and is available in our team FTP."
         },
         "std_primer_library": {
           "type": "string",
