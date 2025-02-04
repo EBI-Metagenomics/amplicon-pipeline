@@ -39,7 +39,7 @@ trunc_len_automation = function(fastq_path){
   for (q in q_score_list){
     less_than_q = min(which(means<q)) - 1
     
-    if (less_than_q < length(filtered_counts_per_cycle)){
+    if (less_than_q > 0 & less_than_q < length(filtered_counts_per_cycle)){
 
       reads_remainder = filtered_counts_per_cycle[less_than_q]/total_read_count
       if (less_than_q != Inf){
