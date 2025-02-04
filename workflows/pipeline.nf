@@ -30,6 +30,7 @@ include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_PR2      } from '../subworkflows/
 include { EXTRACT_ASV_READ_COUNTS                       } from '../modules/local/extract_asv_read_counts/main'
 include { EXTRACT_ASVS_LEFT as EXTRACT_ASVS_LEFT_SILVA  } from '../modules/local/extract_asvs_left/main'
 include { EXTRACT_ASVS_LEFT as EXTRACT_ASVS_LEFT_PR2    } from '../modules/local/extract_asvs_left/main'
+// include { STUDY_SUMMARY_GENERATOR                       } from '../modules/local/study_summary_generator/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,76 +53,76 @@ import groovy.json.JsonBuilder
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    INITIALISE REFERENCE DATABASE INPUT TUPLES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-// Regular taxonomy resolution method //
-ssu_mapseq_krona_tuple = Channel.value([
-    file(params.ssu_db_fasta, checkIfExists: true),
-    file(params.ssu_db_tax, checkIfExists: true),
-    file(params.ssu_db_otu, checkIfExists: true),
-    file(params.ssu_db_mscluster, checkIfExists: true),
-    params.ssu_label
-])
-lsu_mapseq_krona_tuple = Channel.value([
-    file(params.lsu_db_fasta, checkIfExists: true),
-    file(params.lsu_db_tax, checkIfExists: true),
-    file(params.lsu_db_otu, checkIfExists: true),
-    file(params.lsu_db_mscluster, checkIfExists: true),
-    params.lsu_label
-])
-itsonedb_mapseq_krona_tuple = Channel.value([
-    file(params.itsone_db_fasta, checkIfExists: true),
-    file(params.itsone_db_tax, checkIfExists: true),
-    file(params.itsone_db_otu, checkIfExists: true),
-    file(params.itsone_db_mscluster, checkIfExists: true),
-    params.itsone_label
-])
-unite_mapseq_krona_tuple = Channel.value([
-    file(params.unite_db_fasta, checkIfExists: true),
-    file(params.unite_db_tax, checkIfExists: true),
-    file(params.unite_db_otu, checkIfExists: true),
-    file(params.unite_db_mscluster, checkIfExists: true),
-    params.unite_label
-])
-pr2_mapseq_krona_tuple = Channel.value([
-    file(params.pr2_db_fasta, checkIfExists: true),
-    file(params.pr2_db_tax, checkIfExists: true),
-    file(params.pr2_db_otu, checkIfExists: true),
-    file(params.pr2_db_mscluster, checkIfExists: true),
-    params.pr2_label
-])
-
-// Regular ASV resolution method //
-dada2_krona_silva_tuple = tuple(
-    file(params.ssu_db_fasta, checkIfExists: true),
-    file(params.ssu_db_tax, checkIfExists: true),
-    file(params.ssu_db_otu, checkIfExists: true),
-    file(params.ssu_db_mscluster, checkIfExists: true),
-    params.dada2_silva_label
-)
-dada2_krona_pr2_tuple = tuple(
-    file(params.pr2_db_fasta, checkIfExists: true),
-    file(params.pr2_db_tax, checkIfExists: true),
-    file(params.pr2_db_otu, checkIfExists: true),
-    file(params.pr2_db_mscluster, checkIfExists: true),
-    params.dada2_pr2_label
-)
-
-// Initialiase standard primer library //
-std_primer_library = file(params.std_primer_library, type: 'dir', checkIfExists: true)
-
-// Read input samplesheet and validate it using schema_input.json //
-samplesheet = Channel.fromList(samplesheetToList(params.input, "./assets/schema_input.json"))
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 workflow AMPLICON_PIPELINE {
+
+    /*
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        INITIALISE REFERENCE DATABASE INPUT TUPLES
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    */
+
+    // Regular taxonomy resolution method //
+    ssu_mapseq_krona_tuple = Channel.value([
+        file(params.ssu_db_fasta, checkIfExists: true),
+        file(params.ssu_db_tax, checkIfExists: true),
+        file(params.ssu_db_otu, checkIfExists: true),
+        file(params.ssu_db_mscluster, checkIfExists: true),
+        params.ssu_label
+    ])
+    lsu_mapseq_krona_tuple = Channel.value([
+        file(params.lsu_db_fasta, checkIfExists: true),
+        file(params.lsu_db_tax, checkIfExists: true),
+        file(params.lsu_db_otu, checkIfExists: true),
+        file(params.lsu_db_mscluster, checkIfExists: true),
+        params.lsu_label
+    ])
+    itsonedb_mapseq_krona_tuple = Channel.value([
+        file(params.itsone_db_fasta, checkIfExists: true),
+        file(params.itsone_db_tax, checkIfExists: true),
+        file(params.itsone_db_otu, checkIfExists: true),
+        file(params.itsone_db_mscluster, checkIfExists: true),
+        params.itsone_label
+    ])
+    unite_mapseq_krona_tuple = Channel.value([
+        file(params.unite_db_fasta, checkIfExists: true),
+        file(params.unite_db_tax, checkIfExists: true),
+        file(params.unite_db_otu, checkIfExists: true),
+        file(params.unite_db_mscluster, checkIfExists: true),
+        params.unite_label
+    ])
+    pr2_mapseq_krona_tuple = Channel.value([
+        file(params.pr2_db_fasta, checkIfExists: true),
+        file(params.pr2_db_tax, checkIfExists: true),
+        file(params.pr2_db_otu, checkIfExists: true),
+        file(params.pr2_db_mscluster, checkIfExists: true),
+        params.pr2_label
+    ])
+
+    // Regular ASV resolution method //
+    dada2_krona_silva_tuple = tuple(
+        file(params.ssu_db_fasta, checkIfExists: true),
+        file(params.ssu_db_tax, checkIfExists: true),
+        file(params.ssu_db_otu, checkIfExists: true),
+        file(params.ssu_db_mscluster, checkIfExists: true),
+        params.dada2_silva_label
+    )
+    dada2_krona_pr2_tuple = tuple(
+        file(params.pr2_db_fasta, checkIfExists: true),
+        file(params.pr2_db_tax, checkIfExists: true),
+        file(params.pr2_db_otu, checkIfExists: true),
+        file(params.pr2_db_mscluster, checkIfExists: true),
+        params.dada2_pr2_label
+    )
+
+    // Initialiase standard primer library //
+    std_primer_library = file(params.std_primer_library, type: 'dir', checkIfExists: true)
+
+    // Read input samplesheet and validate it using schema_input.json //
+    samplesheet = Channel.fromList(samplesheetToList(params.input, "./assets/schema_input.json"))
 
     ch_versions = Channel.empty()
 
@@ -442,6 +443,13 @@ workflow AMPLICON_PIPELINE {
         .collect()
         .map { collected_json_maps -> json_content = new JsonBuilder(collected_json_maps).toPrettyString() }
         .collectFile(name: "primer_validation_summary.json", storeDir: "${params.outdir}", newLine: true, cache: false)
+
+    // passed_runs_path = "${params.outdir}/qc_passed_runs.csv"
+
+    // STUDY_SUMMARY_GENERATOR(params.outdir,
+    //                         passed_runs_path,
+    //                         params.study_summary_prefix,
+    //                         params.non_insdc)
 }
 
 /*
