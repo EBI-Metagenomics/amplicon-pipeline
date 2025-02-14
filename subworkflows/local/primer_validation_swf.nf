@@ -14,13 +14,13 @@ workflow PRIMER_VALIDATION {
 
         PRIMER_VALIDATION_SEARCH(
             primer_validation_input,
-            file(params.rfam, checkIfExists: true)
+            file(params.rrnas_rfam_covariance_model, checkIfExists: true)
         )
         ch_versions = ch_versions.mix(PRIMER_VALIDATION_SEARCH.out.versions.first())
         
         PRIMER_VALIDATION_DEOVERLAP(
             PRIMER_VALIDATION_SEARCH.out.cmsearch_tbl,
-            file(params.claninfo, checkIfExists: true)
+            file(params.rrnas_rfam_claninfo, checkIfExists: true)
         )
         ch_versions = ch_versions.mix(PRIMER_VALIDATION_DEOVERLAP.out.versions.first())
 
