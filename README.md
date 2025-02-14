@@ -96,6 +96,16 @@ nextflow run ebi-metagenomics/amplicon-pipeline \
     --outdir /path/to/outputdir
 ```
 
+If you want to run the pipeline on deeply-sequenced reads, DADA2 can become a serious bottleneck. To counter this on SLURM, you can specify the `large_samples` profile which will massively boost the resources those processes will ask for. We will improve this to be more dynamic in the future, so for now **use it with caution to avoid causing a standstill in the cluster.** Here's an example:
+
+```bash
+nextflow run ebi-metagenomics/amplicon-pipeline \
+    -r main \
+    -profile codon_slurm,large_samples \
+    --input /path/to/samplesheet.csv \
+    --outdir /path/to/outputdir
+```
+
 ## Outputs
 
 ### Output directory structure
