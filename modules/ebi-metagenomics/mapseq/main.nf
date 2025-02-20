@@ -35,7 +35,7 @@ process MAPSEQ {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        mapseq: \$(mapseq -h 2>&1 | head -1 | cut -d" " -f3 | cut -d"v" -f2)
+        mapseq: \$(mapseq -h 2>&1 | head -1 | cut -d" " -f2 | cut -d"v" -f2)
     END_VERSIONS
     """
 
@@ -48,7 +48,7 @@ process MAPSEQ {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        mapseq: \$(mapseq -h 2>&1 | head -1 | cut -d" " -f3 | cut -d"v" -f2)
+        mapseq: \$(mapseq -h 2>&1 | head -1 | cut -d" " -f2 | cut -d"v" -f2)
     END_VERSIONS
     """
 }
