@@ -24,7 +24,7 @@ workflow CONCAT_PRIMER_CUTADAPT {
         // groupKey solution from https://training.nextflow.io/advanced/grouping/#passing-maps-through-processes
         final_concat_primers_input = CONCAT_PRIMERS.out.concat_primers_out
                                     .map{ meta, concat_primers ->
-                                        key = groupKey(meta.subMap('id', 'single_end'), meta['var_regions_size'])
+                                        def key = groupKey(meta.subMap('id', 'single_end'), meta['var_regions_size'])
                                         [ key, meta['var_region'], concat_primers ]
                                     }
                                     .groupTuple(by: 0)
@@ -89,8 +89,8 @@ workflow CONCAT_PRIMER_CUTADAPT {
                             [ meta.subMap('id', 'single_end'), meta['var_region'], meta['var_regions_size'], [fwd_primer, rev_primer] ]
                         }
                         .join(reads, by: [0])
-                        .map{ meta, var_region, var_regions_size, primers, reads -> 
-                            [ meta + ["var_region":var_region, "var_regions_size": var_regions_size], reads, primers ]
+                        .map{ meta, var_region, var_regions_size, primers, final_reads -> 
+                            [ meta + ["var_region":var_region, "var_regions_size": var_regions_size], final_reads, primers ]
                         }
 
         CUTADAPT(

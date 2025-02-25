@@ -20,7 +20,7 @@ process CLASSIFY_VAR_REGIONS {
     """
     classify_var_regions -d ./ -o ${meta.id} --statistics $cmsearch_deoverlap_out
     
-    num_files="\$(ls *S.V*.txt | wc -l  )"
+    num_files="\$(find . -name '*S.V*.txt' | wc -l  )"
     if [ \$num_files -gt 1 ]; then
         cat *S.V*.txt > ${meta.id}.concat.regions.txt
     fi
