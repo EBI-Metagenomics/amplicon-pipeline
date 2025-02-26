@@ -19,7 +19,7 @@ process STUDY_SUMMARY_GENERATOR {
     def insdc_input = non_insdc ? "--non_insdc" : ""
 
     """
-    // TODO: fix incoming for this in the toolkit, can remove it soon
+    # TODO: fix incoming for this in the toolkit, can remove it soon
     python /usr/local/lib/python3.11/site-packages/mgnify_pipelines_toolkit/analysis/shared/study_summary_generator.py summarise -a ${pipeline_outputs} -r ${successful_runs_file} -p ${prefix} ${insdc_input}
     
     cat <<-END_VERSIONS > versions.yml
