@@ -1,6 +1,5 @@
 
 process STUDY_SUMMARY_GENERATOR {
-    tag "$meta.id"
     label 'very_light'
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
@@ -17,8 +16,11 @@ process STUDY_SUMMARY_GENERATOR {
     path "versions.yml" , emit: versions
 
     script:
+    def insdc_input = non_insdc ? "--non_insdc" : ""
+
     """
-    study_summary_generator summarise -a ${pipeline_outputs} -r ${successful_runs_file} -p ${prefix} ${non_insdc}
+    // TODO: fix incoming for this in the toolkit, can remove it soon
+    python /usr/local/lib/python3.11/site-packages/mgnify_pipelines_toolkit/analysis/shared/study_summary_generator.py summarise -a ${pipeline_outputs} -r ${successful_runs_file} -p ${prefix} ${insdc_input}
     
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

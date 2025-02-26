@@ -30,7 +30,7 @@ include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_PR2      } from '../subworkflows/
 include { EXTRACT_ASV_READ_COUNTS                       } from '../modules/local/extract_asv_read_counts/main'
 include { EXTRACT_ASVS_LEFT as EXTRACT_ASVS_LEFT_SILVA  } from '../modules/local/extract_asvs_left/main'
 include { EXTRACT_ASVS_LEFT as EXTRACT_ASVS_LEFT_PR2    } from '../modules/local/extract_asvs_left/main'
-// include { STUDY_SUMMARY_GENERATOR                       } from '../modules/local/study_summary_generator/main'
+include { STUDY_SUMMARY_GENERATOR                       } from '../modules/local/study_summary_generator/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -418,6 +418,12 @@ workflow AMPLICON_PIPELINE {
 
     // Save all passed runs to file //
     final_passed_runs.collectFile(name: "qc_passed_runs.csv", storeDir: "${params.outdir}", newLine: true, cache: false)
+    .set { passed_runs_path }
+
+    STUDY_SUMMARY_GENERATOR(Channel.fromPath(params.outdir, type: 'dir'),
+                            passed_runs_path,
+                            params.study_summary_prefix,
+                            params.non_insdc)
 
     // Summarise primer validation information into study-wide JSON file //
     CONCAT_PRIMER_CUTADAPT.out.primer_validation_out
@@ -444,12 +450,6 @@ workflow AMPLICON_PIPELINE {
         .map { collected_json_maps -> json_content = new JsonBuilder(collected_json_maps).toPrettyString() }
         .collectFile(name: "primer_validation_summary.json", storeDir: "${params.outdir}", newLine: true, cache: false)
 
-    // passed_runs_path = "${params.outdir}/qc_passed_runs.csv"
-
-    // STUDY_SUMMARY_GENERATOR(params.outdir,
-    //                         passed_runs_path,
-    //                         params.study_summary_prefix,
-    //                         params.non_insdc)
 }
 
 /*
