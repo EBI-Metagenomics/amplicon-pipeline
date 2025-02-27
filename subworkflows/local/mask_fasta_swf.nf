@@ -1,7 +1,7 @@
 
-include { FORMAT_BEDFILE     } from '../../modules/local/format_bedfile/main.nf'
+include { FORMAT_BEDFILE     } from '../../modules/local/format_bedfile/main'
 include { BEDTOOLS_MASKFASTA } from '../../modules/nf-core/bedtools/maskfasta/main'
-
+include { FILTER_MASKED_N } from '../../modules/local/filter_masked_N/main'
 
 workflow MASK_FASTA_SWF {
     
@@ -25,7 +25,11 @@ workflow MASK_FASTA_SWF {
         )
         ch_versions = ch_versions.mix(BEDTOOLS_MASKFASTA.out.versions.first())
 
+        FILTER_MASKED_N(BEDTOOLS_MASKFASTA.out.fasta)
+        ch_versions = ch_versions.mix(FILTER_MASKED_N.out.versions.first())
+
+
     emit:
-        masked_out = BEDTOOLS_MASKFASTA.out.fasta
+        masked_out = FILTER_MASKED_N.out.filtered_its_fasta
         versions = ch_versions
 }
