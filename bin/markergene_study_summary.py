@@ -3,7 +3,6 @@ import argparse
 from collections import defaultdict
 import json
 import pathlib
-import pprint
 import logging
 
 import pandas as pd
@@ -77,8 +76,8 @@ def main():
 
     runs_df = pd.read_csv(RUNS, names=["run", "status"])
 
+    # Marker gene study summary
     markergene_dict = defaultdict(dict)
-
     for i in range(0, len(runs_df)):
         run_acc = runs_df.loc[i, "run"]
         markergene_dict[run_acc]["marker_genes"] = defaultdict(dict)
@@ -97,10 +96,48 @@ def main():
             else:
                 markergene_dict[run_acc]["marker_genes"][markergene]["majority_marker"] = False
 
-    pprint.pprint(markergene_dict)
 
-    with open('markergene_study_summary.json', 'w') as fw:
-        fw.write(json.dumps(markergene_dict, indent=4))
+    if markergene_dict:
+        with open('markergene_study_summary.json', 'w') as fw:
+            fw.write(json.dumps(markergene_dict, indent=4))
+    else:
+        logging.warning(f"Marker gene data empty for some reason. No summary file created.")
+
+    # Amplified region study summary (only available if ASV results present)
+
+    ampregion_dict = defaultdict(dict)
+    for i in range(0, len(runs_df)):
+        run_status = runs_df.loc[i, "status"]
+        if run_status == "no_asvs":
+            continue
+
+        run_acc = runs_df.loc[i, "run"]
+        ampregion_dict[run_acc]["amplified_regions"] = []
+
+        amp_regions = list(pathlib.Path(f"{root_path}/{run_acc}/asv").glob("*S-V*/*.tsv"))
+
+        for amp_region_path in amp_regions:
+            amp_dict = defaultdict()
+            amp_region = str(amp_region_path).split("/")[-2]
+            marker_gene = amp_region.split("-")[0]
+            amp_region = "-".join(amp_region.split("-")[1:])
+
+            amp_region_df = pd.read_csv(amp_region_path, sep="\t")
+            asv_count = len(amp_region_df)
+            read_count = amp_region_df.loc[:, "count"].sum()
+
+            amp_dict["marker_gene"] = marker_gene
+            amp_dict["amplified_region"] = amp_region
+            amp_dict["asv_count"] = int(asv_count) # casting needed for JSON serialising
+            amp_dict["read_count"] = int(read_count) # casting needed for JSON serialising
+
+            ampregion_dict[run_acc]["amplified_regions"].append(amp_dict)
+
+    if ampregion_dict:
+        with open('ampregion_study_summary.json', 'w') as fw:
+            fw.write(json.dumps(ampregion_dict, indent=4))
+    else:
+        logging.warning(f"No amplified region data found. No summary file created.")
 
 
 if __name__ == "__main__":
