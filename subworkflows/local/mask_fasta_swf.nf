@@ -1,7 +1,7 @@
 
 include { FORMAT_BEDFILE     } from '../../modules/local/format_bedfile/main'
 include { BEDTOOLS_MASKFASTA } from '../../modules/nf-core/bedtools/maskfasta/main'
-include { FILTER_MASKED_N } from '../../modules/local/filter_masked_N/main'
+include { FILTER_MASKED_N } from '../../modules/local/filter_masked_n/main'
 
 workflow MASK_FASTA_SWF {
     

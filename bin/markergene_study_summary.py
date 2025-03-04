@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright 2024 EMBL - European Bioinformatics Institute
+# Copyright 2024-2025 EMBL - European Bioinformatics Institute
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import pandas as pd
 import pyfastx
 
 logging.basicConfig(level=logging.DEBUG)
+MAJORITY_MARKER_PROPORTION = 0.45
+
 
 def parse_args():
 
@@ -56,17 +58,19 @@ def add_markergene(root_path, run_acc, markergene_dict, markergene):
         archaeal_ssu = list(pathlib.Path(f"{root_path}/{run_acc}/sequence-categorisation").glob(f"*{markergene}*archaea*"))
         eukarya_ssu = list(pathlib.Path(f"{root_path}/{run_acc}/sequence-categorisation").glob(f"*{markergene}*eukarya*"))
 
-        markergene_dict[f"{markergene} - bacteria"] = defaultdict()
-        markergene_dict[f"{markergene} - archaea"] = defaultdict()
-        markergene_dict[f"{markergene} - eukarya"] = defaultdict()
+        markergene_dict[markergene] = defaultdict()
+        markergene_dict[markergene]["Bacteria"] = defaultdict()
+        markergene_dict[markergene]["Archaea"] = defaultdict()
+        markergene_dict[markergene]["Eukarya"] = defaultdict()
 
-        markergene_dict = add_read_count_to_markergene(markergene_dict, bacterial_ssu, f"{markergene} - bacteria")
-        markergene_dict = add_read_count_to_markergene(markergene_dict, archaeal_ssu, f"{markergene} - archaea")
-        markergene_dict = add_read_count_to_markergene(markergene_dict, eukarya_ssu, f"{markergene} - eukarya")
+        markergene_dict[markergene] = add_read_count_to_markergene(markergene_dict[markergene], bacterial_ssu, "Bacteria")
+        markergene_dict[markergene] = add_read_count_to_markergene(markergene_dict[markergene], archaeal_ssu, "Archaea")
+        markergene_dict[markergene] = add_read_count_to_markergene(markergene_dict[markergene], eukarya_ssu, "Eukarya")
     else:
-        bacterial_ssu = list(pathlib.Path(f"{root_path}/{run_acc}/sequence-categorisation").glob("*ITS*"))
+        its = list(pathlib.Path(f"{root_path}/{run_acc}/sequence-categorisation").glob("*ITS*"))
         markergene_dict["ITS"] = defaultdict()
-        markergene_dict = add_read_count_to_markergene(markergene_dict, bacterial_ssu, "ITS")
+        markergene_dict["ITS"]["Eukarya"] = defaultdict()
+        markergene_dict["ITS"] = add_read_count_to_markergene(markergene_dict["ITS"], its, "Eukarya")
 
     return markergene_dict
 
@@ -101,17 +105,17 @@ def main():
         markergene_dict[run_acc]["marker_genes"] = add_markergene(root_path, run_acc, markergene_dict[run_acc]["marker_genes"], "LSU")
         markergene_dict[run_acc]["marker_genes"] = add_markergene(root_path, run_acc, markergene_dict[run_acc]["marker_genes"], "ITS")
 
-        total_read_counts = sum([ markergene["read_count"] for markergene in markergene_dict[run_acc]["marker_genes"].values() ])
+
+        total_read_counts = sum([ markergene["read_count"] for markergene in markergene_dict[run_acc]["marker_genes"]["SSU"].values() ])
+        total_read_counts += sum([ markergene["read_count"] for markergene in markergene_dict[run_acc]["marker_genes"]["LSU"].values() ])
+        total_read_counts += sum([ markergene["read_count"] for markergene in markergene_dict[run_acc]["marker_genes"]["ITS"].values()])
 
         for markergene in markergene_dict[run_acc]["marker_genes"].keys():
-            read_count = markergene_dict[run_acc]["marker_genes"][markergene]["read_count"]
-            proportion = read_count / float(total_read_counts)
-            
-            if proportion >= 0.45:
-                markergene_dict[run_acc]["marker_genes"][markergene]["majority_marker"] = True
-            else:
-                markergene_dict[run_acc]["marker_genes"][markergene]["majority_marker"] = False
-
+            read_count = 0
+            for domain in markergene_dict[run_acc]["marker_genes"][markergene].keys():
+                read_count += markergene_dict[run_acc]["marker_genes"][markergene][domain]["read_count"]
+                proportion = read_count / float(total_read_counts)
+                markergene_dict[run_acc]["marker_genes"][markergene][domain]["majority_marker"] = proportion >= MAJORITY_MARKER_PROPORTION
 
     if markergene_dict:
         with open(f'{PREFIX}_markergene_study_summary.json', 'w') as fw:
