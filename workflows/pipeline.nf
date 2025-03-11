@@ -30,7 +30,6 @@ include { MAPSEQ_ASV_KRONA as MAPSEQ_ASV_KRONA_PR2      } from '../subworkflows/
 include { EXTRACT_ASV_READ_COUNTS                       } from '../modules/local/extract_asv_read_counts/main'
 include { EXTRACT_ASVS_LEFT as EXTRACT_ASVS_LEFT_SILVA  } from '../modules/local/extract_asvs_left/main'
 include { EXTRACT_ASVS_LEFT as EXTRACT_ASVS_LEFT_PR2    } from '../modules/local/extract_asvs_left/main'
-include { STUDY_SUMMARY_GENERATOR                       } from '../modules/local/study_summary_generator/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -419,27 +418,6 @@ workflow AMPLICON_PIPELINE {
     // Save all passed runs to file //
     final_passed_runs.collectFile(name: "qc_passed_runs.csv", storeDir: "${params.outdir}", newLine: true, cache: false)
     .set { passed_runs_path }
-
-
-    // This is to force nextflow to wait for all analysis files to be present before
-    // running the study summary generator
-    passed_runs_path
-    .concat(MAPSEQ_OTU_KRONA_SSU.out.html,
-        MAPSEQ_OTU_KRONA_PR2.out.html,
-        MAPSEQ_OTU_KRONA_LSU.out.html,
-        MAPSEQ_OTU_KRONA_ITSONEDB.out.html,
-        MAPSEQ_OTU_KRONA_UNITE.out.html,
-        MAPSEQ_ASV_KRONA_SILVA.out.krona_out,
-        MAPSEQ_ASV_KRONA_PR2.out.krona_out
-        )
-    .collect()
-    .map { it[0] }
-    .set { passed_runs_path }
-
-    STUDY_SUMMARY_GENERATOR(Channel.fromPath(params.outdir, type: 'dir'),
-                            passed_runs_path,
-                            params.study_summary_prefix,
-                            params.non_insdc)
 
     // Summarise primer validation information into study-wide JSON file //
     CONCAT_PRIMER_CUTADAPT.out.primer_validation_out
