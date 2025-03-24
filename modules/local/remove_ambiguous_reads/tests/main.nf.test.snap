@@ -7,14 +7,17 @@
                         "id": "test",
                         "single_end": false
                     },
-                    "16S-V3-V4",
                     [
-                        "test_noambig_1.fastq.gz:md5,34834a5a828a6feb102330d4d1e2e135",
-                        "test_noambig_2.fastq.gz:md5,ff8ed43509b9278821dd47e6cf17fbd4"
+                        "test_noambig_1.fastq.gz:md5,1fcc28fbb35ff646fbf61d88dad454f6",
+                        "test_noambig_2.fastq.gz:md5,957292d0eee42dbe63f5b11dd9aa7e0f"
                     ]
                 ]
             ]
         ],
-        "timestamp": "2023-11-06T18:19:51.786528168"
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.4"
+        },
+        "timestamp": "2025-03-24T16:38:56.338472452"
     }
 }

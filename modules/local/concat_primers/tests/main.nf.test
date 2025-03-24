@@ -15,8 +15,7 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    [ id:'test', single_end:false ], // meta map
-                    "16S-V3-V4",
+                    [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
                     file('${projectDir}/modules/local/concat_primers/tests/data/test_std_primers.fasta', checkIfExists: true),
                     file('${projectDir}/modules/local/concat_primers/tests/data/test_auto_primers.fasta', checkIfExists: true)
                 ]

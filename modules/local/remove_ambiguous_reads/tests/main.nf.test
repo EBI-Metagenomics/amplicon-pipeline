@@ -16,7 +16,6 @@ nextflow_process {
                 """
                 input[0] = [
                     [ id:'test', single_end:false ], // meta map
-                    "16S-V3-V4",
                     [ 
                         file('${projectDir}/modules/local/remove_ambiguous_reads/tests/data/test_1.cutadapt.fastq.gz', checkIfExists: true),
                         file('${projectDir}/modules/local/remove_ambiguous_reads/tests/data/test_2.cutadapt.fastq.gz', checkIfExists: true) 
