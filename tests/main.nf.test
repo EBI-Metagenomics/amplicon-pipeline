@@ -11,6 +11,7 @@ nextflow_pipeline {
             params {
                 input  = "${projectDir}/tests/samplesheets/test_samplesheet.csv"
                 outdir = "tests/results"
+                non_insdc = true
             }
         }
 
