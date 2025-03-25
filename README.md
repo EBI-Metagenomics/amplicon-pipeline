@@ -1,6 +1,6 @@
 # MGnify amplicon analysis pipeline
 
-This repository contains the **beta version** of the v6.0 [MGnify](https://www.ebi.ac.uk/metagenomics) amplicon analysis pipeline. It is, first and foremost, a refactor of the existing [v5.0 amplicon analysis pipeline](https://github.com/EBI-Metagenomics/pipeline-v5), replacing CWL with [Nextflow](https://www.nextflow.io/) as its workflow management system. This pipeline re-implements all [existing closed-reference v5.0 features](https://docs.mgnify.org/src/docs/analysis.html#amplicon-analysis-pipeline), and makes multiple significant changes and additions.
+This repository contains the v6.0 [MGnify](https://www.ebi.ac.uk/metagenomics) amplicon analysis pipeline. It is, first and foremost, a refactor of the existing [v5.0 amplicon analysis pipeline](https://github.com/EBI-Metagenomics/pipeline-v5), replacing CWL with [Nextflow](https://www.nextflow.io/) as its workflow management system. This pipeline re-implements all [existing closed-reference v5.0 features](https://docs.mgnify.org/src/docs/analysis.html#amplicon-analysis-pipeline), and makes multiple significant changes and additions.
 
 ![V6 Schema](assets/v6_amplicon_schema.png)
 
@@ -41,7 +41,9 @@ At this stage, the only sequence amplicons that this pipeline is built for are:
 | Tool                                                                                            | Version  | Purpose                                                |
 | ----------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------ |
 | [fastp](https://github.com/OpenGene/fastp)                                                      | 0.23.4   | Read quality control                                   |
+| [SeqFu](https://github.com/telatin/seqfu2)                                                      | 1.20.3   | FASTQ sanity checking                                  |
 | [seqtk](https://github.com/lh3/seqtk)                                                           | 1.3-r106 | FASTQ file manipulation                                |
+| [SeqKit](https://bioinf.shenwei.me/seqkit/)                                                     | 2.9.0    | FASTQ file manipulation                                |
 | [easel](https://github.com/EddyRivasLab/easel)                                                  | 0.49     | FASTA file manipulation                                |
 | [bedtools](https://bedtools.readthedocs.io/en/latest/)                                          | 2.30.0   | FASTA sequence masking                                 |
 | [Infernal/cmsearch](https://github.com/EddyRivasLab/infernal/tree/master)                       | 1.1.5    | rRNA sequence searching                                |
@@ -51,7 +53,10 @@ At this stage, the only sequence amplicons that this pipeline is built for are:
 | [cutadapt](https://cutadapt.readthedocs.io/en/stable/)                                          | 4.6      | Primer trimming                                        |
 | [R](https://www.r-project.org/)                                                                 | 4.3.3    | R programming language (runs DADA2)                    |
 | [DADA2](https://benjjneb.github.io/dada2/index.html)                                            | 1.30.0   | ASV calling                                            |
+| [MultiQC](https://github.com/MultiQC/MultiQC)                                                   | 1.24.1   | Result aggregation into HTML reports                   |
 | [mgnify-pipelines-toolkit](https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit)        | 0.1.8    | Toolkit containing various in-house processing scripts |
+| [PIMENTO](https://github.com/EBI-Metagenomics/PIMENTO)                                          | 0.0.4    | Primer inference toolkit used in the pipeline          |
+
 
 ### Reference databases
 
@@ -113,68 +118,62 @@ nextflow run ebi-metagenomics/amplicon-pipeline \
 Example output directory structure for one run (`ERR4334351`):
 
 ```
-├── pipeline_info
-│   └── software_versions.yml
 ├── ERR4334351
-│   ├── taxonomy-summary
-│   │   ├── UNITE
-│   │   │   ├── ERR4334351_UNITE.txt
-│   │   │   ├── ERR4334351_UNITE.tsv
-│   │   │   ├── ERR4334351_UNITE.mseq
-│   │   │   └── ERR4334351.html
-│   │   ├── SILVA-SSU
-│   │   │   ├── ERR4334351_SILVA-SSU.txt
-│   │   │   ├── ERR4334351_SILVA-SSU.tsv
-│   │   │   ├── ERR4334351_SILVA-SSU.mseq
-│   │   │   └── ERR4334351.html
-│   │   ├── PR2
-│   │   │   ├── ERR4334351_PR2.txt
-│   │   │   ├── ERR4334351_PR2.tsv
-│   │   │   ├── ERR4334351_PR2.mseq
-│   │   │   └── ERR4334351.html
-│   │   ├── ITSoneDB
-│   │   │   ├── ERR4334351_ITSoneDB.txt
-│   │   │   ├── ERR4334351_ITSoneDB.tsv
-│   │   │   ├── ERR4334351_ITSoneDB.mseq
-│   │   │   └── ERR4334351.html
-│   │   ├── DADA2-SILVA
-│   │   │   ├── ERR4334351_DADA2-SILVA.mseq
-│   │   │   ├── ERR4334351_16S-V3-V4.html
-│   │   │   └── ERR4334351_16S-V3-V4_DADA2-SILVA_asv_krona_counts.txt
-│   │   └── DADA2-PR2
-│   │       ├── ERR4334351_DADA2-PR2.mseq
-│   │       ├── ERR4334351_16S-V3-V4.html
-│   │       └── ERR4334351_16S-V3-V4_DADA2-PR2_asv_krona_counts.txt
-│   ├── sequence-categorisation
-│   │   ├── ERR4334351.tblout.deoverlapped
-│   │   ├── ERR4334351_SSU_rRNA_bacteria.RF00177.fa
-│   │   ├── ERR4334351_SSU_rRNA_archaea.RF01959.fa
-│   │   └── ERR4334351_SSU.fasta
-│   ├── qc
-│   │   ├── ERR4334351_suffix_header_err.json
-│   │   ├── ERR4334351_seqfu.tsv
-│   │   ├── ERR4334351_multiqc_report.html
-│   │   ├── ERR4334351.merged.fastq.gz
-│   │   └── ERR4334351.fastp.json
-│   ├── primer-identification
-│   │   ├── ERR4334351_primer_validation.tsv
-│   │   ├── ERR4334351_primers.fasta
-│   │   └── ERR4334351.cutadapt.json
+│   ├── amplified-region-inference
+│   │   ├── ERR4334351.16S.V3-V4.txt
+│   │   └── ERR4334351.tsv
 │   ├── asv
 │   │   ├── 16S-V3-V4
 │   │   │   └── ERR4334351_16S-V3-V4_asv_read_counts.tsv
-│   │   ├── ERR4334351_dada2_stats.tsv
-│   │   ├── ERR4334351_DADA2-SILVA_asv_tax.tsv
+│   │   ├── ERR4334351_asv_seqs.fasta
 │   │   ├── ERR4334351_DADA2-PR2_asv_tax.tsv
-│   │   └── ERR4334351_asv_seqs.fasta
-│   └── amplified-region-inference
-│       ├── ERR4334351.tsv
-│       └── ERR4334351.16S.V3-V4.txt
+│   │   ├── ERR4334351_DADA2-SILVA_asv_tax.tsv
+│   │   └── ERR4334351_dada2_stats.tsv
+│   ├── primer-identification
+│   │   ├── ERR4334351.cutadapt.json
+│   │   ├── ERR4334351_primers.fasta
+│   │   └── ERR4334351_primer_validation.tsv
+│   ├── qc
+│   │   ├── ERR4334351.fastp.json
+│   │   ├── ERR4334351.merged.fastq.gz
+│   │   ├── ERR4334351_multiqc_report.html
+│   │   ├── ERR4334351_seqfu.tsv
+│   │   └── ERR4334351_suffix_header_err.json
+│   ├── sequence-categorisation
+│   │   ├── ERR4334351_SSU.fasta
+│   │   ├── ERR4334351_SSU_rRNA_archaea.RF01959.fa
+│   │   ├── ERR4334351_SSU_rRNA_bacteria.RF00177.fa
+│   │   └── ERR4334351.tblout.deoverlapped
+│   └── taxonomy-summary
+│       ├── DADA2-PR2
+│       │   ├── ERR4334351_16S-V3-V4_DADA2-PR2_asv_krona_counts.txt
+│       │   ├── ERR4334351_16S-V3-V4.html
+│       │   └── ERR4334351_DADA2-PR2.mseq
+│       ├── DADA2-SILVA
+│       │   ├── ERR4334351_16S-V3-V4_DADA2-SILVA_asv_krona_counts.txt
+│       │   ├── ERR4334351_16S-V3-V4.html
+│       │   └── ERR4334351_DADA2-SILVA.mseq
+│       ├── PR2
+│       │   ├── ERR4334351.html
+│       │   ├── ERR4334351_PR2.mseq
+│       │   ├── ERR4334351_PR2.tsv
+│       │   └── ERR4334351_PR2.txt
+│       └── SILVA-SSU
+│           ├── ERR4334351.html
+│           ├── ERR4334351_SILVA-SSU.mseq
+│           ├── ERR4334351_SILVA-SSU.tsv
+│           └── ERR4334351_SILVA-SSU.txt
+├── pipeline_info
+│   ├── execution_report_2025-03-25_14-13-55.html
+│   ├── execution_timeline_2025-03-25_14-13-55.html
+│   ├── execution_trace_2025-03-25_14-13-55.txt
+│   ├── pipeline_dag_2025-03-25_14-13-55.html
+│   └── software_versions.yml
+├── bco.json
 ├── study_multiqc_report.html
 ├── qc_passed_runs.csv
 ├── qc_failed_runs.csv
-├── primer_validation_summary.json
-└── manifest.json
+└── primer_validation_summary.json
 ```
 
 For a more detailed description of the different output files, see the [OUTPUTS_DESCRIPTION.md](https://github.com/EBI-Metagenomics/amplicon-pipeline/blob/main/OUTPUTS_DESCRIPTION.md) file.
