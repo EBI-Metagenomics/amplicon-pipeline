@@ -1,17 +1,21 @@
 {
-    "inf_points_out": {
+    "cutoffs": {
         "content": [
             [
                 [
                     {
                         "id": "test",
-                        "single_end": false
+                        "single_end": false,
+                        "var_region": "16S-V3-V4"
                     },
-                    "16S-V3-V4",
-                    "test_16S-V3-V4_inf_points.tsv:md5,b4da973b056b9b5ed4ec7ca8d7998be4"
+                    "test_16S-V3-V4_cutoffs.tsv:md5,b4da973b056b9b5ed4ec7ca8d7998be4"
                 ]
             ]
         ],
-        "timestamp": "2023-11-03T15:59:01.72783491"
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.4"
+        },
+        "timestamp": "2025-03-25T11:31:39.263156319"
     }
 }
