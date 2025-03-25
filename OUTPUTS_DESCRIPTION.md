@@ -274,7 +274,7 @@ An important thing to note is that while a run might succeed at generating resul
 
 ### Primer validation summary
 
-The pipeline performs inferrence of primer presence and sequence. For any runs where a primer was detected, metadata about it will be aggregated into a top-level primer validation summary file (`primer_validation_summary.json`), including its sequence, region, and identification strategy. For example:
+The pipeline performs inferrence of primer presence and sequence using [PIMENTO](https://github.com/EBI-Metagenomics/PIMENTO/tree/dev). For any runs where a primer was detected, metadata about it will be aggregated into a top-level primer validation summary file (`primer_validation_summary.json`), including its sequence, region, and identification strategy. For example:
 
 ```json
 [
