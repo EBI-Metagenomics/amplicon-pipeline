@@ -47,9 +47,6 @@ include { dada2_input_preparation_function              } from '../lib/nf/dada2_
 // Import samplesheetToList from nf-schema //
 include { samplesheetToList                             } from 'plugin/nf-schema'
 
-// Import JsonBuilder//
-import groovy.json.JsonBuilder
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -292,7 +289,7 @@ workflow AMPLICON_PIPELINE {
                         meta.var_region != "concat"
                      }
                     .map{ meta, asvs_left ->
-                        key = groupKey(meta.subMap('id'), meta.var_regions_size)
+                        def key = groupKey(meta.subMap('id'), meta.var_regions_size)
                         [ key, asvs_left ]
                     }
                     .groupTuple(by:0)
@@ -381,7 +378,7 @@ workflow AMPLICON_PIPELINE {
         .filter { meta, seqfu_res ->
             seqfu_res[0] != "OK"
         }
-        .map { meta, _ -> "${meta.id},seqfu_fail" }
+        .map { meta, __ -> "${meta.id},seqfu_fail" }
         .set { seqfu_fails }
 
     // Extract runs that failed Suffix Header check //
@@ -389,7 +386,7 @@ workflow AMPLICON_PIPELINE {
         .filter { meta, sfxhd_res ->
             sfxhd_res.countLines() != 0
         }
-        .map { meta, _ -> "${meta.id},sfxhd_fail"  }
+        .map { meta, __ -> "${meta.id},sfxhd_fail"  }
         .set { sfxhd_fails }
 
     // Extract runs that failed Library Strategy check //
@@ -397,11 +394,11 @@ workflow AMPLICON_PIPELINE {
         .filter { meta, strategy ->
             strategy != "AMPLICON"
         }
-        .map { meta, _ -> "${meta.id},libstrat_fail" }
+        .map { meta, __ -> "${meta.id},libstrat_fail" }
         .set { libstrat_fails }
 
     // Extract runs that had zero reads after fastp //
-    extended_reads_qc.qc_empty.map { meta, _ -> "${meta.id},no_reads"  }
+    extended_reads_qc.qc_empty.map { meta, __ -> "${meta.id},no_reads"  }
         .set { no_reads_fails }
 
     // Save all failed runs to file //
@@ -433,7 +430,7 @@ workflow AMPLICON_PIPELINE {
         .groupTuple()
         .map { meta, primer_val ->
 
-            json_map = ["id": "${meta.id}", "primers": []]
+            def json_map = ["id": "${meta.id}", "primers": []]
 
             primer_val.each { run_id, ev, met, gene, region, name, strand, sequence ->
                 def new_primer = [
@@ -449,7 +446,7 @@ workflow AMPLICON_PIPELINE {
             json_map
          }
         .collect()
-        .map { collected_json_maps -> json_content = new JsonBuilder(collected_json_maps).toPrettyString() }
+        .map { collected_json_maps -> def json_content = new groovy.json.JsonBuilder(collected_json_maps).toPrettyString() }
         .collectFile(name: "primer_validation_summary.json", storeDir: "${params.outdir}", newLine: true, cache: false)
 
 }

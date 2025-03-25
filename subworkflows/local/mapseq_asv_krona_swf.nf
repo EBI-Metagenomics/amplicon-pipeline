@@ -59,7 +59,7 @@ workflow MAPSEQ_ASV_KRONA {
                                     [ meta.subMap('id', 'single_end'), var_region, meta['var_regions_size'], maps, asvtaxtable, filt_reads, extracted_var ]
                                 }
                                .join(concat_var_regions, by: 0)
-                               .map { meta, var_region, var_regions_size, maps, asvtaxtable, filt_reads, _, concat_str, concat_vars ->
+                               .map { meta, var_region, var_regions_size, maps, asvtaxtable, filt_reads, __, concat_str, concat_vars ->
                                     [ meta + ['var_regions_size':var_regions_size], concat_str, maps, asvtaxtable, filt_reads, concat_vars ]
                                }
         // Add in the concatenated var region channel to the rest of the input

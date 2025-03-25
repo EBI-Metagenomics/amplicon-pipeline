@@ -104,10 +104,6 @@
         "mpt_version": {
           "type": "string",
           "description": "Version of the mgnify-pipelines-toolkit to use."
-        },
-        "non_insdc": {
-          "type": "string",
-          "description": "Use if pipeline run will contain non-INSDC standard run accessions"
         }
       }
     },
