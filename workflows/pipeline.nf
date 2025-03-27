@@ -47,74 +47,6 @@ include { dada2_input_preparation_function              } from '../lib/nf/dada2_
 // Import samplesheetToList from nf-schema //
 include { samplesheetToList                             } from 'plugin/nf-schema'
 
-// Import JsonBuilder//
-import groovy.json.JsonBuilder
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    INITIALISE REFERENCE DATABASE INPUT TUPLES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-// Regular taxonomy resolution method //
-ssu_mapseq_krona_tuple = Channel.value([
-    file(params.ssu_db_fasta, checkIfExists: true),
-    file(params.ssu_db_tax, checkIfExists: true),
-    file(params.ssu_db_otu, checkIfExists: true),
-    file(params.ssu_db_mscluster, checkIfExists: true),
-    params.ssu_label
-])
-lsu_mapseq_krona_tuple = Channel.value([
-    file(params.lsu_db_fasta, checkIfExists: true),
-    file(params.lsu_db_tax, checkIfExists: true),
-    file(params.lsu_db_otu, checkIfExists: true),
-    file(params.lsu_db_mscluster, checkIfExists: true),
-    params.lsu_label
-])
-itsonedb_mapseq_krona_tuple = Channel.value([
-    file(params.itsone_db_fasta, checkIfExists: true),
-    file(params.itsone_db_tax, checkIfExists: true),
-    file(params.itsone_db_otu, checkIfExists: true),
-    file(params.itsone_db_mscluster, checkIfExists: true),
-    params.itsone_label
-])
-unite_mapseq_krona_tuple = Channel.value([
-    file(params.unite_db_fasta, checkIfExists: true),
-    file(params.unite_db_tax, checkIfExists: true),
-    file(params.unite_db_otu, checkIfExists: true),
-    file(params.unite_db_mscluster, checkIfExists: true),
-    params.unite_label
-])
-pr2_mapseq_krona_tuple = Channel.value([
-    file(params.pr2_db_fasta, checkIfExists: true),
-    file(params.pr2_db_tax, checkIfExists: true),
-    file(params.pr2_db_otu, checkIfExists: true),
-    file(params.pr2_db_mscluster, checkIfExists: true),
-    params.pr2_label
-])
-
-// Regular ASV resolution method //
-dada2_krona_silva_tuple = tuple(
-    file(params.ssu_db_fasta, checkIfExists: true),
-    file(params.ssu_db_tax, checkIfExists: true),
-    file(params.ssu_db_otu, checkIfExists: true),
-    file(params.ssu_db_mscluster, checkIfExists: true),
-    params.dada2_silva_label
-)
-dada2_krona_pr2_tuple = tuple(
-    file(params.pr2_db_fasta, checkIfExists: true),
-    file(params.pr2_db_tax, checkIfExists: true),
-    file(params.pr2_db_otu, checkIfExists: true),
-    file(params.pr2_db_mscluster, checkIfExists: true),
-    params.dada2_pr2_label
-)
-
-// Initialiase standard primer library //
-std_primer_library = file(params.std_primer_library, type: 'dir', checkIfExists: true)
-
-// Read input samplesheet and validate it using schema_input.json //
-samplesheet = Channel.fromList(samplesheetToList(params.input, "./assets/schema_input.json"))
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -122,6 +54,71 @@ samplesheet = Channel.fromList(samplesheetToList(params.input, "./assets/schema_
 */
 
 workflow AMPLICON_PIPELINE {
+
+    /*
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        INITIALISE REFERENCE DATABASE INPUT TUPLES
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    */
+
+    // Regular taxonomy resolution method //
+    ssu_mapseq_krona_tuple = Channel.value([
+        file(params.ssu_db_fasta, checkIfExists: true),
+        file(params.ssu_db_tax, checkIfExists: true),
+        file(params.ssu_db_otu, checkIfExists: true),
+        file(params.ssu_db_mscluster, checkIfExists: true),
+        params.ssu_label
+    ])
+    lsu_mapseq_krona_tuple = Channel.value([
+        file(params.lsu_db_fasta, checkIfExists: true),
+        file(params.lsu_db_tax, checkIfExists: true),
+        file(params.lsu_db_otu, checkIfExists: true),
+        file(params.lsu_db_mscluster, checkIfExists: true),
+        params.lsu_label
+    ])
+    itsonedb_mapseq_krona_tuple = Channel.value([
+        file(params.itsone_db_fasta, checkIfExists: true),
+        file(params.itsone_db_tax, checkIfExists: true),
+        file(params.itsone_db_otu, checkIfExists: true),
+        file(params.itsone_db_mscluster, checkIfExists: true),
+        params.itsone_label
+    ])
+    unite_mapseq_krona_tuple = Channel.value([
+        file(params.unite_db_fasta, checkIfExists: true),
+        file(params.unite_db_tax, checkIfExists: true),
+        file(params.unite_db_otu, checkIfExists: true),
+        file(params.unite_db_mscluster, checkIfExists: true),
+        params.unite_label
+    ])
+    pr2_mapseq_krona_tuple = Channel.value([
+        file(params.pr2_db_fasta, checkIfExists: true),
+        file(params.pr2_db_tax, checkIfExists: true),
+        file(params.pr2_db_otu, checkIfExists: true),
+        file(params.pr2_db_mscluster, checkIfExists: true),
+        params.pr2_label
+    ])
+
+    // Regular ASV resolution method //
+    dada2_krona_silva_tuple = tuple(
+        file(params.ssu_db_fasta, checkIfExists: true),
+        file(params.ssu_db_tax, checkIfExists: true),
+        file(params.ssu_db_otu, checkIfExists: true),
+        file(params.ssu_db_mscluster, checkIfExists: true),
+        params.dada2_silva_label
+    )
+    dada2_krona_pr2_tuple = tuple(
+        file(params.pr2_db_fasta, checkIfExists: true),
+        file(params.pr2_db_tax, checkIfExists: true),
+        file(params.pr2_db_otu, checkIfExists: true),
+        file(params.pr2_db_mscluster, checkIfExists: true),
+        params.dada2_pr2_label
+    )
+
+    // Initialiase standard primer library //
+    std_primer_library = file(params.std_primer_library, type: 'dir', checkIfExists: true)
+
+    // Read input samplesheet and validate it using schema_input.json //
+    samplesheet = Channel.fromList(samplesheetToList(params.input, "./assets/schema_input.json"))
 
     ch_versions = Channel.empty()
 
@@ -292,7 +289,7 @@ workflow AMPLICON_PIPELINE {
                         meta.var_region != "concat"
                      }
                     .map{ meta, asvs_left ->
-                        key = groupKey(meta.subMap('id'), meta.var_regions_size)
+                        def key = groupKey(meta.subMap('id'), meta.var_regions_size)
                         [ key, asvs_left ]
                     }
                     .groupTuple(by:0)
@@ -330,11 +327,19 @@ workflow AMPLICON_PIPELINE {
     multiqc_input = CONCAT_PRIMER_CUTADAPT.out.cutadapt_json.map{ meta, json ->
                         [['id':meta.id, 'single_end':meta.single_end], json]
                     }
-                    .join(READS_QC_MERGE.out.fastp_summary_json)
+                    .join(READS_QC_MERGE.out.fastp_summary_json, remainder:true)
                     .join(DADA2_SWF.out.dada2_report.map{ meta, tsv ->
-                        [['id':meta.id, 'single_end':meta.single_end], tsv]})
+                        [['id':meta.id, 'single_end':meta.single_end], tsv]}, remainder:true)
                     .map{ meta, cutadapt, fastp, dada2 ->
-                            [meta, [cutadapt, fastp, dada2]]
+                            def final_inputs = [cutadapt, fastp, dada2]
+                            if (!cutadapt){
+                                final_inputs -= cutadapt
+                            }
+                            if (!dada2){
+                                final_inputs -= dada2
+                            }
+
+                            [meta, final_inputs]
                         }
 
     // MultiQC for individual runs //
@@ -373,7 +378,7 @@ workflow AMPLICON_PIPELINE {
         .filter { meta, seqfu_res ->
             seqfu_res[0] != "OK"
         }
-        .map { meta, _ -> "${meta.id},seqfu_fail" }
+        .map { meta, __ -> "${meta.id},seqfu_fail" }
         .set { seqfu_fails }
 
     // Extract runs that failed Suffix Header check //
@@ -381,7 +386,7 @@ workflow AMPLICON_PIPELINE {
         .filter { meta, sfxhd_res ->
             sfxhd_res.countLines() != 0
         }
-        .map { meta, _ -> "${meta.id},sfxhd_fail"  }
+        .map { meta, __ -> "${meta.id},sfxhd_fail"  }
         .set { sfxhd_fails }
 
     // Extract runs that failed Library Strategy check //
@@ -389,11 +394,11 @@ workflow AMPLICON_PIPELINE {
         .filter { meta, strategy ->
             strategy != "AMPLICON"
         }
-        .map { meta, _ -> "${meta.id},libstrat_fail" }
+        .map { meta, __ -> "${meta.id},libstrat_fail" }
         .set { libstrat_fails }
 
     // Extract runs that had zero reads after fastp //
-    extended_reads_qc.qc_empty.map { meta, _ -> "${meta.id},no_reads"  }
+    extended_reads_qc.qc_empty.map { meta, __ -> "${meta.id},no_reads"  }
         .set { no_reads_fails }
 
     // Save all failed runs to file //
@@ -417,6 +422,7 @@ workflow AMPLICON_PIPELINE {
 
     // Save all passed runs to file //
     final_passed_runs.collectFile(name: "qc_passed_runs.csv", storeDir: "${params.outdir}", newLine: true, cache: false)
+    .set { passed_runs_path }
 
     // Summarise primer validation information into study-wide JSON file //
     CONCAT_PRIMER_CUTADAPT.out.primer_validation_out
@@ -424,7 +430,7 @@ workflow AMPLICON_PIPELINE {
         .groupTuple()
         .map { meta, primer_val ->
 
-            json_map = ["id": "${meta.id}", "primers": []]
+            def json_map = ["id": "${meta.id}", "primers": []]
 
             primer_val.each { run_id, ev, met, gene, region, name, strand, sequence ->
                 def new_primer = [
@@ -440,8 +446,9 @@ workflow AMPLICON_PIPELINE {
             json_map
          }
         .collect()
-        .map { collected_json_maps -> json_content = new JsonBuilder(collected_json_maps).toPrettyString() }
+        .map { collected_json_maps -> def json_content = new groovy.json.JsonBuilder(collected_json_maps).toPrettyString() }
         .collectFile(name: "primer_validation_summary.json", storeDir: "${params.outdir}", newLine: true, cache: false)
+
 }
 
 /*

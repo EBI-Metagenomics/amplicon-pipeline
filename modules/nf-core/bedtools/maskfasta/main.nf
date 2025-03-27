@@ -28,7 +28,7 @@ process BEDTOOLS_MASKFASTA {
         $args \\
         -fi $fasta_unzipped \\
         -bed $bed \\
-        -fo ${prefix}.fa
+        -fo ${prefix}_ITS.fa
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         bedtools: \$(bedtools --version | sed -e "s/bedtools v//g")

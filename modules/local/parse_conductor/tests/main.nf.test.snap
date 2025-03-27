@@ -7,12 +7,15 @@
                         "id": "test",
                         "single_end": false
                     },
-                    "16S-V3-V4",
                     "std",
                     "std"
                 ]
             ]
         ],
-        "timestamp": "2023-11-03T14:00:19.924220199"
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.4"
+        },
+        "timestamp": "2025-03-24T16:26:52.07037968"
     }
 }

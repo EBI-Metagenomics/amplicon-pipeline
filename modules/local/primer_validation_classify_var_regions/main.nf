@@ -27,8 +27,9 @@ process PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS {
     if [ \$num_primers -lt 2 ] || [ \$num_lines -ne \$num_primers ]
     then
         echo "Primer validation didn't pass. Outputting empty file."
-        echo -n > ${meta.id}_primer_validation.tsv
-        echo -n > ${meta.id}_primers.fasta
+        rm ${meta.id}_primer_validation.tsv ${meta.id}_primers.fasta
+        echo -n >| ${meta.id}_primer_validation.tsv
+        echo -n >| ${meta.id}_primers.fasta
     fi
 
     cat <<-END_VERSIONS > versions.yml

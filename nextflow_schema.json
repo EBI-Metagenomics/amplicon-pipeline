@@ -4,7 +4,7 @@
   "title": "ebi-metagenomics/ampliconpipeline pipeline parameters",
   "description": "MGnify amplicon pipeline",
   "type": "object",
-  "defs": {
+  "$defs": {
     "input_output_options": {
       "title": "Input/output options",
       "type": "object",
@@ -88,14 +88,27 @@
           "hidden": true,
           "help_text": "Allows string values that are parseable as numbers or booleans. For further information see [JSONSchema docs](https://github.com/everit-org/json-schema#lenient-mode)."
         },
+        "validationSchemaIgnoreParams": {
+          "type": "string"
+        },
         "save_trimmed_fail": {
           "type": "boolean",
           "default": true,
           "description": "For fastp, specify true to save files that failed to pass trimming thresholds"
         },
+        "multiqc_config": {
+          "type": "string",
+          "default": "./assets/multiqc_config.yml",
+          "description": "Config file for MultiQC"
+        },
+        "trace_report_suffix": {
+          "type": "string",
+          "fa_icon": "far calendar",
+          "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
+          "hidden": true
+        },
         "mpt_version": {
           "type": "string",
-          "default": "0.1.3--pyhdfd78af_0",
           "description": "Version of the mgnify-pipelines-toolkit to use."
         }
       }
@@ -253,7 +266,8 @@
         "std_primer_library": {
           "type": "string",
           "format": "directory-path",
-          "description": "Path to standard primer library"
+          "description": "Path to standard primer library",
+          "default": "./data/standard_primers"
         }
       }
     },
@@ -295,16 +309,16 @@
   },
   "allOf": [
     {
-      "$ref": "#/defs/input_output_options"
+      "$ref": "#/$defs/input_output_options"
     },
     {
-      "$ref": "#/defs/generic_options"
+      "$ref": "#/$defs/generic_options"
     },
     {
-      "$ref": "#/defs/ref_dbs"
+      "$ref": "#/$defs/ref_dbs"
     },
     {
-      "$ref": "#/defs/max_job_request_options"
+      "$ref": "#/$defs/max_job_request_options"
     }
   ]
 }
