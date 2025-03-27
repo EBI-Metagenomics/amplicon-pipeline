@@ -1,10 +1,10 @@
 nextflow_process {
 
-    name "Test Process FIND_MCP_INF_POINTS"
+    name "Test Process FIND_PRIMER_CUTOFFS"
     script "../main.nf"
-    process "FIND_MCP_INF_POINTS"
+    process "FIND_PRIMER_CUTOFFS"
     tag "modules"
-    tag "find_mcp_inf_points"
+    tag "find_primer_cutoffs"
 
     test("Should run without failures") {
 
@@ -15,9 +15,8 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    [ id:'test', single_end:false ], // meta map
-                    "16S-V3-V4",
-                    file('${projectDir}/modules/local/find_mcp_inf_points/tests/data/test_mcp_cons.tsv', checkIfExists: true)
+                    [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
+                    file('${projectDir}/modules/local/find_primer_cutoffs/tests/data/test_mcp_cons.tsv', checkIfExists: true)
                 ]
                 """
             }
@@ -26,7 +25,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out.inf_points_out).match("inf_points_out") }
+                { assert snapshot(process.out.cutoffs).match("cutoffs") }
             )
         }
 

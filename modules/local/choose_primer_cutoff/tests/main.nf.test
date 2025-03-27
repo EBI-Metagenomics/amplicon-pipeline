@@ -1,10 +1,10 @@
 nextflow_process {
 
-    name "Test Process ASSESS_MCP_INF_POINTS"
+    name "Test Process CHOOSE_PRIMER_CUTOFF"
     script "../main.nf"
-    process "ASSESS_MCP_INF_POINTS"
+    process "CHOOSE_PRIMER_CUTOFF"
     tag "modules"
-    tag "assess_mcp_inf_points"
+    tag "choose_primer_cutoff"
 
     test("Should run without failures") {
 
@@ -15,10 +15,9 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    [ id:'test', single_end:false ], // meta map
-                    "16S-V3-V4",
-                    file('${projectDir}/modules/local/assess_mcp_inf_points/tests/data/test_inf_points.tsv', checkIfExists: true),
-                    file('${projectDir}/modules/local/assess_mcp_inf_points/tests/data/test.fastq.gz', checkIfExists: true)
+                    [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
+                    file('${projectDir}/modules/local/choose_primer_cutoff/tests/data/test_inf_points.tsv', checkIfExists: true),
+                    file('${projectDir}/modules/local/choose_primer_cutoff/tests/data/test.fastq.gz', checkIfExists: true)
                 ]
                 """
             }
