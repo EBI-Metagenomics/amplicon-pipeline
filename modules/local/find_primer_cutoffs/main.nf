@@ -3,8 +3,9 @@ process FIND_PRIMER_CUTOFFS {
     // Find inflection points in conservation curves
     tag "$meta.id"
     label 'very_light'
-    container "oras://community.wave.seqera.io/library/mi-pimento:0.0.4--1795182b3e13ee89"
-
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        "https://depot.galaxyproject.org/singularity/mi-pimento:1.0.0--pyhdfd78af_0":
+        "biocontainers/mi-pimento:1.0.0--pyhdfd78af_0"}"
     input:
     tuple val(meta), path(bcv)
 

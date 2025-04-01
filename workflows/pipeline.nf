@@ -117,8 +117,15 @@ workflow AMPLICON_PIPELINE {
         params.dada2_pr2_label
     )
 
-    // Initialiase standard primer library //
-    std_primer_library = file(params.std_primer_library, type: 'dir', checkIfExists: true)
+
+    // Initialiase standard primer library for PIMENTO if user-given//
+    if (params.std_primer_library){
+        std_primer_library = file(params.std_primer_library, type: 'dir', checkIfExists: true)
+    }
+    else{
+        // Will use the default PIMENTO standard primer library
+        std_primer_library = []
+    }
 
     // Read input samplesheet and validate it using schema_input.json //
     samplesheet = Channel.fromList(samplesheetToList(params.input, "./assets/schema_input.json"))

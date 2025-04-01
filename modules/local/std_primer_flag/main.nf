@@ -3,8 +3,9 @@ process STD_PRIMER_FLAG {
     // Check for presence of standard library of primers (stored in ./data/standard_primers)
     tag "$meta.id"
     label 'very_light'
-    container "oras://community.wave.seqera.io/library/mi-pimento:0.0.4--1795182b3e13ee89"
-
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        "https://depot.galaxyproject.org/singularity/mi-pimento:1.0.0--pyhdfd78af_0":
+        "biocontainers/mi-pimento:1.0.0--pyhdfd78af_0"}"
     input:
     tuple val(meta), path(reads_merged)
     path(std_primer_library)
@@ -14,10 +15,12 @@ process STD_PRIMER_FLAG {
     path "*std_primer_out.txt"
     path "versions.yml"                        , emit: versions
 
-
     script:
+    def std_primer_library_arg = "${std_primer_library}" ? "-p ${std_primer_library}" : ""
+    print(std_primer_library)
+
     """
-    pimento std -i ${reads_merged} -p ${std_primer_library} -o ${meta.id}_${meta.var_region}
+    pimento std -i ${reads_merged} ${std_primer_library_arg} -o ${meta.id}_${meta.var_region}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
