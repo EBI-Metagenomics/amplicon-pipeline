@@ -18,7 +18,7 @@ nextflow_process {
                     [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
                     file('${projectDir}/modules/local/std_primer_flag/tests/data/test.fastq.gz', checkIfExists: true),
                 ]
-                input[1] = file('${projectDir}/data/standard_primers', checkIfExists: true)
+                input[1] = []
                 """
             }
         }
