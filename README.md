@@ -55,7 +55,7 @@ At this stage, the only sequence amplicons that this pipeline is built for are:
 | [DADA2](https://benjjneb.github.io/dada2/index.html)                                            | 1.30.0   | ASV calling                                            |
 | [MultiQC](https://github.com/MultiQC/MultiQC)                                                   | 1.24.1   | Result aggregation into HTML reports                   |
 | [mgnify-pipelines-toolkit](https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit)        | 0.1.8    | Toolkit containing various in-house processing scripts |
-| [PIMENTO](https://github.com/EBI-Metagenomics/PIMENTO)                                          | 0.0.4    | Primer inference toolkit used in the pipeline          |
+| [PIMENTO](https://github.com/EBI-Metagenomics/PIMENTO)                                          | 1.0.0    | Primer inference toolkit used in the pipeline          |
 
 
 ### Reference databases
@@ -71,7 +71,7 @@ This pipeline uses five different reference databases. The files the pipeline us
 | [Rfam](https://rfam.org/)                     | 14.10   | rRNA covariance models                | https://ftp.ebi.ac.uk/pub/databases/metagenomics/pipelines/tool-dbs/rfam/                                                                                     |
 
 > [!NOTE]  
-> The preprocessed databases are generated with the [Microbiome Informatics tax_db_generation_nf pipeline](https://github.com/EBI-Metagenomics/taxdb_generation_nf).
+> The preprocessed databases are generated with the [Microbiome Informatics reference-databases-preprocessing-pipeline](https://github.com/EBI-Metagenomics/reference-databases-preprocessing-pipeline).
 
 ## How to run
 
