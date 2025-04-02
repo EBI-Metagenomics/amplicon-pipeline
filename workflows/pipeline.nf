@@ -119,12 +119,11 @@ workflow AMPLICON_PIPELINE {
 
 
     // Initialiase standard primer library for PIMENTO if user-given//
+    // If there are no primers provided, it will fallback to use the default PIMENTO standard primer library
+    std_primer_library = []
+
     if (params.std_primer_library){
         std_primer_library = file(params.std_primer_library, type: 'dir', checkIfExists: true)
-    }
-    else{
-        // Will use the default PIMENTO standard primer library
-        std_primer_library = []
     }
 
     // Read input samplesheet and validate it using schema_input.json //
