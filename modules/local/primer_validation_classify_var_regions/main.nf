@@ -28,8 +28,8 @@ process PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS {
     then
         echo "Primer validation didn't pass. Outputting empty file."
         rm ${meta.id}_primer_validation.tsv ${meta.id}_primers.fasta
-        echo -n > ${meta.id}_primer_validation.tsv
-        echo -n > ${meta.id}_primers.fasta
+        echo -n >| ${meta.id}_primer_validation.tsv
+        echo -n >| ${meta.id}_primers.fasta
     fi
 
     cat <<-END_VERSIONS > versions.yml

@@ -1,22 +1,4 @@
 {
-    "Should run without failures": {
-        "content": [
-            [
-                [
-                    {
-                        "id": "test",
-                        "single_end": false
-                    },
-                    "test_maskfile.bed:md5,c4995d75a92f483fbecf983670ece17f"
-                ]
-            ]
-        ],
-        "meta": {
-            "nf-test": "0.8.4",
-            "nextflow": "23.10.1"
-        },
-        "timestamp": "2023-11-01T16:36:54.441064735"
-    },
     "Should take ssu+lsu coordinates and return a formatted .bed file for masking them with bedtools": {
         "content": [
             [

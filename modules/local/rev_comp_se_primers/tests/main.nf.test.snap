@@ -7,7 +7,6 @@
                         "id": "test",
                         "single_end": false
                     },
-                    "16S-V3-V4",
                     "test_rev_comp_se_primers.fasta:md5,f26cdc22a5231d2dbd0831f1f1983dc6"
                 ]
             ]
