@@ -4,9 +4,8 @@ process STD_PRIMER_FLAG {
     tag "$meta.id"
     label 'very_light'
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
-        "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
-
+        "https://depot.galaxyproject.org/singularity/mi-pimento:1.0.0--pyhdfd78af_0":
+        "biocontainers/mi-pimento:1.0.0--pyhdfd78af_0"}"
     input:
     tuple val(meta), path(reads_merged)
     path(std_primer_library)
@@ -16,14 +15,16 @@ process STD_PRIMER_FLAG {
     path "*std_primer_out.txt"
     path "versions.yml"                        , emit: versions
 
-
     script:
+    def std_primer_library_arg = "${std_primer_library}" ? "-p ${std_primer_library}" : ""
+    print(std_primer_library)
+
     """
-    standard_primer_matching -i $reads_merged -p $std_primer_library -s ${meta.id}_${meta.var_region} -o ./
+    pimento std -i ${reads_merged} ${std_primer_library_arg} -o ${meta.id}_${meta.var_region}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        mgnify-pipelines-toolkit: ${params.mpt_version}
+        mi-pimento: \$( pimento --version | cut -d" " -f3 )
     END_VERSIONS
     """
 

@@ -41,7 +41,7 @@ The `qc` directory contains output files related to the quality control steps of
 
 - **ERR4334351.fastp.json**: This `json` file contains summary output of the `fastp` run, including how many reads and/or bases were filtered for various reasons. This `json` file is also used later by `MultiQC` to generate its report files.
 - **ERR4334351.merged.fastq.gz**: This compressed `fastq` file contains the cleaned and merged reads from the `fastp` run. _Note: if the run is single-end, this file won't exist._
-- _ERR1718805.fastp.fastq.gz_: This compressed `fastq` file contains the cleaned reads from the `fastp` run. This file can be seen as the equivalent of the previous merged file for single-end runs.
+- **ERR1718805.fastp.fastq.gz**: This compressed `fastq` file contains the cleaned reads from the `fastp` run. This file can be seen as the equivalent of the previous merged file for single-end runs.
 - **ERR4334351_multiqc_report.html**: This `html` file contains the `MultiQC` report for that run. It will combine outputs from three different tools into the report; `fastp`, `cutadapt`, and `DADA2`.
 - **ERR4334351_seqfu.tsv**: This `tsv` file contains the output from the sanity checking performed by `SeqFu`. `SeqFu` makes a few checks of whether the given fastq files are correctly structured, and if this QC step fails, the contents of this file will indicate the reasons why. The contents of the tsv file are described in [seqfu's documentation](https://telatin.github.io/seqfu2/tools/check.html#output). 
 - **ERR4334351_suffix_header_err.json**: This `json` file contains the output from the sanity checking performed on the suffixes and headers of fastq files. It is expected that the fastq files ending with the suffix `_1` should contain the `/1` tag in the headers inside the file, and vice versa for the suffix `_2` and tag `/2`. _Note: if the run is single-end, the header check should be to have no suffix, but still contain the `/1` tag as is standard._
@@ -274,7 +274,7 @@ An important thing to note is that while a run might succeed at generating resul
 
 ### Primer validation summary
 
-The pipeline performs inferrence of primer presence and sequence. For any runs where a primer was detected, metadata about it will be aggregated into a top-level primer validation summary file (`primer_validation_summary.json`), including its sequence, region, and identification strategy. For example:
+The pipeline performs inferrence of primer presence and sequence using [PIMENTO](https://github.com/EBI-Metagenomics/PIMENTO/tree/dev). For any runs where a primer was detected, metadata about it will be aggregated into a top-level primer validation summary file (`primer_validation_summary.json`), including its sequence, region, and identification strategy. For example:
 
 ```json
 [

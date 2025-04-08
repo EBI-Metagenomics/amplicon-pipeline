@@ -1,21 +1,25 @@
 
-process GENERAL_PRIMER_FLAG {
-    // Check for the presence of primers in general
+process FIND_PRIMER_CUTOFFS {
+    // Find inflection points in conservation curves
     tag "$meta.id"
     label 'very_light'
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         "https://depot.galaxyproject.org/singularity/mi-pimento:1.0.0--pyhdfd78af_0":
         "biocontainers/mi-pimento:1.0.0--pyhdfd78af_0"}"
     input:
-    tuple val(meta), path(reads_merged)
+    tuple val(meta), path(bcv)
 
     output:
-    tuple val(meta), path("*general_primer_out.txt"), emit: general_primer_out
-    path "versions.yml"                             , emit: versions
+    tuple val(meta), path("*cutoffs.tsv"), emit: cutoffs
+    path "versions.yml"                  , emit: versions
 
     script:
     """
-    pimento are_there_primers -i ${reads_merged} -o ${meta.id}_${meta.var_region}
+    if [[ -s ./$bcv ]]; then
+        pimento find_cutoffs -i ${bcv} -o ${meta.id}_${meta.var_region}
+    else
+        touch ${meta.id}_${meta.var_region}_cutoffs.tsv
+    fi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

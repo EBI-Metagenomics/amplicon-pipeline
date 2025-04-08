@@ -15,21 +15,19 @@ nextflow_process {
             process {
                 """
                 input[0] = [
-                    [ id:'test', single_end:false ], // meta map
-                    "16S-V3-V4",
+                    [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
                     [
                         file('${projectDir}/modules/local/make_asv_count_tables/tests/data/test_1_map.txt', checkIfExists: true),
                         file('${projectDir}/modules/local/make_asv_count_tables/tests/data/test_2_map.txt', checkIfExists: true) 
                     ],
-                    file('${projectDir}/modules/local/make_asv_count_tables/tests/data/test_proportion_chimeric.txt', checkIfExists: true),
-                    file('${projectDir}/modules/local/make_asv_count_tables/tests/data/test_proportion_matched.txt', checkIfExists: true),
                     file('${projectDir}/modules/local/make_asv_count_tables/tests/data/test_taxa.tsv', checkIfExists: true),
-                    file('${projectDir}/modules/local/make_asv_count_tables/tests/data/test.16S.V3-V4.txt', checkIfExists: true),
                     [ 
                         file('${projectDir}/modules/local/make_asv_count_tables/tests/data/test_1.fastp.fastq.gz', checkIfExists: true),
                         file('${projectDir}/modules/local/make_asv_count_tables/tests/data/test_2.fastp.fastq.gz', checkIfExists: true) 
-                    ]
+                    ],
+                    file('${projectDir}/modules/local/make_asv_count_tables/tests/data/test.16S.V3-V4.txt', checkIfExists: true)
                 ]
+                input[1] = "DADA2-PR2"
                 """
             }
         }

@@ -1,7 +1,7 @@
 
 include { ASSESSMCPPROPORTIONS   } from '../../modules/ebi-metagenomics/assessmcpproportions/main'
-include { FIND_MCP_INF_POINTS   } from '../../modules/local/find_mcp_inf_points/main.nf'
-include { ASSESS_MCP_INF_POINTS } from '../../modules/local/assess_mcp_inf_points/main.nf'
+include { FIND_PRIMER_CUTOFFS   } from '../../modules/local/find_primer_cutoffs/main.nf'
+include { CHOOSE_PRIMER_CUTOFF } from '../../modules/local/choose_primer_cutoff/main.nf'
 
 workflow AUTOMATIC_PRIMER_PREDICTION {
 
@@ -25,28 +25,28 @@ workflow AUTOMATIC_PRIMER_PREDICTION {
         ch_versions = ch_versions.mix(ASSESSMCPPROPORTIONS.out.versions.first())
 
         // Find inflection points in conservation curves
-        FIND_MCP_INF_POINTS(
+        FIND_PRIMER_CUTOFFS(
             ASSESSMCPPROPORTIONS.out.tsv
         )
-        ch_versions = ch_versions.mix(FIND_MCP_INF_POINTS.out.versions.first())
+        ch_versions = ch_versions.mix(FIND_PRIMER_CUTOFFS.out.versions.first())
 
         extracted_reads = auto_trimming_input.map{ meta, fwd_flag, rev_flag, extracted_reads ->
                                                     [ meta, extracted_reads ]
                                                  }
         // Join fastq channel and the inf_points channel
-        assess_inf_input = FIND_MCP_INF_POINTS.out.inf_points_out
+        assess_inf_input = FIND_PRIMER_CUTOFFS.out.cutoffs
                            .join(extracted_reads, by: [0])
 
         // Select inflection points most likely to be primer cutoff points
-        ASSESS_MCP_INF_POINTS(
+        CHOOSE_PRIMER_CUTOFF(
             assess_inf_input
         )
-        ch_versions = ch_versions.mix(ASSESS_MCP_INF_POINTS.out.versions.first())
+        ch_versions = ch_versions.mix(CHOOSE_PRIMER_CUTOFF.out.versions.first())
 
-        ASSESS_MCP_INF_POINTS.out.auto_primer_out
+        CHOOSE_PRIMER_CUTOFF.out.auto_primer_out
 
    emit:
-        auto_primer_trimming_out = ASSESS_MCP_INF_POINTS.out.auto_primer_out
+        auto_primer_trimming_out = CHOOSE_PRIMER_CUTOFF.out.auto_primer_out
         versions = ch_versions
 
 }
