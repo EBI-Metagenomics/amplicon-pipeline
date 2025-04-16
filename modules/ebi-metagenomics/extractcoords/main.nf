@@ -16,9 +16,9 @@ process EXTRACTCOORDS {
     tuple val(meta),  path("sequence-categorisation/*SSU.fasta")                         , optional: true, emit: ssu_fasta
     tuple val(meta),  path("sequence-categorisation/*LSU.fasta")                         , optional: true, emit: lsu_fasta
     tuple val(meta),  path("*concat_SSU_LSU_coords.txt")                                 , emit: concat_ssu_lsu_coords
-    tuple val(meta),  path("sequence-categorisation/*rRNA_bacteria*.fa")                 , optional: true, emit: rrna_bacteria
-    tuple val(meta),  path("sequence-categorisation/*rRNA_archaea*.fa")                  , optional: true, emit: rrna_archaea
-    tuple val(meta),  path("sequence-categorisation/*rRNA_eukarya*.fa")                  , optional: true, emit: eukarya
+    tuple val(meta),  path("sequence-categorisation/*rRNA_bacteria*.fasta")                 , optional: true, emit: rrna_bacteria
+    tuple val(meta),  path("sequence-categorisation/*rRNA_archaea*.fasta")                  , optional: true, emit: rrna_archaea
+    tuple val(meta),  path("sequence-categorisation/*rRNA_eukarya*.fasta")                  , optional: true, emit: eukarya
     path "versions.yml"                                                                  , emit: versions
 
     when:
