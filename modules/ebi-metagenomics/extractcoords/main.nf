@@ -29,7 +29,7 @@ process EXTRACTCOORDS {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    get_subunits -i $easel_coords_fasta -n ${prefix}
+    get_subunits -i $easel_coords_fasta -n ${prefix} --separate-subunits-by-models
     get_subunits_coords -i $matched_seqs_with_coords -s SSU -l LSU
     cat SSU_coords LSU_coords > ${prefix}_concat_SSU_LSU_coords.txt
 
