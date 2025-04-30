@@ -7,7 +7,7 @@ process CLASSIFY_VAR_REGIONS {
     //     "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
     //     "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
 
-    container "oras://community.wave.seqera.io/library/pip_mgnify-pipelines-toolkit:6e930b9d3bc4bd44"
+    container "oras://community.wave.seqera.io/library/mgnify-pipelines-toolkit:1.1.0--4bf7d70f3ec16273"
 
     input:
     tuple val(meta), path(cmsearch_deoverlap_out)
