@@ -3,11 +3,9 @@ process CLASSIFY_VAR_REGIONS {
     tag "$meta.id"
     label 'light'
     conda "${projectDir}/conf/environment.yml"
-    // container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-    //     "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
-    //     "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
-
-    container "oras://community.wave.seqera.io/library/mgnify-pipelines-toolkit:1.1.0--4bf7d70f3ec16273"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
+        "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
 
     input:
     tuple val(meta), path(cmsearch_deoverlap_out)
