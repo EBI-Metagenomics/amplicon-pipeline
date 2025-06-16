@@ -1,0 +1,79 @@
+nextflow_pipeline {
+    name "Test Pipeline Default"
+    script "../main.nf"
+    tag "pipeline"
+    tag "default"
+ 
+
+    test("-profile test") {
+        when {
+            params {
+                
+                input = "${projectDir}/tests/data/samplesheet.csv"
+                outdir = "$outputDir"
+
+                // Silva databases
+                ssu_db_fasta = "${projectDir}/tests/data/SILVA/mini_SILVA-SSU.fasta"
+                ssu_db_tax = "${projectDir}/tests/data/SILVA/mini_SILVA-SSU-tax.txt"
+                ssu_db_otu = "${projectDir}/tests/data/SILVA/mini_SILVA-SSU.otu"
+                ssu_db_mscluster = "${projectDir}/tests/data/SILVA/mini_SILVA-SSU.fasta.mscluster"
+                ssu_label = "SSU"
+
+                // UNITE database
+                unite_db_fasta = "${projectDir}/tests/data/UNITE/mini_UNITE.fasta"
+                unite_db_tax = "${projectDir}/tests/data/UNITE/mini_UNITE-tax.txt"
+                unite_db_otu = "${projectDir}/tests/data/UNITE/mini_UNITE.otu"
+                unite_db_mscluster = "${projectDir}/tests/data/UNITE/mini_UNITE.fasta.mscluster"
+                unite_label = "UNITE"
+
+                // ITSone database
+                itsone_db_fasta = "${projectDir}/tests/data/ITSone/mini_ITSone.fasta"
+                itsone_db_tax = "${projectDir}/tests/data/ITSone/mini_ITSone-tax.txt"
+                itsone_db_otu = "${projectDir}/tests/data/ITSone/mini_ITSone.otu"
+                itsone_db_mscluster = "${projectDir}/tests/data/ITSone/mini_ITSone.fasta.mscluster"
+                itsone_label = "ITSonedb"
+
+                // PR2 database
+                pr2_db_fasta = "${projectDir}/tests/data/PR2/mini_PR2.fasta"
+                pr2_db_tax = "${projectDir}/tests/data/PR2/mini_PR2-tax.txt"
+                pr2_db_otu = "${projectDir}/tests/data/PR2/mini_PR2.otu"
+                pr2_db_mscluster = "${projectDir}/tests/data/PR2/mini_PR2.fasta.mscluster"
+                pr2_label = "PR2"
+
+                dada2_pr2_label = "DADA2-PR2"
+
+                // rfam
+                rrnas_rfam_covariance_model = "${projectDir}/tests/data/rfam/mini_ribo_RF00177.cm"
+                rrnas_rfam_claninfo = "${projectDir}/tests/data/rfam/mini_ribo.clan_info"
+
+            }
+        }
+        then {
+            // stable_name: All files + folders in ${params.outdir}/ with stable names
+            def stable_name = getAllFilesFromDir(
+                params.outdir,
+                relative: true,
+                includeDir: true,
+                ignore: ['pipeline_info/*.{html,json,txt}', 'pipeline_info/execution_*.{html,txt}']
+            )
+ 
+            // stable_path: All files in ${params.outdir}/ with stable content
+            def stable_path = getAllFilesFromDir(
+                params.outdir,
+                ignoreFile: 'tests/.nftignore'
+            )
+ 
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    // Number of successful tasks
+                    workflow.trace.succeeded().size(),
+                    // All stable file/folder names (relative paths)
+                    stable_name,
+                    // All files with stable contents
+                    stable_path
+                ).match() }
+            )
+        }
+    }
+}
