@@ -1,0 +1,88 @@
+
+nextflow_process {
+
+    name "Test Process LIBRARYSTRATEGYCHECK"
+    script "../main.nf"
+    process "LIBRARYSTRATEGYCHECK"
+
+    tag "modules"
+    tag "modules_ebimetagenomics"
+    tag "librarystrategycheck"
+
+    test("librarystrategycheck - AMPLICON") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false], // meta map
+                    file("${moduleDir}/tests/fixtures/test_bcv.tsv", checkIfExists: true)
+                    ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.library_check_out,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
+            )
+        }
+    }
+
+    test("librarystrategycheck - NOT AMPLICON") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false], // meta map
+                    file("${moduleDir}/tests/fixtures/test_bcv_notamplicon.tsv", checkIfExists: true)
+                    ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.library_check_out,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
+            )
+        }
+    }
+
+    test("librarystrategycheck - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false], // meta map
+                    file("${moduleDir}/tests/fixtures/test_bcv.tsv", checkIfExists: true)
+                    ]
+                """
+            }
+            }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.library_check_out,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
+            )
+        }
+    }
+}

@@ -1,0 +1,155 @@
+
+nextflow_process {
+
+    name "Test Process PIMENTO_GENERATEBCV"
+    script "../main.nf"
+    process "PIMENTO_GENERATEBCV"
+
+    tag "modules"
+    tag "modules_ebimetagenomics"
+    tag "pimento"
+    tag "pimento/generatebcv"
+
+    test("pimento/generatebcv - FR") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
+                    "auto",
+                    "auto",
+                    file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
+                    ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.tsv,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
+            )
+        }
+
+    }
+
+    test("pimento/generatebcv - F") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
+                    "auto",
+                    "none",
+                    file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
+                    ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.tsv,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
+            )
+        }
+
+    }
+
+    test("pimento/generatebcv - R") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
+                    "none",
+                    "auto",
+                    file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
+                    ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.tsv,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
+            )
+        }
+
+    }
+
+    test("pimento/generatebcv - none") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
+                    "none",
+                    "none",
+                    file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
+                    ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.tsv,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
+            )
+        }
+
+    }
+
+    test("pimento/generatebcv - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
+                    "auto",
+                    "auto",
+                    file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
+                    ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(
+                    process.out.tsv,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
+            )
+        }
+
+    }
+
+}
