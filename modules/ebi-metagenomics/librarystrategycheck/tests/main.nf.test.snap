@@ -1,0 +1,77 @@
+{
+    "librarystrategycheck - NOT AMPLICON": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    ""
+                ]
+            ],
+            [
+                {
+                    "LIBRARYSTRATEGYCHECK": {
+                        "mgnify-pipelines-toolkit": "1.2.1"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-06-18T14:42:44.234847"
+    },
+    "librarystrategycheck - AMPLICON": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "AMPLICON"
+                ]
+            ],
+            [
+                {
+                    "LIBRARYSTRATEGYCHECK": {
+                        "mgnify-pipelines-toolkit": "1.2.1"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-06-18T14:42:35.510857"
+    },
+    "librarystrategycheck - stub": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false
+                    },
+                    "AMPLICON"
+                ]
+            ],
+            [
+                {
+                    "LIBRARYSTRATEGYCHECK": {
+                        "mgnify-pipelines-toolkit": "1.2.1"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-06-18T14:42:51.964961"
+    }
+}

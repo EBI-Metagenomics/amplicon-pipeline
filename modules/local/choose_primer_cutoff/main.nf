@@ -4,8 +4,8 @@ process CHOOSE_PRIMER_CUTOFF {
     tag "$meta.id"
     label 'very_light'
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "https://depot.galaxyproject.org/singularity/mi-pimento:1.0.0--pyhdfd78af_0":
-        "biocontainers/mi-pimento:1.0.0--pyhdfd78af_0"}"
+        "https://depot.galaxyproject.org/singularity/mi-pimento:${params.pimento_version}":
+        "biocontainers/mi-pimento:${params.pimento_version}"}"
     input:
     tuple val(meta), path(cutoffs), path(reads_merged)
 
