@@ -33,29 +33,22 @@ process PIMENTO_GENERATEBCV {
         strands = "R"
     }
 
-    if (strands == "") {
-        """
+    """
+    if [ "${strands}" == "" ]; then
         touch ${assess_mcp_prop_prefix}_mcp_cons.tsv
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            mi-pimento: \$( pimento --version | cut -d" " -f3 )
-        END_VERSIONS
-        """
-    } else {
-        """
+    else
         pimento \\
             gen_bcv \\
             -i ${fastq} \\
             -st ${strands} \\
             -o ${assess_mcp_prop_prefix}
+    fi
 
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            mi-pimento: \$( pimento --version | cut -d" " -f3 )
-        END_VERSIONS
-        """
-    }
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        mi-pimento: \$( pimento --version | cut -d" " -f3 )
+    END_VERSIONS
+    """
 
     stub:
     def args = task.ext.args ?: ''
