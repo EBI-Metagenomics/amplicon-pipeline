@@ -1,0 +1,132 @@
+{
+    "pimento/generatebcv - stub": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false,
+                        "var_region": "16S-V3-V4"
+                    },
+                    "test_16S-V3-V4_mcp_cons.tsv:md5,f02e326f800ee26f04df7961adbf7c0a"
+                ]
+            ],
+            [
+                {
+                    "PIMENTO_GENERATEBCV": {
+                        "mi-pimento": "1.0.1"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-06-18T14:38:12.95981"
+    },
+    "pimento/generatebcv - none": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false,
+                        "var_region": "16S-V3-V4"
+                    },
+                    "test_16S-V3-V4_mcp_cons.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ]
+            ],
+            [
+                {
+                    "PIMENTO_GENERATEBCV": {
+                        "mi-pimento": "1.0.1"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-06-18T14:38:04.488138"
+    },
+    "pimento/generatebcv - F": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false,
+                        "var_region": "16S-V3-V4"
+                    },
+                    "test_16S-V3-V4_bcv.tsv:md5,1c566bc27d2bf777e76ffb8e52db7132"
+                ]
+            ],
+            [
+                {
+                    "PIMENTO_GENERATEBCV": {
+                        "mi-pimento": "1.0.1"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-06-18T14:37:46.746505"
+    },
+    "pimento/generatebcv - FR": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false,
+                        "var_region": "16S-V3-V4"
+                    },
+                    "test_16S-V3-V4_bcv.tsv:md5,875c712aadf9b21bd535e555dbb4b7e1"
+                ]
+            ],
+            [
+                {
+                    "PIMENTO_GENERATEBCV": {
+                        "mi-pimento": "1.0.1"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-06-18T14:37:37.09592"
+    },
+    "pimento/generatebcv - R": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "single_end": false,
+                        "var_region": "16S-V3-V4"
+                    },
+                    "test_16S-V3-V4_bcv.tsv:md5,e4500d4e1aabab1e143063f4c26029ea"
+                ]
+            ],
+            [
+                {
+                    "PIMENTO_GENERATEBCV": {
+                        "mi-pimento": "1.0.1"
+                    }
+                }
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-06-18T14:37:55.942524"
+    }
+}

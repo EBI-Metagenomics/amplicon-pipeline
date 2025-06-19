@@ -1,5 +1,5 @@
 
-include { ASSESSMCPPROPORTIONS   } from '../../modules/ebi-metagenomics/assessmcpproportions/main'
+include { PIMENTO_GENERATEBCV   } from '../../modules/ebi-metagenomics/pimento/generatebcv/main'
 include { FIND_PRIMER_CUTOFFS   } from '../../modules/local/find_primer_cutoffs/main.nf'
 include { CHOOSE_PRIMER_CUTOFF } from '../../modules/local/choose_primer_cutoff/main.nf'
 
@@ -18,15 +18,14 @@ workflow AUTOMATIC_PRIMER_PREDICTION {
 
         ch_versions = Channel.empty()
         // Use Most Common Prefix (MCP) method to generate curves of base conservation
-        ASSESSMCPPROPORTIONS(
+        PIMENTO_GENERATEBCV(
             auto_trimming_input,
-            false
         )
-        ch_versions = ch_versions.mix(ASSESSMCPPROPORTIONS.out.versions.first())
+        ch_versions = ch_versions.mix(PIMENTO_GENERATEBCV.out.versions.first())
 
         // Find inflection points in conservation curves
         FIND_PRIMER_CUTOFFS(
-            ASSESSMCPPROPORTIONS.out.tsv
+            PIMENTO_GENERATEBCV.out.tsv
         )
         ch_versions = ch_versions.mix(FIND_PRIMER_CUTOFFS.out.versions.first())
 

@@ -1,15 +1,16 @@
 
 nextflow_process {
 
-    name "Test Process ASSESSMCPPROPORTIONS"
+    name "Test Process PIMENTO_GENERATEBCV"
     script "../main.nf"
-    process "ASSESSMCPPROPORTIONS"
+    process "PIMENTO_GENERATEBCV"
 
     tag "modules"
     tag "modules_ebimetagenomics"
-    tag "assessmcpproportions"
+    tag "pimento"
+    tag "pimento/generatebcv"
 
-    test("assessmcpproportions - FR") {
+    test("pimento/generatebcv - FR") {
 
         when {
             process {
@@ -20,7 +21,6 @@ nextflow_process {
                     "auto",
                     file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
                     ]
-                input[1] = false
                 """
             }
         }
@@ -28,13 +28,17 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out).match() }
+                { assert snapshot(
+                    process.out.tsv,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
             )
         }
 
     }
 
-    test("assessmcpproportions - F") {
+    test("pimento/generatebcv - F") {
 
         when {
             process {
@@ -45,7 +49,6 @@ nextflow_process {
                     "none",
                     file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
                     ]
-                input[1] = false
                 """
             }
         }
@@ -53,13 +56,17 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out).match() }
+                { assert snapshot(
+                    process.out.tsv,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
             )
         }
 
     }
 
-    test("assessmcpproportions - R") {
+    test("pimento/generatebcv - R") {
 
         when {
             process {
@@ -70,7 +77,6 @@ nextflow_process {
                     "auto",
                     file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
                     ]
-                input[1] = false
                 """
             }
         }
@@ -78,13 +84,17 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out).match() }
+                { assert snapshot(
+                    process.out.tsv,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
             )
         }
 
     }
 
-    test("assessmcpproportions - none") {
+    test("pimento/generatebcv - none") {
 
         when {
             process {
@@ -95,7 +105,6 @@ nextflow_process {
                     "none",
                     file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
                     ]
-                input[1] = false
                 """
             }
         }
@@ -103,38 +112,17 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out).match() }
+                { assert snapshot(
+                    process.out.tsv,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
             )
         }
 
     }
 
-    test("assessmcpproportions - FR - library_check") {
-
-        when {
-            process {
-                """
-                input[0] = [
-                    [ id:'test', single_end:false, var_region:'16S-V3-V4' ], // meta map
-                    "auto",
-                    "auto",
-                    file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
-                    ]
-                input[1] = true
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() }
-            )
-        }
-
-    }
-
-    test("assessmcpproportions - stub") {
+    test("pimento/generatebcv - stub") {
 
         options "-stub"
 
@@ -147,7 +135,6 @@ nextflow_process {
                     "auto",
                     file("${moduleDir}/tests/fixtures/test.fastq.gz", checkIfExists: true)
                     ]
-                input[1] = false
                 """
             }
         }
@@ -155,7 +142,11 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out).match() }
+                { assert snapshot(
+                    process.out.tsv,
+                    process.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
             )
         }
 

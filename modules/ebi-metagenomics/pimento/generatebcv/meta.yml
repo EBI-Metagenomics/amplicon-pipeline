@@ -1,17 +1,17 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
-name: "assessmcpproportions"
-description: Assess proportions of Most Common Prefixes (MCP) in reads
+name: "pimento_generatebcv"
+description: Generate Base-Conservation Vectors (BCV) in a stepwise and windowed manner for a fastq file.
 keywords:
-  - fastq
-  - reads
-  - qc
+  - primers
+  - sequencing
+  - genomics
+  - metagenomics
 tools:
-  - "assessmcpproportions":
-      description: "Assess proportions of MCPs in reads, uses mgnify-pipelines-toolkit
-        as conda environment"
-      homepage: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
-      documentation: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
-      tool_dev_url: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
+  - "pimento":
+      description: "A PrIMEr infereNce TOolkit to facilitate large-scale calling of metabarcoding amplicon sequence variants"
+      homepage: "https://github.com/EBI-Metagenomics/PIMENTO"
+      documentation: "https://github.com/EBI-Metagenomics/PIMENTO"
+      tool_dev_url: "https://github.com/EBI-Metagenomics/PIMENTO"
       licence: ["Apache-2.0"]
       identifier: ""
 
@@ -37,10 +37,7 @@ input:
         type: file
         description: Merged or single-end FASTQ file
         pattern: "*.fastq.gz"
-  - - library_check:
-        type: boolean
-        description: Boolean flag to control for whether library strategy | being amplicon
-          should be checked
+
 output:
   - tsv:
       - meta:
@@ -52,20 +49,12 @@ output:
           type: file
           description: .tsv file containing MCP proportion results for all given strands
           pattern: "*.tsv"
-  - library_check_out:
-      - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1', single_end:false ]`
-      - check_out:
-          type: string
-          description: Optional env variable containing either "AMPLICON", empty otherwise
   - versions:
-      - versions.yml:
+      - "versions.yml":
           type: file
           description: File containing software versions
           pattern: "versions.yml"
+
 authors:
   - "@chrisata"
 maintainers:

@@ -1,6 +1,7 @@
 
 include { SEQFU_CHECK            } from '../../../modules/ebi-metagenomics/seqfu/check/main'
-include { ASSESSMCPPROPORTIONS   } from '../../../modules/ebi-metagenomics/assessmcpproportions/main'
+include { PIMENTO_GENERATEBCV    } from '../../../modules/ebi-metagenomics/pimento/generatebcv/main'
+include { LIBRARYSTRATEGYCHECK    } from '../../../modules/ebi-metagenomics/librarystrategycheck/main'
 include { FASTQSUFFIXHEADERCHECK } from '../../../modules/ebi-metagenomics/fastqsuffixheadercheck/main'
 include { FASTP                  } from '../../../modules/ebi-metagenomics/fastp/main'
 include { SEQTK_SEQ              } from '../../../modules/ebi-metagenomics/seqtk/seq/main'
@@ -37,26 +38,29 @@ workflow  READS_QC {
         .join(ch_reads)
 
     if ( filter_amplicon ) {
-        assess_mcp_proportions_input = passed_suffixheader_reads
+        generatebcv_input = passed_suffixheader_reads
                         .map { meta, fastq ->
                             if ( meta.single_end ) {
-                                [ meta, "auto", "none", fastq ]
+                                [ meta, "auto", "auto", fastq ]
                             } else {
-                                [ meta, "auto", "none", fastq[0] ]
+                                [ meta, "auto", "auto", fastq[0] ]
                             }
                         }
 
-        ASSESSMCPPROPORTIONS(assess_mcp_proportions_input, true)
-        ch_versions = ch_versions.mix(ASSESSMCPPROPORTIONS.out.versions.first())
+        PIMENTO_GENERATEBCV(generatebcv_input)
+        ch_versions = ch_versions.mix(PIMENTO_GENERATEBCV.out.versions.first())
 
-        fastp_input = ASSESSMCPPROPORTIONS.out.library_check_out
+        LIBRARYSTRATEGYCHECK(PIMENTO_GENERATEBCV.out.tsv)
+        ch_versions = ch_versions.mix(LIBRARYSTRATEGYCHECK.out.versions.first())
+
+        fastp_input = LIBRARYSTRATEGYCHECK.out.library_check_out
                         .filter { meta, strategy ->
                             strategy == "AMPLICON"
                         }
                         .map { meta, _ -> [ meta ] }
                         .join(ch_reads)
 
-        amplicon_check = ASSESSMCPPROPORTIONS.out.library_check_out
+        amplicon_check = LIBRARYSTRATEGYCHECK.out.library_check_out
     } else {
         fastp_input = passed_suffixheader_reads
         amplicon_check = Channel.empty()

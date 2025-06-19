@@ -5,11 +5,6 @@
     "git@github.com:EBI-Metagenomics/nf-modules.git": {
       "modules": {
         "ebi-metagenomics": {
-          "assessmcpproportions": {
-            "branch": "main",
-            "git_sha": "2c10a5c506ad200076d5fcc4581feb340e351e2f",
-            "installed_by": ["reads_qc"]
-          },
           "cmsearchtbloutdeoverlap": {
             "branch": "main",
             "git_sha": "696324c637a7e0cf06fe331faffee42e36826898",
@@ -40,7 +35,7 @@
           },
           "fastqsuffixheadercheck": {
             "branch": "main",
-            "git_sha": "67a02223d9bd9f38750255250035dc1a8da0b5db",
+            "git_sha": "772c5b45baa7d88d779d6e0ec9e4654d2d5c14c6",
             "installed_by": ["reads_qc"]
           },
           "infernal/cmsearch": {
@@ -54,6 +49,11 @@
             "installed_by": ["mapseq_otu_krona"],
             "patch": "modules/ebi-metagenomics/krona/ktimporttext/krona-ktimporttext.diff"
           },
+          "librarystrategycheck": {
+            "branch": "main",
+            "git_sha": "9cc5d3c2396859f0f1376bbfe3ca5d721a0b5b3c",
+            "installed_by": ["reads_qc"]
+          },
           "mapseq": {
             "branch": "main",
             "git_sha": "1375e8b3072c40346eb4f7d9c1ae15459c07b620",
@@ -64,6 +64,11 @@
             "git_sha": "fe16b0221649bc7ca3bfa69f722e8a89fab1de16",
             "installed_by": ["mapseq_otu_krona"],
             "patch": "modules/ebi-metagenomics/mapseq2biom/mapseq2biom.diff"
+          },
+          "pimento/generatebcv": {
+            "branch": "main",
+            "git_sha": "9cc5d3c2396859f0f1376bbfe3ca5d721a0b5b3c",
+            "installed_by": ["reads_qc"]
           },
           "seqfu/check": {
             "branch": "main",
@@ -86,7 +91,7 @@
           },
           "reads_qc": {
             "branch": "main",
-            "git_sha": "c6917c7d1ae059968317c6315f503a6e85d7aa2e",
+            "git_sha": "9cc5d3c2396859f0f1376bbfe3ca5d721a0b5b3c",
             "installed_by": ["subworkflows"]
           },
           "rrna_extraction": {

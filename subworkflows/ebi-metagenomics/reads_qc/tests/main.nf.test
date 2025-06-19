@@ -39,7 +39,17 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert snapshot(workflow.out).match() }
+                { assert snapshot(
+                    workflow.out.seqfu_check,
+                    workflow.out.suffix_header_check,
+                    workflow.out.amplicon_check,
+                    workflow.out.reads,
+                    workflow.out.reads_se_and_merged,
+                    workflow.out.fastp_summary_json,
+                    workflow.out.reads_fasta,
+                    workflow.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
             )
         }
     }
@@ -74,7 +84,17 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert snapshot(workflow.out).match() }
+                { assert snapshot(
+                    workflow.out.seqfu_check,
+                    workflow.out.suffix_header_check,
+                    workflow.out.amplicon_check,
+                    workflow.out.reads,
+                    workflow.out.reads_se_and_merged,
+                    workflow.out.fastp_summary_json,
+                    workflow.out.reads_fasta,
+                    workflow.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
             )
         }
     }
@@ -109,7 +129,17 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert snapshot(workflow.out).match() }
+                { assert snapshot(
+                    workflow.out.seqfu_check,
+                    workflow.out.suffix_header_check,
+                    workflow.out.amplicon_check,
+                    workflow.out.reads,
+                    workflow.out.reads_se_and_merged,
+                    workflow.out.fastp_summary_json,
+                    workflow.out.reads_fasta,
+                    workflow.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
             )
         }
     }
@@ -138,7 +168,17 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert snapshot(workflow.out).match() }
+                { assert snapshot(
+                    workflow.out.seqfu_check,
+                    workflow.out.suffix_header_check,
+                    workflow.out.amplicon_check,
+                    workflow.out.reads,
+                    workflow.out.reads_se_and_merged,
+                    workflow.out.fastp_summary_json,
+                    workflow.out.reads_fasta,
+                    workflow.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
             )
         }
     }
@@ -167,7 +207,17 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert snapshot(workflow.out).match() }
+                { assert snapshot(
+                    workflow.out.seqfu_check,
+                    workflow.out.suffix_header_check,
+                    workflow.out.amplicon_check,
+                    workflow.out.reads,
+                    workflow.out.reads_se_and_merged,
+                    workflow.out.fastp_summary_json,
+                    workflow.out.reads_fasta,
+                    workflow.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
             )
         }
     }
