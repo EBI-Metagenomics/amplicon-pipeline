@@ -255,7 +255,6 @@ workflow AMPLICON_PIPELINE {
                        }
 
     dada2_input = dada2_input_preparation_function(concat_input, READS_QC.out.reads, cutadapt_channel)
-
     // Run DADA2 ASV generation //
     DADA2_SWF(
         dada2_input

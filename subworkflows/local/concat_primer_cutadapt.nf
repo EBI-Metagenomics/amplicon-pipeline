@@ -52,41 +52,12 @@ workflow CONCAT_PRIMER_CUTADAPT {
         )
         ch_versions = ch_versions.mix(PRIMER_VALIDATION.out.versions)
 
+        post_primer_validation_filter = PRIMER_VALIDATION.out.validated_primers
+                                        .mix(runs_without_primers)
 
-        post_primer_val_filter = PRIMER_VALIDATION.out.primer_validation_out
-                                 .map{ meta, primer_val ->
-                                    [ meta.subMap('id', 'single_end'), primer_val ]
-                                 }
-
-        rev_comp_se_primers_input = primer_validation_input.map{ meta, primers ->
-                                    [meta.subMap('id', 'single_end'), primers ]
-                                }
-                                .join(post_primer_val_filter, by:0)
-                                .map{ meta, primers, primer_val ->
-                                    if (primer_val.countLines() == 0){
-                                        [ meta, primer_val ]
-                                    }
-                                    else {
-                                        [ meta, primers ]
-                                    }
-                                }
-                                .mix(runs_without_primers)
-
-        REV_COMP_SE_PRIMERS(
-            rev_comp_se_primers_input
-        )
-        ch_versions = ch_versions.mix(REV_COMP_SE_PRIMERS.out.versions.first())
-
-        SPLIT_PRIMERS_BY_STRAND(
-            REV_COMP_SE_PRIMERS.out.rev_comp_se_primers_out
-        )
-        ch_versions = ch_versions.mix(SPLIT_PRIMERS_BY_STRAND.out.versions.first())
-
-
-        // Join concatenated primers to the fastp-cleaned paired reads files and run cutadapt on them
-        cutadapt_input = SPLIT_PRIMERS_BY_STRAND.out.stranded_primer_out
-                        .map{ meta, fwd_primer, rev_primer ->
-                            [ meta.subMap('id', 'single_end'), meta['var_region'], meta['var_regions_size'], [fwd_primer, rev_primer] ]
+        cutadapt_input = post_primer_validation_filter
+                        .map{ meta, primers ->
+                            [ meta.subMap('id', 'single_end'), meta['var_region'], [meta['var_regions_size']], primers ]
                         }
                         .join(reads, by: [0])
                         .map{ meta, var_region, var_regions_size, primers, final_reads -> 

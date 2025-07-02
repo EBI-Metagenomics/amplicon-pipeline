@@ -2,9 +2,11 @@
 process MAKE_ASV_COUNT_TABLES {
     tag "$meta.id"
     label 'medium'
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
-        "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
+    // container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    //     "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
+    //     "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
+    container "oras://community.wave.seqera.io/library/pip_mgnify-pipelines-toolkit:8dcd8ce518e2a5b9"
+
 
     input:
     tuple val(meta), path(maps), path(asvtaxtable), path(reads), path(extracted_var_path)
