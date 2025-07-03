@@ -422,15 +422,16 @@ workflow AMPLICON_PIPELINE {
     .groupTuple()
     .map { meta, results ->
         if ( results.size() == 3 ) {
-            return "${meta.id},all_results"
-        }
-        else if ( results.size() == 2 ) {
-            if (results[1]) {     // if dada_stats_fail == true
-                return "${meta.id},dada2_stats_fail"
+            if (results[2]){
+                return "${meta.id},all_results"
             }
             else {
-                return "${meta.id},no_asvs"
+                return "${meta.id},dada2_stats_fail"
             }
+        }
+        else {
+            return "${meta.id},no_asvs"
+
         }
         error "Unexpected. meta: ${meta}, results: ${results}"
     }

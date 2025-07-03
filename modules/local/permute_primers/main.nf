@@ -2,10 +2,9 @@
 process PERMUTE_PRIMERS {
     tag "$meta.id"
     label 'very_light'
-    // container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-    //     "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
-    //     "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
-    container "oras://community.wave.seqera.io/library/pip_mgnify-pipelines-toolkit:64432eed2c673687"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
+        "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
 
     input:
     tuple val(meta), path(concat_primers_fasta)

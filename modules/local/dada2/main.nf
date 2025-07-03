@@ -17,7 +17,16 @@ process DADA2 {
     script:
     if ( meta.single_end ){
         """
-        dada2.R ${meta.id} $reads
+        set +e
+
+        error_file="dada2_errors.txt"
+        dada2.R ${meta.id} $reads 2> \$error_file
+
+        if [[ -s \$error_file ]] && grep -q "Error rates could not be estimated" \$error_file; then
+            stats_fail=true
+        else
+            stats_fail=false
+        fi
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

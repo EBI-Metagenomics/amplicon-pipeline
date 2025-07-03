@@ -2,10 +2,9 @@
 process PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS {
     tag "$meta.id"
     label 'very_light'
-    // container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-    //     "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
-    //     "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
-    container "oras://community.wave.seqera.io/library/pip_mgnify-pipelines-toolkit:64432eed2c673687"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
+        "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
 
     input:
     tuple val(meta), path(cmsearch_deoverlap_out), path(concat_primers_fasta)
@@ -17,8 +16,7 @@ process PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS {
 
     script:
     """
-    // TODO remove absolute path obviously, this is temporary
-    python /hps/software/users/rdf/metagenomics/service-team/users/chrisata/mgnify-pipelines-toolkit/mgnify_pipelines_toolkit/analysis/amplicon/primer_val_classification.py -i $cmsearch_deoverlap_out -f $concat_primers_fasta -s ${meta.id}
+    primer_val_classification -i $cmsearch_deoverlap_out -f $concat_primers_fasta -s ${meta.id}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
