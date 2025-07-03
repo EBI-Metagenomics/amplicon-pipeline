@@ -11,9 +11,9 @@ process MAKE_ASV_COUNT_TABLES {
     val db_label
 
     output:
-    tuple val(meta), path("*asv_krona_counts.txt"), emit: asv_count_tables_out
-    tuple val(meta), path("*asv_read_counts.tsv") , emit: asv_read_counts_out
-    tuple val(meta), path("*asvs_left.txt")       , emit: asvs_left
+    tuple val(meta), path("*asv_krona_counts.txt"), optional: true, emit: asv_count_tables_out
+    tuple val(meta), path("*asv_read_counts.tsv") , optional: true, emit: asv_read_counts_out
+    tuple val(meta), path("*asvs_left.txt")       , optional: true, emit: asvs_left
     path "versions.yml"                           , emit: versions
 
     script:
