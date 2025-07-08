@@ -81,7 +81,7 @@ if (!is.na(path_r)){
 
 if (length(merged$sequence) == 0){
   print("No ASVs - stopping script early.")
-  quit(status=1)
+  quit(status=0)
 } else{
     # Make ASV count table
   seqtab = makeSequenceTable(merged)
