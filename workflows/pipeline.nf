@@ -422,9 +422,7 @@ workflow AMPLICON_PIPELINE {
     .groupTuple()
     .map { meta, results ->
         if ( results.size() == 3 ) {
-            else {
-                return "${meta.id},all_results"
-            }
+            return "${meta.id},all_results"
         }
         else {
             if (results[1]){
