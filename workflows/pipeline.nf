@@ -262,7 +262,7 @@ workflow AMPLICON_PIPELINE {
     ch_versions = ch_versions.mix(DADA2_SWF.out.versions)
 
     DADA2_SWF.out.dada2_stats_fail.ifEmpty(true).view()
-    def dada2_stats_simple = DADA2_SWF.out.dada2_stats_fail.map { meta, stats_fail ->
+    def dada2_stats_fail = DADA2_SWF.out.dada2_stats_fail.map { meta, stats_fail ->
                                 key = meta.subMap('id', 'single_end')
                                 return [key, stats_fail]
                             }
@@ -418,20 +418,20 @@ workflow AMPLICON_PIPELINE {
 
     // Extract passed runs, describe whether those passed runs also ASV results //
     DADA2_SWF.out.dada2_report.map { meta, dada2_report -> [ ["id": meta.id, "single_end": meta.single_end], dada2_report ] }
-    .concat(extended_reads_qc.qc_pass, dada2_stats_simple)
+    .concat(extended_reads_qc.qc_pass, dada2_stats_fail)
     .groupTuple()
     .map { meta, results ->
         if ( results.size() == 3 ) {
-            if (results[2]){
-                return "${meta.id},all_results"
-            }
             else {
-                return "${meta.id},dada2_stats_fail"
+                return "${meta.id},all_results"
             }
         }
         else {
-            return "${meta.id},no_asvs"
-
+            if (results[1]){
+                return "${meta.id},dada2_stats_fail"
+            } else {
+                return "${meta.id},no_asvs"
+            }
         }
         error "Unexpected. meta: ${meta}, results: ${results}"
     }
