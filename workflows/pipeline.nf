@@ -425,7 +425,7 @@ workflow AMPLICON_PIPELINE {
             return "${meta.id},all_results"
         }
         else {
-            if (results[1]){
+            if (results[1] == "true"){
                 return "${meta.id},dada2_stats_fail"
             } else {
                 return "${meta.id},no_asvs"
