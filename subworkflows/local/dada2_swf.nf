@@ -22,8 +22,9 @@ workflow DADA2_SWF {
         ch_versions = ch_versions.mix(DADA2.out.versions.first())
 
     emit:
-        dada2_out = DADA2.out.dada2_out
-        dada2_report = DADA2.out.dada2_stats
-        versions = ch_versions
+        dada2_out        = DADA2.out.dada2_out
+        dada2_report     = DADA2.out.dada2_stats
+        dada2_stats_fail = DADA2.out.dada2_stats_fail
+        versions         = ch_versions
     
 }

@@ -1,4 +1,6 @@
-Changes in module 'ebi-metagenomics/cutadapt'
+Changes in component 'ebi-metagenomics/cutadapt'
+'modules/ebi-metagenomics/cutadapt/environment.yml' is unchanged
+Changes in 'cutadapt/main.nf':
 --- modules/ebi-metagenomics/cutadapt/main.nf
 +++ modules/ebi-metagenomics/cutadapt/main.nf
 @@ -1,7 +1,7 @@
@@ -10,7 +12,38 @@ Changes in module 'ebi-metagenomics/cutadapt'
  
      conda "${moduleDir}/environment.yml"
      container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-@@ -42,19 +42,47 @@
+@@ -14,6 +14,7 @@
+     output:
+     tuple val(meta), path('*.trim.fastq.gz'), emit: reads
+     tuple val(meta), path('*.log')          , emit: log
++    tuple val(meta), path('*.json')         , emit: json
+     path "versions.yml"                     , emit: versions
+ 
+     when:
+@@ -29,38 +30,72 @@
+     }
+ 
+     def fwd_primer = ""
+-    if (primers[0].size() > 0){
+-        fwd_primer = "-g file:${primers[0]}"
+-    }
++    def rev_primer = ""
+ 
+-    def rev_primer = ""
+-    if (primers[1].size() > 0  && meta.single_end){
+-        rev_primer = "-a file:${primers[1]}"
+-    } else if (primers[1].size() > 0  && !meta.single_end){
+-        rev_primer = "-G file:${primers[1]}"
++    if (primers){
++        if (primers[0].size() > 0){
++            fwd_primer = "-g file:${primers[0]}"
++        }
++        if (primers[1].size() > 0  && meta.single_end){
++            rev_primer = "-a file:${primers[1]}"
++        } else if (primers[1].size() > 0  && !meta.single_end){
++            rev_primer = "-G file:${primers[1]}"
++        }
+     }
  
      def primer_arg = "$fwd_primer $rev_primer"
  
@@ -33,6 +66,7 @@ Changes in module 'ebi-metagenomics/cutadapt'
 +            touch ${prefix}.cutadapt.log
 +            touch ${prefix}_1.trim.fastq.gz
 +            touch ${prefix}_2.trim.fastq.gz
++            touch ${prefix}.cutadapt.json
 +
 +            cat <<-END_VERSIONS > versions.yml
 +            "${task.process}":
@@ -44,6 +78,7 @@ Changes in module 'ebi-metagenomics/cutadapt'
 +            """
 +            touch ${prefix}.cutadapt.log
 +            touch ${prefix}.trim.fastq.gz
++            touch ${prefix}.cutadapt.json
 +
 +            cat <<-END_VERSIONS > versions.yml
 +            "${task.process}":
@@ -61,6 +96,7 @@ Changes in module 'ebi-metagenomics/cutadapt'
 +            $trimmed \\
 +            $primer_arg \\
 +            $reads \\
++            --json ${prefix}.cutadapt.json \\
 +            > ${prefix}.cutadapt.log
 +        cat <<-END_VERSIONS > versions.yml
 +        "${task.process}":
@@ -71,5 +107,13 @@ Changes in module 'ebi-metagenomics/cutadapt'
  
      stub:
      def prefix  = task.ext.prefix ?: "${meta.id}"
+     def trimmed = meta.single_end ? "${prefix}.trim.fastq.gz" : "${prefix}_1.trim.fastq.gz ${prefix}_2.trim.fastq.gz"
+     """
+     touch ${prefix}.cutadapt.log
++    touch ${prefix}.cutadapt.json
+     touch ${trimmed}
+ 
+     cat <<-END_VERSIONS > versions.yml
 
+'modules/ebi-metagenomics/cutadapt/meta.yml' is unchanged
 ************************************************************

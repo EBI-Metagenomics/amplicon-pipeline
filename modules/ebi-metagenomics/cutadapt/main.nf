@@ -30,15 +30,17 @@ process CUTADAPT {
     }
 
     def fwd_primer = ""
-    if (primers[0].size() > 0){
-        fwd_primer = "-g file:${primers[0]}"
-    }
-
     def rev_primer = ""
-    if (primers[1].size() > 0  && meta.single_end){
-        rev_primer = "-a file:${primers[1]}"
-    } else if (primers[1].size() > 0  && !meta.single_end){
-        rev_primer = "-G file:${primers[1]}"
+
+    if (primers){
+        if (primers[0].size() > 0){
+            fwd_primer = "-g file:${primers[0]}"
+        }
+        if (primers[1].size() > 0  && meta.single_end){
+            rev_primer = "-a file:${primers[1]}"
+        } else if (primers[1].size() > 0  && !meta.single_end){
+            rev_primer = "-G file:${primers[1]}"
+        }
     }
 
     def primer_arg = "$fwd_primer $rev_primer"
