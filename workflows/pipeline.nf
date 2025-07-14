@@ -261,7 +261,6 @@ workflow AMPLICON_PIPELINE {
     )
     ch_versions = ch_versions.mix(DADA2_SWF.out.versions)
 
-    DADA2_SWF.out.dada2_stats_fail.ifEmpty(true).view()
     def dada2_stats_fail = DADA2_SWF.out.dada2_stats_fail.map { meta, stats_fail ->
                                 key = meta.subMap('id', 'single_end')
                                 return [key, stats_fail]
