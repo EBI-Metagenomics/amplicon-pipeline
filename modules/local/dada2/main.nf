@@ -23,7 +23,7 @@ process DADA2 {
         error_file="${meta.id}_dada2_errors.txt"
         dada2.R ${meta.id} $reads 2> \$error_file
 
-        if [[ -s \$error_file ]] && grep -q "Error rates could not be estimated" \$error_file; then
+        if [[ -s \$error_file ]] && grep -q "Caught an error" \$error_file; then
             stats_fail=true
         else
             stats_fail=false
@@ -42,7 +42,7 @@ process DADA2 {
         error_file="${meta.id}_dada2_errors.txt"
         dada2.R ${meta.id} ${reads[0]} ${reads[1]} 2> \$error_file
 
-        if [[ -s \$error_file ]] && grep -q "Error rates could not be estimated" \$error_file; then
+        if [[ -s \$error_file ]] && grep -q "Caught an error" \$error_file; then
             stats_fail=true
         else
             stats_fail=false

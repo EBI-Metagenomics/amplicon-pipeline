@@ -114,7 +114,7 @@ tryCatch(
 )
 
 if (length(merged$sequence) == 0){
-  message("No ASVs - stopping script early.")
+  message("Caught an error - No ASVs - stopping script early.")
   quit()
 }
 
