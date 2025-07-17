@@ -11,6 +11,7 @@ process DADA2 {
     output:
     tuple val(meta), path("*map.txt"), path("*asvs.fasta"), path("*_filt.fastq.gz"), optional: true, emit: dada2_out
     tuple val(meta), path("*_dada2_stats.tsv")                                     , optional: true, emit: dada2_stats
+    tuple val(meta), path("*_dada2_errors.txt")                                    , optional: true, emit: dada2_errors
     tuple val(meta), env(stats_fail)                                               , optional: true, emit: dada2_stats_fail
     path "versions.yml"                                                            , emit: versions
     
@@ -19,7 +20,7 @@ process DADA2 {
         """
         set +e
 
-        error_file="dada2_errors.txt"
+        error_file="${meta.id}_dada2_errors.txt"
         dada2.R ${meta.id} $reads 2> \$error_file
 
         if [[ -s \$error_file ]] && grep -q "Error rates could not be estimated" \$error_file; then
@@ -38,7 +39,7 @@ process DADA2 {
         """
         set +e
 
-        error_file="dada2_errors.txt"
+        error_file="${meta.id}_dada2_errors.txt"
         dada2.R ${meta.id} ${reads[0]} ${reads[1]} 2> \$error_file
 
         if [[ -s \$error_file ]] && grep -q "Error rates could not be estimated" \$error_file; then
