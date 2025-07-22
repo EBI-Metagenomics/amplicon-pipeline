@@ -136,6 +136,7 @@ Example output directory structure for one run (`ERR4334351`):
 │   ├── qc
 │   │   ├── ERR4334351.fastp.json
 │   │   ├── ERR4334351.merged.fastq.gz
+│   │   ├── ERR4334351_dada2_errors.txt
 │   │   ├── ERR4334351_multiqc_report.html
 │   │   ├── ERR4334351_seqfu.tsv
 │   │   └── ERR4334351_suffix_header_err.json
