@@ -257,12 +257,14 @@ workflow AMPLICON_PIPELINE {
     dada2_input = dada2_input_preparation_function(concat_input, READS_QC.out.reads, cutadapt_channel)
     // Run DADA2 ASV generation //
     DADA2_SWF(
-        dada2_input
+        dada2_input,
+        RRNA_EXTRACTION.out.cmsearch_deoverlap_out
+
     )
     ch_versions = ch_versions.mix(DADA2_SWF.out.versions)
 
     def dada2_stats_fail = DADA2_SWF.out.dada2_stats_fail.map { meta, stats_fail ->
-                                key = meta.subMap('id', 'single_end')
+                                def key = meta.subMap('id', 'single_end')
                                 return [key, stats_fail]
                             }
 
