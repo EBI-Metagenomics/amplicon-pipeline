@@ -1,6 +1,5 @@
 
 process EXTRACT_RRNA_HITS_FROM_UNMERGED_READS {
-    // Remove reads that have at least 10% N bases with seqkit commands
     tag "$meta.id"
     label 'process_medium'
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
