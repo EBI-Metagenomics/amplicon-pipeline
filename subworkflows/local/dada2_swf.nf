@@ -23,10 +23,7 @@ workflow DADA2_SWF {
                         [meta + ["var_region": var_region, "var_regions_size": var_regions_size], reads, cmsearch_deoverlap_out]
                       }
 
-        seqkit_input.view()
-
         EXTRACT_RRNA_HITS_FROM_UNMERGED_READS(seqkit_input)
-
 
         REMOVE_AMBIGUOUS_READS(
             EXTRACT_RRNA_HITS_FROM_UNMERGED_READS.out.extracted_reads
