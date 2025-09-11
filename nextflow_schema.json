@@ -23,6 +23,11 @@
           "fa_icon": "fas fa-file-csv",
           "schema": "assets/schema_input.json"
         },
+        "private_study": {
+          "type": "boolean",
+          "description": "Download reads and assemblies from s3 fire",
+          "default": false
+        },
         "outdir": {
           "type": "string",
           "format": "directory-path",
