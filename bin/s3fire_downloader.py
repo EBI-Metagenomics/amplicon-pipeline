@@ -9,8 +9,8 @@ from botocore import UNSIGNED
 from botocore.config import Config
 
 FIRE_ENDPOINT: str = "https://hl.fire.sdo.ebi.ac.uk"
-PUBLIC_FTP_PATH = "ftp.sra.ebi.ac.uk/vol1/"
-PRIVATE_FTP_PATH = "ftp.dcc-private.ebi.ac.uk/vol1/"
+PUBLIC_FTP_PATH: str = "ftp.sra.ebi.ac.uk/vol1/"
+PRIVATE_FTP_PATH: str = "ftp.dcc-private.ebi.ac.uk/vol1/"
 PUBLIC_BUCKET: str = "era-public"
 PRIVATE_BUCKET: str = "era-private"
 
