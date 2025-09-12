@@ -55,7 +55,7 @@ At this stage, the only sequence amplicons that this pipeline is built for are:
 | [DADA2](https://benjjneb.github.io/dada2/index.html)                                            | 1.30.0   | ASV calling                                            |
 | [MultiQC](https://github.com/MultiQC/MultiQC)                                                   | 1.24.1   | Result aggregation into HTML reports                   |
 | [mgnify-pipelines-toolkit](https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit)        | 0.1.8    | Toolkit containing various in-house processing scripts |
-| [PIMENTO](https://github.com/EBI-Metagenomics/PIMENTO)                                          | 1.0.0    | Primer inference toolkit used in the pipeline          |
+| [PIMENTO](https://github.com/EBI-Metagenomics/PIMENTO)                                          | 1.0.2    | Primer inference toolkit used in the pipeline          |
 
 
 ### Reference databases
@@ -131,7 +131,8 @@ Example output directory structure for one run (`ERR4334351`):
 │   │   └── ERR4334351_dada2_stats.tsv
 │   ├── primer-identification
 │   │   ├── ERR4334351.cutadapt.json
-│   │   ├── ERR4334351_primers.fasta
+│   │   ├── fwd_primers.fasta
+│   │   ├── rev_primers.fasta
 │   │   └── ERR4334351_primer_validation.tsv
 │   ├── qc
 │   │   ├── ERR4334351.fastp.json
