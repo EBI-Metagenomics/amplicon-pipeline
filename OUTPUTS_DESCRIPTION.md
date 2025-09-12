@@ -112,7 +112,8 @@ The `primer-identification` directory contains output files related to the autom
 ├── sequence-categorisation
 ├── amplified-region-inference
 ├── primer-identification
-    ├── ERR4334351_primers.fasta
+    ├── fwd_primers.fasta
+    ├── rev_primers.fasta
     ├── ERR4334351.cutadapt.json
     └── ERR4334351_primer_validation.tsv
 ├── asv
@@ -120,7 +121,8 @@ The `primer-identification` directory contains output files related to the autom
 ```
 
 #### Output files
-- **ERR4334351_primers.fasta**: This `fasta` file contains the sequences of any identified primers that were then trimmed off using `cutadapt`.
+- **fwd_primers.fasta**: This `fasta` file contains the sequences of any forward (5'-3')identified primers that were then trimmed off using `cutadapt`.
+- **rev_primers.fasta**: This `fasta` file contains the sequences of any forward (3'-5')identified primers that were then trimmed off using `cutadapt`.
 - **ERR4334351.cutadapt.json**: This `json` file contains the summary output of the `cutadapt` run, including which primers were trimmed off, how many bases were trimmed off in the process, etc. This `json` file is also used later by `MultiQC` to generate its report files.
 - **ERR4334351_primer_validation.tsv**: This `tsv` file contains the summary output of the primer validation module. Any primers that were trimmed off will have successfully been validated as primers using `infernal/cmsearch`, and this output file summarises these findings.
 
