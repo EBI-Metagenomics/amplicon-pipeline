@@ -4,6 +4,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+include { DOWNLOAD_FROM_FIRE                            } from '../modules/ebi-metagenomics/download_from_fire/main'
 include { READS_QC                                      } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { READS_QC as READS_QC_MERGE                    } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { RRNA_EXTRACTION                               } from '../subworkflows/ebi-metagenomics/rrna_extraction/main'
@@ -115,7 +116,7 @@ workflow AMPLICON_PIPELINE {
     )
 
 
-    // Initialiase standard primer library for PIMENTO if user-given//
+    // Initialise standard primer library for PIMENTO if user-given//
     // If there are no primers provided, it will fallback to use the default PIMENTO standard primer library
     std_primer_library = []
 
@@ -138,7 +139,20 @@ workflow AMPLICON_PIPELINE {
         }
     }
 
-    ch_input = samplesheet.map(groupReads)
+    samplesheet_input = samplesheet.map(groupReads)
+
+    if (params.private_study) {
+        /*
+         * For private studies we need to bypass Nextflow S3 integration until https://github.com/nextflow-io/nextflow/issues/4873 is fixed
+         * The EBI parameter is needed as this only works on EBI network, FIRE is not accessible otherwise
+        */
+        DOWNLOAD_FROM_FIRE(
+            samplesheet_input
+        )
+
+        ch_versions = ch_versions.mix(DOWNLOAD_FROM_FIRE.out.versions.first())
+        ch_input = DOWNLOAD_FROM_FIRE.out.downloaded_files
+    }
 
     // Sanity checking and quality control of reads //
     READS_QC_MERGE(
