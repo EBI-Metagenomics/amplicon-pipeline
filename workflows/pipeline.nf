@@ -139,7 +139,7 @@ workflow AMPLICON_PIPELINE {
         }
     }
 
-    samplesheet_input = samplesheet.map(groupReads)
+    ch_input = samplesheet.map(groupReads)
 
     if (params.private_study) {
         /*
@@ -147,7 +147,7 @@ workflow AMPLICON_PIPELINE {
          * The EBI parameter is needed as this only works on EBI network, FIRE is not accessible otherwise
         */
         DOWNLOAD_FROM_FIRE(
-            samplesheet_input
+            ch_input
         )
 
         ch_versions = ch_versions.mix(DOWNLOAD_FROM_FIRE.out.versions.first())
