@@ -19,7 +19,7 @@
           },
           "download_from_fire": {
             "branch": "main",
-            "git_sha": "0f9fd69a98f074595e72561e4e6ae3ed270f1c2b",
+            "git_sha": "451c753a331eba27178cb8056ac8a18813c640b9",
             "installed_by": ["modules"]
           },
           "easel/eslsfetch": {
