@@ -9,8 +9,8 @@ from botocore import UNSIGNED
 from botocore.config import Config
 
 FIRE_ENDPOINT: str = "https://hl.fire.sdo.ebi.ac.uk"
-PUBLIC_FTP_PATH: str = "ftp.sra.ebi.ac.uk/vol1/"
-PRIVATE_FTP_PATH: str = "ftp.dcc-private.ebi.ac.uk/vol1/"
+PUBLIC_FTP_PATH: str = "ftp://ftp.sra.ebi.ac.uk/vol1/"
+PRIVATE_FTP_PATH: str = "ftp://ftp.dcc-private.ebi.ac.uk/vol1/"
 PUBLIC_BUCKET: str = "era-public"
 PRIVATE_BUCKET: str = "era-private"
 
@@ -30,7 +30,7 @@ def transform_ftp_to_s3(ftp_path: str) -> tuple[str, str]:
     :raises ValueError: If the FTP path does not match the expected format.
     """
     if ftp_path.startswith("https"):
-        ftp_path = ftp_path.replace("https://", "")
+        ftp_path = ftp_path.replace("https://", "ftp://")
     if ftp_path.startswith(PUBLIC_FTP_PATH):
         s3_key = ftp_path.replace(PUBLIC_FTP_PATH, "")
         logger.info(f"Detected a public file for FTP path: {ftp_path}")
