@@ -36,15 +36,9 @@ jobs:
       - name: Run Tests
         run: nf-test test --verbose --ci tests/main.nf.test
      
-      - name: Debug nf-test outputs
+      - name: Move .nf-test output to non-hidden folder for artifact upload
         if: always()
         run: |
-          echo "Top-level files:"
-          ls -la
-          echo "tests/ folder:"
-          ls -la tests || true
-          echo ".nf-test folder:"
-          ls -Rla .nf-test || true
           echo "changing name of .nf-test dir"
           mv .nf-test nf-test-output
 
