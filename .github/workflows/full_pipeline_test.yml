@@ -53,3 +53,4 @@ jobs:
           name: nf-test-out
           path: |
             ${{ github.workspace }}/.nf-test/**
+            ${{ github.workspace }}/.nf-test/**/*
