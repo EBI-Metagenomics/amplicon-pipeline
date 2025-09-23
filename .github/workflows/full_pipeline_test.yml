@@ -46,11 +46,10 @@ jobs:
           echo ".nf-test folder:"
           ls -Rla .nf-test || true
 
-      # - name: Store the nf-test results
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: nf-test-out
-      #     path: |
-      #       .nf-test/**
-      #       **/.nextflow.log
+      - name: Store the nf-test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nf-test-out
+          path: |
+            ${{ github.workspace }}/.nf-test/**
