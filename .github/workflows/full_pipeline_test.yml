@@ -41,4 +41,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: nf-test-out
-          path: .nf-test/
+          path: /home/runner/work/amplicon-pipeline/amplicon-pipeline/.nf-test
