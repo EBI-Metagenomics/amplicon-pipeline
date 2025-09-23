@@ -2,4 +2,4 @@ sample,fastq_1,fastq_2,single_end
 ERRSEQFUFAIL,https://github.com/EBI-Metagenomics/amplicon-pipeline/raw/dev/tests/test_reads/ERRSEQFUFAIL_1.fastq.gz,https://github.com/EBI-Metagenomics/amplicon-pipeline/raw/dev/tests/test_reads/ERRSEQFUFAIL_2.fastq.gz,false
 ERRSFXHDFAIL,https://github.com/EBI-Metagenomics/amplicon-pipeline/raw/dev/tests/test_reads/ERRSFXHDFAIL_1.fastq.gz,https://github.com/EBI-Metagenomics/amplicon-pipeline/raw/dev/tests/test_reads/ERRSFXHDFAIL_2.fastq.gz,false
 ERRNOREADS,https://github.com/EBI-Metagenomics/amplicon-pipeline/raw/dev/tests/test_reads/ERRNOREADS_1.fastq.gz,https://github.com/EBI-Metagenomics/amplicon-pipeline/raw/dev/tests/test_reads/ERRNOREADS_2.fastq.gz,false
-ERR4334351,tests/test_reads/ERR4334351_test_1.fastq.gz,tests/test_reads/ERR4334351_test_2.fastq.gz,false
+ERR4334351,https://raw.githubusercontent.com/EBI-Metagenomics/amplicon-pipeline/refs/heads/full_pipeline_test/tests/test_reads/ERR4334351_test_1.fastq.gz,https://raw.githubusercontent.com/EBI-Metagenomics/amplicon-pipeline/refs/heads/full_pipeline_test/tests/test_reads/ERR4334351_test_2.fastq.gz,false
