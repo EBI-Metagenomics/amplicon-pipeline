@@ -29,6 +29,9 @@ jobs:
         run: |
           wget -qO- https://get.nf-test.com | bash
           sudo mv nf-test /usr/local/bin/
+      -
+        name: Set up Docker
+        uses: docker/setup-docker-action@v4
 
       - name: Run Tests
         run: nf-test test --verbose --ci tests/main.nf.test
