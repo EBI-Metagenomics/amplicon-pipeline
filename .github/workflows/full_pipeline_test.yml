@@ -34,7 +34,7 @@ jobs:
         uses: docker/setup-docker-action@v4
 
       - name: Run Tests
-        run: nf-test test --verbose --ci --with-trace tests/main.nf.test
+        run: nf-test test --verbose --ci tests/main.nf.test
      
       - name: Move .nf-test output to non-hidden folder for artifact upload
         if: always()
