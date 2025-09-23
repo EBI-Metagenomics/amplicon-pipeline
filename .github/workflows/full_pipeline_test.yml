@@ -29,9 +29,6 @@ jobs:
         run: |
           wget -qO- https://get.nf-test.com | bash
           sudo mv nf-test /usr/local/bin/
-      -
-        name: Set up Docker
-        uses: docker/setup-docker-action@v4
 
       - name: Run Tests
         run: nf-test test --verbose --ci tests/main.nf.test
@@ -42,8 +39,8 @@ jobs:
           echo "changing name of .nf-test dir"
           mv .nf-test nf-test-output
 
-      - name: Store the nf-test results
-        if: always()
+      - name: Store the nf-test results if nf-test failed
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: nf-test-out
