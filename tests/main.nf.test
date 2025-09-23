@@ -24,12 +24,12 @@ nextflow_pipeline {
             // the order of lines change for these files so getting the name + filesize instead
             def mseqs = getAllFilesFromDir(params.outdir, include: ['**/taxonomy-summary/**/*.mseq'])
             def mseq_strings = mseqs.collect { mseq ->
-                "${mseq.name} - filesizee: ${mseq.size()}"
+                "${mseq.name} - filesize: ${mseq.size()}"
             }
             // the order of lines change for these files so getting the name + filesize instead
             def asv_taxa = getAllFilesFromDir(params.outdir, include: ['**/asv/*asv_tax.tsv'])
             def asv_taxa_strings = asv_taxa.collect { asv_tax ->
-                "${asv_tax.name} - filesizeee: ${asv_tax.size()}"
+                "${asv_tax.name} - filesize: ${asv_tax.size()}"
             }
 
             with(workflow) {
