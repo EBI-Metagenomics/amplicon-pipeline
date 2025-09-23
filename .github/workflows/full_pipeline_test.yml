@@ -34,11 +34,14 @@ jobs:
         uses: docker/setup-docker-action@v4
 
       - name: Run Tests
-        run: nf-test test --verbose --ci tests/main.nf.test
+        run: nf-test test --verbose --ci tests/main.nf.test --outdir test-results
 
       - name: Store the nf-test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: nf-test-out
-          path: /home/runner/work/amplicon-pipeline/amplicon-pipeline/.nf-test
+          path: |
+            test-results/**
+            .nf-test/**
+            **/.nextflow.log
