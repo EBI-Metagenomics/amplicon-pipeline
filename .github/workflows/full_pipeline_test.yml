@@ -45,6 +45,8 @@ jobs:
           ls -la tests || true
           echo ".nf-test folder:"
           ls -Rla .nf-test || true
+          echo "changing name of .nf-test dir"
+          mv .nf-test nf-test-output
 
       - name: Store the nf-test results
         if: always()
@@ -52,5 +54,5 @@ jobs:
         with:
           name: nf-test-out
           path: |
-            ${{ github.workspace }}/.nf-test/**
-            ${{ github.workspace }}/.nf-test/**/*
+            ${{ github.workspace }}/nf-test-output
+
