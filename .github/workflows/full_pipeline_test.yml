@@ -35,3 +35,9 @@ jobs:
 
       - name: Run Tests
         run: nf-test test --verbose --ci tests/main.nf.test
+
+      - name: Store the nf-test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: nf-test-out
+          path: .nf-test/
