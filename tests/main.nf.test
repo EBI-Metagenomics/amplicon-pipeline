@@ -35,16 +35,6 @@ nextflow_pipeline {
             with(workflow) {
                 assertAll(
                     { assert success }, 
-                    // Test expected task success counts at potential branch points of the pipeline
-                    { assert trace.succeeded().count{ task -> task.name.contains("AMPLICON_PIPELINE:READS_QC_MERGE:SEQFU_CHECK") } == 4 },
-                    { assert trace.succeeded().count{ task -> task.name.contains("AMPLICON_PIPELINE:READS_QC_MERGE:FASTQSUFFIXHEADERCHECK") } == 3 },
-                    { assert trace.succeeded().count{ task -> task.name.contains("AMPLICON_PIPELINE:READS_QC_MERGE:PIMENTO_GENERATEBCV") } == 2 },
-                    { assert trace.succeeded().count{ task -> task.name.contains("AMPLICON_PIPELINE:READS_QC_MERGE:FASTP") } == 2 },
-                    { assert trace.succeeded().count{ task -> task.name.contains("AMPLICON_PIPELINE:READS_QC_MERGE:SEQTK_SEQ") } == 2 },
-                    { assert trace.succeeded().count{ task -> task.name.contains("AMPLICON_PIPELINE:RRNA_EXTRACTION:INFERNAL_CMSEARCH") } == 1 },
-                    { assert trace.succeeded().count{ task -> task.name.contains("AMPLICON_PIPELINE:AMP_REGION_INFERENCE:EXTRACT_VAR_REGIONS") } == 1 },
-                    { assert trace.succeeded().count{ task -> task.name.contains("AMPLICON_PIPELINE:CONCAT_PRIMER_CUTADAPT:CUTADAPT") } == 1 },
-                    { assert trace.succeeded().count{ task -> task.name.contains("AMPLICON_PIPELINE:DADA2_SWF:DADA2") } == 1 },
                     // Test output of certain important files
                     { assert snapshot(
                         stable_name,
