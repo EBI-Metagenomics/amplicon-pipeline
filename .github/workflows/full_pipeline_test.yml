@@ -44,7 +44,7 @@ jobs:
           echo "tests/ folder:"
           ls -la tests || true
           echo ".nf-test folder:"
-          ls -la .nf-test || true
+          ls -Rla .nf-test || true
 
       # - name: Store the nf-test results
       #   if: always()
