@@ -34,7 +34,7 @@ jobs:
         uses: docker/setup-docker-action@v4
 
       - name: Run Tests
-        run: nf-test test --verbose --ci tests/main.nf.test --outdir test-results
+        run: nf-test test --verbose --ci tests/main.nf.test
 
       - name: Store the nf-test results
         if: always()
@@ -42,6 +42,5 @@ jobs:
         with:
           name: nf-test-out
           path: |
-            test-results/**
             .nf-test/**
             **/.nextflow.log
