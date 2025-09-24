@@ -9,7 +9,7 @@ nextflow_pipeline {
 
         when {
             params {
-                input  = "${projectDir}/tests/samplesheets/test_samplesheet.csv"
+                input  = "${projectDir}/assets/test-fixtures/samplesheets/test_samplesheet.csv"
                 outdir = "$outputDir"
                 non_insdc = true
             }
