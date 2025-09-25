@@ -4,7 +4,6 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { DOWNLOAD_FROM_FIRE                            } from '../modules/ebi-metagenomics/download_from_fire/main'
 include { READS_QC                                      } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { READS_QC as READS_QC_MERGE                    } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { RRNA_EXTRACTION                               } from '../subworkflows/ebi-metagenomics/rrna_extraction/main'
@@ -37,6 +36,7 @@ include { EXTRACT_ASVS_LEFT as EXTRACT_ASVS_LEFT_PR2    } from '../modules/local
     IMPORT NF-CORE MODULES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+include { DOWNLOAD_FROM_FIRE                              } from '../modules/ebi-metagenomics/downloadfromfire/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS                   } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC as MULTIQC_RUN                        } from '../modules/nf-core/multiqc/main.nf'
 include { MULTIQC as MULTIQC_STUDY                      } from '../modules/nf-core/multiqc/main.nf'
