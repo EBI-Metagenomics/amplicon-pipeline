@@ -1,0 +1,8 @@
+pipeline_info/*.{html,yml}
+bco.json
+study_multiqc_report.html
+**/qc/*multiqc_report.html
+**/qc/*.gz
+**/taxonomy-summary/**/*.html
+**/taxonomy-summary/**/*.mseq
+**/asv/*asv_tax.tsv
