@@ -40,7 +40,7 @@
           },
           "fastqsuffixheadercheck": {
             "branch": "main",
-            "git_sha": "772c5b45baa7d88d779d6e0ec9e4654d2d5c14c6",
+            "git_sha": "2ce9d8fef2b2d7bd7995a2ec4de0e41dc06d757e",
             "installed_by": ["reads_qc"]
           },
           "infernal/cmsearch": {
@@ -72,7 +72,7 @@
           },
           "pimento/generatebcv": {
             "branch": "main",
-            "git_sha": "9cc5d3c2396859f0f1376bbfe3ca5d721a0b5b3c",
+            "git_sha": "31202bc23f1c8c597d9879e0005e092ff3f32205",
             "installed_by": ["reads_qc"]
           },
           "seqfu/check": {
@@ -96,7 +96,7 @@
           },
           "reads_qc": {
             "branch": "main",
-            "git_sha": "9cc5d3c2396859f0f1376bbfe3ca5d721a0b5b3c",
+            "git_sha": "2ce9d8fef2b2d7bd7995a2ec4de0e41dc06d757e",
             "installed_by": ["subworkflows"]
           },
           "rrna_extraction": {
