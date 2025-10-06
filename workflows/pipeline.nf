@@ -181,7 +181,8 @@ workflow AMPLICON_PIPELINE {
     RRNA_EXTRACTION(
         extended_reads_qc.qc_pass,
         file( params.rrnas_rfam_covariance_model, checkIfExists: true ),
-        file( params.rrnas_rfam_claninfo, checkIfExists: true )
+        file( params.rrnas_rfam_claninfo, checkIfExists: true ),
+        true
     )
     ch_versions = ch_versions.mix(RRNA_EXTRACTION.out.versions)
 
