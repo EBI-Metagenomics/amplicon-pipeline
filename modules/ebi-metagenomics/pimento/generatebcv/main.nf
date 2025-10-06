@@ -5,8 +5,8 @@ process PIMENTO_GENERATEBCV {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        "https://depot.galaxyproject.org/singularity/mi-pimento:${params.pimento_version}":
-        "biocontainers/mi-pimento:${params.pimento_version}" }"
+        'https://depot.galaxyproject.org/singularity/mi-pimento:1.0.2--pyhdfd78af_0':
+        'biocontainers/mi-pimento:1.0.2--pyhdfd78af_0' }"
 
     input:
     tuple val(meta), val(fwd_flag), val(rev_flag), path(fastq)
@@ -33,22 +33,29 @@ process PIMENTO_GENERATEBCV {
         strands = "R"
     }
 
-    """
-    if [ "${strands}" == "" ]; then
+    if (strands == "") {
+        """
         touch ${assess_mcp_prop_prefix}_mcp_cons.tsv
-    else
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            mi-pimento: \$( pimento --version | cut -d" " -f3 )
+        END_VERSIONS
+        """
+    } else {
+        """
         pimento \\
             gen_bcv \\
             -i ${fastq} \\
             -st ${strands} \\
             -o ${assess_mcp_prop_prefix}
-    fi
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        mi-pimento: \$( pimento --version | cut -d" " -f3 )
-    END_VERSIONS
-    """
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            mi-pimento: \$( pimento --version | cut -d" " -f3 )
+        END_VERSIONS
+        """
+    }
 
     stub:
     def args = task.ext.args ?: ''
