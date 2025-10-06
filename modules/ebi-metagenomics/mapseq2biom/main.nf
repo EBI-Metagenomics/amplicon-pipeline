@@ -14,7 +14,7 @@ process MAPSEQ2BIOM {
 
     output:
     tuple val(meta), path("${meta.id}.txt")         , emit: krona_input
-    tuple val(meta), path("${meta.id}.tsv")         , emit: biom_out
+    tuple val(meta), path("${meta.id}_biom.tsv")    , emit: biom_out
     tuple val(meta), path("${meta.id}.notaxid.tsv") , emit: biom_notaxid_out
     path "versions.yml"                             , emit: versions
 
@@ -33,7 +33,7 @@ process MAPSEQ2BIOM {
         --label ${db_label} \
         --query ${msq} \
         --otu-table ${db_otu} \
-        --out-file ${prefix}.tsv
+        --out-file ${prefix}_biom.tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -47,7 +47,7 @@ process MAPSEQ2BIOM {
     """
     touch ${prefix}.txt
     touch ${prefix}.notaxid.tsv
-    touch ${prefix}.tsv
+    touch ${prefix}_biom.tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

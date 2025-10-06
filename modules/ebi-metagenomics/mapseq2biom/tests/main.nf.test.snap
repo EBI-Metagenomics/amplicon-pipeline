@@ -17,7 +17,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_biom.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "2": [
@@ -47,7 +47,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                        "test_biom.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
                     ]
                 ],
                 "krona_input": [
@@ -88,7 +88,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test.tsv:md5,627ca596232e79fe2777f0e9352df993"
+                        "test_biom.tsv:md5,627ca596232e79fe2777f0e9352df993"
                     ]
                 ],
                 "2": [
@@ -118,7 +118,7 @@
                             "id": "test",
                             "single_end": false
                         },
-                        "test.tsv:md5,627ca596232e79fe2777f0e9352df993"
+                        "test_biom.tsv:md5,627ca596232e79fe2777f0e9352df993"
                     ]
                 ],
                 "krona_input": [
