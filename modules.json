@@ -66,7 +66,7 @@
           },
           "mapseq2biom": {
             "branch": "main",
-            "git_sha": "fe16b0221649bc7ca3bfa69f722e8a89fab1de16",
+            "git_sha": "ac5436f095ff98b7c7a9da83f4550ff99757c0a5",
             "installed_by": ["mapseq_otu_krona"],
             "patch": "modules/ebi-metagenomics/mapseq2biom/mapseq2biom.diff"
           },
