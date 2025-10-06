@@ -101,7 +101,7 @@
           },
           "rrna_extraction": {
             "branch": "main",
-            "git_sha": "b8ce29264034badcba2e6bbdd69013220a3fa973",
+            "git_sha": "dee130784845e25b91a00820d5fd3dd5ba5e1052",
             "installed_by": ["subworkflows"]
           }
         }

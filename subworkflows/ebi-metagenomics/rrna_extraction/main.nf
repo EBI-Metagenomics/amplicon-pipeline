@@ -7,10 +7,10 @@ include { EXTRACTCOORDS               } from '../../../modules/ebi-metagenomics/
 workflow RRNA_EXTRACTION {
 
     take:
-    ch_fasta     // channel: [ val(meta), [ fasta ] ]
-    rfam         // file: rfam for cmsearch
-    claninfo     // file: claninfo for cmsearchtbloutdeoverlap
-
+    ch_fasta          // channel: [ val(meta), [ fasta ] ]
+    rfam              // file: rfam for cmsearch
+    claninfo          // file: claninfo for cmsearchtbloutdeoverlap
+    separate_subunits // val: boolean
     main:
 
     ch_versions = Channel.empty()
@@ -38,7 +38,7 @@ workflow RRNA_EXTRACTION {
     EXTRACTCOORDS(
         EASEL_ESLSFETCH.out.easel_coords,
         EASEL_ESLSFETCH.out.matched_seqs_with_coords,
-        false
+        separate_subunits
     )
     ch_versions = ch_versions.mix(EXTRACTCOORDS.out.versions.first())
 

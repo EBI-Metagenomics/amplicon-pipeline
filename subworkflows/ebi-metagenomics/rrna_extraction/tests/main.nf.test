@@ -29,6 +29,7 @@ nextflow_workflow {
                 ])
                 input[1] = file(params.rfam)
                 input[2] = file(params.rfam_clan)
+                input[3] = false
                 """
             }
         }
