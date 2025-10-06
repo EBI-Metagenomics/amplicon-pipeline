@@ -2,7 +2,8 @@
 process INFERNAL_CMSEARCH {
 
     tag "$meta.id"
-    label 'medium'
+
+    label 'process_low'
 
     conda "bioconda::infernal=1.1.5"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -35,7 +36,7 @@ process INFERNAL_CMSEARCH {
         --cpu $task.cpus \\
         $args \\
         --tblout ${prefix}.cmsearch_matches.tbl \\
-        $covariance_model_database \\
+        $covariance_model_database/*.cm \\
         $seqdb_name
 
     gzip -n ${prefix}.cmsearch_matches.tbl
@@ -55,7 +56,7 @@ process INFERNAL_CMSEARCH {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        infernal: \$(cmsearch -h | grep -o '^# INFERNAL [0-9.]*' | sed 's/^# INFERNAL *//')
+        cmsearch: \$(cmsearch -h | grep -o '^# INFERNAL [0-9.]*' | sed 's/^# INFERNAL *//')
     END_VERSIONS
     """
 }

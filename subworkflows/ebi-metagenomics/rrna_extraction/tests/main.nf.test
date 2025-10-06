@@ -6,7 +6,7 @@ nextflow_workflow {
     config "./nextflow.config"
 
     tag "subworkflows"
-    tag "subworkflows_nfcore"
+    tag "subworkflows_ebimetagenomics"
     tag "subworkflows/rrna_extraction"
     tag "infernal"
     tag "infernal/cmsearch"
@@ -19,7 +19,7 @@ nextflow_workflow {
 
         when {
             params {
-                rfam = "${moduleDir}/tests/test.cm"
+                rfam = "${moduleDir}/tests/"
                 rfam_clan = "${moduleDir}/tests/ribo.claninfo"
             }
             workflow {
@@ -27,15 +27,15 @@ nextflow_workflow {
                 input[0] = Channel.of( [ [ id:'test', single_end:false ], // meta map
                     file('${moduleDir}/tests/test.fasta.gz', checkIfExists: true)
                 ])
-                input[1] = file(params.rrnas_rfam_covariance_model)
-                input[2] = file(params.rrnas_rfam_claninfo)
+                input[1] = file(params.rfam)
+                input[2] = file(params.rfam_clan)
                 """
             }
         }
         then {
             assertAll(
                 { assert workflow.success},
-                { assert snapshot(workflow.out).match() }            
+                { assert snapshot(workflow.out).match() }
             )
         }
     }

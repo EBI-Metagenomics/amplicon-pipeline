@@ -37,7 +37,8 @@ workflow RRNA_EXTRACTION {
 
     EXTRACTCOORDS(
         EASEL_ESLSFETCH.out.easel_coords,
-        EASEL_ESLSFETCH.out.matched_seqs_with_coords
+        EASEL_ESLSFETCH.out.matched_seqs_with_coords,
+        false
     )
     ch_versions = ch_versions.mix(EXTRACTCOORDS.out.versions.first())
 
