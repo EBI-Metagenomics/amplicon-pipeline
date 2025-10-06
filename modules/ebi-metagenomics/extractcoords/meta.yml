@@ -1,4 +1,3 @@
----
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "extractcoords"
 description: Process output from easel-sfetch to extract SSU and LSU sequences
@@ -9,50 +8,148 @@ keywords:
   - lsu
 tools:
   - "extractcoords":
-      description: "Process output from easel-sfetch to extract SSU and LSU sequences, uses mgnify-pipelines-toolkit as conda environment"
+      description: "Process output from easel-sfetch to extract SSU and LSU sequences,
+        uses mgnify-pipelines-toolkit as conda environment"
       homepage: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
       documentation: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
       tool_dev_url: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
       licence: ["Apache-2.0"]
+      identifier: ""
 
 input:
-  - meta:
-      type: map
-      description: |
-        Groovy Map containing sample information
-        e.g. `[ id:'sample1', single_end:false ]`
-  - easel_coords_fasta:
-      type: file
-      description: Fasta file output from running esl-sfetch to extract sequences by name
-      pattern: "*.fasta"
-  - matched_seqs_with_coords:
-      type: file
-      description: Space-separated cmsearchdeoverlap output formatted for use by esl-sfetch
-      pattern: "*.txt"
-
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - easel_coords_fasta:
+        type: file
+        description: Fasta file output from running esl-sfetch to extract
+          sequences by name
+        pattern: "*.fasta"
+        ontologies: []
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - matched_seqs_with_coords:
+        type: file
+        description: Space-separated cmsearchdeoverlap output formatted for use by
+          esl-sfetch
+        pattern: "*.txt"
+        ontologies: []
+  - - separate_subunits:
+        type: boolean
+        description: Specify true to separate hits into the different RNA subunits
 output:
-  - meta:
-      type: map
-      description: |
-        Groovy Map containing sample information
-        e.g. `[ id:'sample1', single_end:false ]`
   - ssu_fasta:
-      type: file
-      description: Fasta file containing the SSU sequences
-      pattern: "*.fasta"
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - sequence-categorisation/*SSU.fasta:
+          type: file
+          description: Fasta file containing the SSU sequences
+          pattern: "*.fasta"
+          ontologies: []
   - lsu_fasta:
-      type: file
-      description: Fasta file containing the LSU sequences
-      pattern: "*.fasta"
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - sequence-categorisation/*LSU.fasta:
+          type: file
+          description: Fasta file containing the LSU sequences
+          pattern: "*.fasta"
+          ontologies: []
+  - rrna_bacteria:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - sequence-categorisation/*rRNA_bacteria*.fasta:
+          type: file
+          description: Fasta file containing bacterial rRNA
+          pattern: "*.fasta"
+          ontologies: []
+  - rrna_archaea:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - sequence-categorisation/*rRNA_archaea*.fasta:
+          type: file
+          description: Fasta file containing archaeal rRNA
+          pattern: "*.fasta"
+          ontologies: []
+  - eukarya:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - sequence-categorisation/*rRNA_eukarya*.fasta:
+          type: file
+          description: Fasta file containing eukaryan rRNA
+          pattern: "*.fasta"
+          ontologies: []
+  - fiveS_fasta:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - sequence-categorisation/*5S.fasta:
+          type: file
+          description: "5S rRNA nucleotide sequences"
+          ontologies: []
+  - five_eightS_fasta:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - sequence-categorisation/*5_8S.fasta:
+          type: file
+          description: "5 and 8S rRNA nucleotide sequences"
+          ontologies: []
+  - ncrna_fasta:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - sequence-categorisation/*other_ncRNA.fasta:
+          type: file
+          description: "non-coding RNA nucleotide sequences"
+          ontologies: []
   - concat_ssu_lsu_coords:
-      type: file
-      description: Space-separated concatenated file of coordinates of matches of both SSU and LSU
-      pattern: "*.txt"
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - "*concat_SSU_LSU_coords.txt":
+          type: file
+          description: Space-separated concatenated file of coordinates of matches
+            of both SSU and LSU
+          pattern: "*.txt"
+          ontologies: []
   - versions:
-      type: file
-      description: File containing software versions
-      pattern: "versions.yml"
+      - versions.yml:
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+          ontologies:
+            - edam: http://edamontology.org/format_3750 # YAML
 authors:
   - "@chrisata"
 maintainers:
   - "@chrisata"
+  - "@mberacochea"
+  - "@KateSakharova"
