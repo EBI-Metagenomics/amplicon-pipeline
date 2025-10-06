@@ -7,14 +7,14 @@
                         "id": "test",
                         "single_end": false
                     },
-                    "test_primer_validation.tsv:md5,953e749f8d42c4ac89cc84c4afd55731"
+                    "test_primer_validation.tsv:md5,68b329da9893e34099c7d8ad5cb9c940"
                 ]
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.4"
+            "nextflow": "25.04.7"
         },
-        "timestamp": "2025-03-24T16:33:35.135130098"
+        "timestamp": "2025-10-06T10:18:47.577329"
     }
 }
