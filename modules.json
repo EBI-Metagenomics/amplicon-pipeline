@@ -17,9 +17,9 @@
             "installed_by": ["modules"],
             "patch": "modules/ebi-metagenomics/cutadapt/cutadapt.diff"
           },
-          "download_from_fire": {
+          "downloadfromfire": {
             "branch": "main",
-            "git_sha": "0f9fd69a98f074595e72561e4e6ae3ed270f1c2b",
+            "git_sha": "0ed5e91ea0790d0fa12387bacc1c93915c6bcfd8",
             "installed_by": ["modules"]
           },
           "easel/eslsfetch": {

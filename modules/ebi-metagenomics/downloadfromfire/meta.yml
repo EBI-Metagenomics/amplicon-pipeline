@@ -1,0 +1,46 @@
+name: downloadfromfire
+description: Downloads files from EBI FIRE S3 storage using FTP paths
+keywords:
+  - download
+  - fire
+  - s3
+  - ftp
+tools:
+  - boto3:
+      description: AWS SDK for Python
+      homepage: https://github.com/boto/boto3
+      documentation: https://boto3.amazonaws.com/v1/documentation/api/latest/index.html
+      tool_dev_url: https://github.com/boto/boto3
+      licence: ["Apache-2.0"]
+      identifier: biotools:boto3
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - input_paths:
+        type: list
+        description: List of FTP paths to download from FIRE S3 storage
+        pattern: "ftp://*"
+output:
+  - downloaded_files:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "downloaded_files/*fa*.gz":
+          type: file
+          description: Downloaded FASTA files (compressed)
+          pattern: "downloaded_files/*fa*.gz"
+  - versions:
+      - versions.yml:
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@Ge94"
+  - "@mberacochea"
+maintainers:
+  - "@mberacochea"
