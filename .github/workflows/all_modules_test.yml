@@ -34,7 +34,7 @@ jobs:
           sudo mv nf-test /usr/local/bin/
 
       - name: Run Tests
-        run: nf-test test --verbose --ci --shard ${{ matrix.shard }}/${{ strategy.job-total }} --tag modules
+        run: nf-test test --ci --shard ${{ matrix.shard }}/${{ strategy.job-total }} --tag modules
      
       - name: Move .nf-test output to non-hidden folder for artifact upload
         if: always()
