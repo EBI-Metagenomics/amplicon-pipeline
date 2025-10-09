@@ -1,4 +1,4 @@
-name: Full pipeline test
+name: Full end-to-end pipeline test
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main, dev]
 
 jobs:
-  test:
+  e2e-test:
     runs-on: ubuntu-latest
 
     steps:
