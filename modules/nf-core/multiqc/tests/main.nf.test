@@ -10,17 +10,21 @@ nextflow_process {
 
     config "./nextflow.config"
 
-    test("sarscov2 single-end [fastqc]") {
+    test("multiqc - report containing just fastp") {
 
         when {
             process {
                 """
-                input[0] = Channel.of(file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/fastqc/test_fastqc.zip', checkIfExists: true))
+                input[0] = [
+                    [id: 'test'],
+                    file('${moduleDir}/tests/ERR4334351.fastp.json', checkIfExists: true)
+                ]
                 input[1] = []
                 input[2] = []
                 input[3] = []
                 input[4] = []
                 input[5] = []
+                input[6] = []
                 """
             }
         }
@@ -28,63 +32,9 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
+                { assert snapshot(process.out.versions).match("multiqc_versions_single") },
                 { assert process.out.report[0] ==~ ".*/multiqc_report.html" },
-                { assert process.out.data[0] ==~ ".*/multiqc_data" },
-                { assert snapshot(process.out.versions).match("multiqc_versions_single") }
-            )
-        }
-
-    }
-
-    test("sarscov2 single-end [fastqc] [config]") {
-
-        when {
-            process {
-                """
-                input[0] = Channel.of(file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/fastqc/test_fastqc.zip', checkIfExists: true))
-                input[1] = Channel.of(file("https://github.com/nf-core/tools/raw/dev/nf_core/pipeline-template/assets/multiqc_config.yml", checkIfExists: true))
-                input[2] = []
-                input[3] = []
-                input[4] = []
-                input[5] = []
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert process.success },
-                { assert process.out.report[0] ==~ ".*/multiqc_report.html" },
-                { assert process.out.data[0] ==~ ".*/multiqc_data" },
-                { assert snapshot(process.out.versions).match("multiqc_versions_config") }
-            )
-        }
-    }
-
-    test("sarscov2 single-end [fastqc] - stub") {
-
-        options "-stub"
-
-        when {
-            process {
-                """
-                input[0] = Channel.of(file(params.modules_testdata_base_path + 'genomics/sarscov2/illumina/fastqc/test_fastqc.zip', checkIfExists: true))
-                input[1] = []
-                input[2] = []
-                input[3] = []
-                input[4] = []
-                input[5] = []
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out.report.collect { file(it).getName() } +
-                                process.out.data.collect { file(it).getName() } +
-                                process.out.plots.collect { file(it).getName() } +
-                                process.out.versions ).match("multiqc_stub") }
+                { assert process.out.data[0] ==~ ".*/multiqc_data" }
             )
         }
 
