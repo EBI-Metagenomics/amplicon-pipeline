@@ -4,4 +4,4 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - "bioconda::mi-pimento=1.0.1"
+  - "bioconda::mi-pimento=1.0.2"

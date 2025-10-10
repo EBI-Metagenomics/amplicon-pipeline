@@ -9,21 +9,40 @@ nextflow_pipeline {
 
         when {
             params {
-                input  = "${projectDir}/tests/samplesheets/test_samplesheet.csv"
-                outdir = "tests/results"
+                input  = "${projectDir}/assets/test-fixtures/samplesheets/test_samplesheet.csv"
+                outdir = "$outputDir"
                 non_insdc = true
             }
         }
 
         then {
+
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,yml}'])
+            def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            def compressed_fastq = getAllFilesFromDir(params.outdir, include: ['ERR4334351/qc/*.merged.fastq.gz'])
+
+            // the order of lines change for these files so getting the name + filesize instead
+            def mseqs = getAllFilesFromDir(params.outdir, include: ['**/taxonomy-summary/**/*.mseq'])
+            def mseq_strings = mseqs.collect { mseq ->
+                "${mseq.name} - filesize: ${mseq.size()}"
+            }
+            // the order of lines change for these files so getting the name + filesize instead
+            def asv_taxa = getAllFilesFromDir(params.outdir, include: ['**/asv/*asv_tax.tsv'])
+            def asv_taxa_strings = asv_taxa.collect { asv_tax ->
+                "${asv_tax.name} - filesize: ${asv_tax.size()}"
+            }
+
             with(workflow) {
                 assertAll(
                     { assert success }, 
-                    { assert trace.succeeded().count{ task -> task.name.contains("SEQFU_CHECK") } == 6 },
-                    { assert trace.succeeded().count{ task -> task.name.contains("FASTQSUFFIXHEADERCHECK") } == 4 },
-                    { assert trace.succeeded().count{ task -> task.name.contains("ASSESSMCPPROPORTIONS") } == 1 },
-                    { assert trace.succeeded().count{ task -> task.name.contains("FASTP") } == 2 },
-                    { assert trace.succeeded().count{ task -> task.name.contains("SEQTK_SEQ") } == 1 }
+                    // Test output of certain important files
+                    { assert snapshot(
+                        stable_name,
+                        stable_path,
+                        compressed_fastq,
+                        mseq_strings,
+                        asv_taxa_strings
+                    ).match() }
                 )
             }
         }

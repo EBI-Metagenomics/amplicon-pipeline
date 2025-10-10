@@ -32,6 +32,9 @@ input:
         The input file containing the claninfo to use for cmsearchtbloutdeoverlap
         Structure: path(claninfo)
       pattern: "*.claninfo"
+  - separate_subunits:
+      type: boolean
+      description: Specify true to separate hits into the different RNA subunits
 output:
   - cmsearch_deoverlap_out:
       type: file

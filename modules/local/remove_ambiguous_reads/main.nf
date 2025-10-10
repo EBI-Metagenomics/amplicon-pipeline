@@ -1,6 +1,5 @@
 
 process REMOVE_AMBIGUOUS_READS {
-    // Run DADA2 pipeline including read-tracking
     tag "$meta.id"
     label 'process_medium'
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
