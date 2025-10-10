@@ -15,7 +15,7 @@
 # limitations under the License.
 
 #' @export
-read_asv_tracking = function(dada_obj, drp_obj, merged, strand, chimera_ids) {
+read_asv_tracking = function(dada_obj, drp_obj, merged, strand, ids_to_remove) {
     
     # Select requested strand ASV map
     if (strand == "forward"){
@@ -28,11 +28,11 @@ read_asv_tracking = function(dada_obj, drp_obj, merged, strand, chimera_ids) {
       
     }
     
-    if (length(chimera_ids) != 0){
+    if (length(ids_to_remove) != 0){
       if (strand == "single"){
-        derep_map[derep_map %in% chimera_ids] = NA
+        derep_map[derep_map %in% ids_to_remove] = NA
       } else{
-        merged.strand = merged.strand[-chimera_ids]
+        merged.strand = merged.strand[-ids_to_remove]
       }
     }
     
@@ -48,7 +48,7 @@ read_asv_tracking = function(dada_obj, drp_obj, merged, strand, chimera_ids) {
     
           for (match in matches){
     
-            if (!match %in% chimera_ids){
+            if (!match %in% ids_to_remove){
               add_lst = append(add_lst, match)
             }
             
