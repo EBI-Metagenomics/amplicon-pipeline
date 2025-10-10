@@ -23,15 +23,10 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Setup Nextflow latest-edge
-        uses: nf-core/setup-nextflow@v1
+      - name: Setup nf-test
+        uses: nf-core/setup-nf-test@v1.3.6
         with:
-          version: "latest-edge"
-
-      - name: Install nf-test
-        run: |
-          wget -qO- https://get.nf-test.com | bash
-          sudo mv nf-test /usr/local/bin/
+          install-pdiff: true
 
       - name: Run Tests
         run: nf-test test --ci --shard ${{ matrix.shard }}/${{ strategy.job-total }} --tag modules
