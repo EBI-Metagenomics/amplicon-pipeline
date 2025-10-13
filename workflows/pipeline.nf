@@ -284,64 +284,64 @@ workflow AMPLICON_PIPELINE {
                                 return [key, stats_fail]
                             }
 
-    // ASV taxonomic assignments + generate Krona plots for each run+amp_region //
-    MAPSEQ_ASV_KRONA_SILVA(
-        DADA2_SWF.out.dada2_out,
-        AMP_REGION_INFERENCE.out.concat_var_regions,
-        AMP_REGION_INFERENCE.out.extracted_var_path,
-        dada2_krona_silva_tuple,
-    )
-    ch_versions = ch_versions.mix(MAPSEQ_ASV_KRONA_SILVA.out.versions)
+    // // ASV taxonomic assignments + generate Krona plots for each run+amp_region //
+    // MAPSEQ_ASV_KRONA_SILVA(
+    //     DADA2_SWF.out.dada2_out,
+    //     AMP_REGION_INFERENCE.out.concat_var_regions,
+    //     AMP_REGION_INFERENCE.out.extracted_var_path,
+    //     dada2_krona_silva_tuple,
+    // )
+    // ch_versions = ch_versions.mix(MAPSEQ_ASV_KRONA_SILVA.out.versions)
 
-    MAPSEQ_ASV_KRONA_PR2(
-        DADA2_SWF.out.dada2_out,
-        AMP_REGION_INFERENCE.out.concat_var_regions,
-        AMP_REGION_INFERENCE.out.extracted_var_path,
-        dada2_krona_pr2_tuple,
-    )
-    ch_versions = ch_versions.mix(MAPSEQ_ASV_KRONA_PR2.out.versions)
+    // MAPSEQ_ASV_KRONA_PR2(
+    //     DADA2_SWF.out.dada2_out,
+    //     AMP_REGION_INFERENCE.out.concat_var_regions,
+    //     AMP_REGION_INFERENCE.out.extracted_var_path,
+    //     dada2_krona_pr2_tuple,
+    // )
+    // ch_versions = ch_versions.mix(MAPSEQ_ASV_KRONA_PR2.out.versions)
 
-    /*  
-    Multiple steps in ASV calling + annotation can result in lost ASVs
-    These final modules make sure the set of ASVs being reported in the different outputs
-    are consistent i.e. ASVs in read count files, ASV sequences in FASTA files, etc.
-    */
-    extract_asv_read_counts_input = MAPSEQ_ASV_KRONA_SILVA.out.asvs_left
-        .join(MAPSEQ_ASV_KRONA_PR2.out.asvs_left)
+    // /*  
+    // Multiple steps in ASV calling + annotation can result in lost ASVs
+    // These final modules make sure the set of ASVs being reported in the different outputs
+    // are consistent i.e. ASVs in read count files, ASV sequences in FASTA files, etc.
+    // */
+    // extract_asv_read_counts_input = MAPSEQ_ASV_KRONA_SILVA.out.asvs_left
+    //     .join(MAPSEQ_ASV_KRONA_PR2.out.asvs_left)
 
-    EXTRACT_ASV_READ_COUNTS(extract_asv_read_counts_input)
-    ch_versions = ch_versions.mix(EXTRACT_ASV_READ_COUNTS.out.versions)
+    // EXTRACT_ASV_READ_COUNTS(extract_asv_read_counts_input)
+    // ch_versions = ch_versions.mix(EXTRACT_ASV_READ_COUNTS.out.versions)
 
-    extract_asvs_input = EXTRACT_ASV_READ_COUNTS.out.asvs_left
-                    .filter { meta, asvs_left ->
-                        meta.var_region != "concat"
-                     }
-                    .map{ meta, asvs_left ->
-                        def key = groupKey(meta.subMap('id'), meta.var_regions_size)
-                        [ key, asvs_left ]
-                    }
-                    .groupTuple(by:0)
-                    .join(DADA2_SWF.out.dada2_out.map{meta, maps, asv_seqs, filt_reads ->
-                                        [['id':meta.id], asv_seqs]
-                                        }
-                            )
+    // extract_asvs_input = EXTRACT_ASV_READ_COUNTS.out.asvs_left
+    //                 .filter { meta, asvs_left ->
+    //                     meta.var_region != "concat"
+    //                  }
+    //                 .map{ meta, asvs_left ->
+    //                     def key = groupKey(meta.subMap('id'), meta.var_regions_size)
+    //                     [ key, asvs_left ]
+    //                 }
+    //                 .groupTuple(by:0)
+    //                 .join(DADA2_SWF.out.dada2_out.map{meta, maps, asv_seqs, filt_reads ->
+    //                                     [['id':meta.id], asv_seqs]
+    //                                     }
+    //                         )
 
-    extract_asvs_input_silva = extract_asvs_input
-                    .join(MAPSEQ_ASV_KRONA_SILVA.out.asvtaxtable.map{meta, asvtaxtable ->
-                                        [['id':meta.id], asvtaxtable]
-                                        }
-                        )
-    extract_asvs_input_pr2 = extract_asvs_input
-                    .join(MAPSEQ_ASV_KRONA_PR2.out.asvtaxtable.map{meta, asvtaxtable ->
-                                        [['id':meta.id], asvtaxtable]
-                                        }
-                        )
+    // extract_asvs_input_silva = extract_asvs_input
+    //                 .join(MAPSEQ_ASV_KRONA_SILVA.out.asvtaxtable.map{meta, asvtaxtable ->
+    //                                     [['id':meta.id], asvtaxtable]
+    //                                     }
+    //                     )
+    // extract_asvs_input_pr2 = extract_asvs_input
+    //                 .join(MAPSEQ_ASV_KRONA_PR2.out.asvtaxtable.map{meta, asvtaxtable ->
+    //                                     [['id':meta.id], asvtaxtable]
+    //                                     }
+    //                     )
 
-    EXTRACT_ASVS_LEFT_SILVA(extract_asvs_input_silva, dada2_krona_silva_tuple[4])
-    ch_versions = ch_versions.mix(EXTRACT_ASVS_LEFT_SILVA.out.versions.first())
+    // EXTRACT_ASVS_LEFT_SILVA(extract_asvs_input_silva, dada2_krona_silva_tuple[4])
+    // ch_versions = ch_versions.mix(EXTRACT_ASVS_LEFT_SILVA.out.versions.first())
 
-    EXTRACT_ASVS_LEFT_PR2(extract_asvs_input_pr2, dada2_krona_pr2_tuple[4])
-    ch_versions = ch_versions.mix(EXTRACT_ASVS_LEFT_PR2.out.versions.first())
+    // EXTRACT_ASVS_LEFT_PR2(extract_asvs_input_pr2, dada2_krona_pr2_tuple[4])
+    // ch_versions = ch_versions.mix(EXTRACT_ASVS_LEFT_PR2.out.versions.first())
 
     /*****************************/
     /* MultiQC reports */
