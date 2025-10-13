@@ -279,7 +279,7 @@ workflow AMPLICON_PIPELINE {
     // )
     // ch_versions = ch_versions.mix(DADA2_SWF.out.versions)
 
-    DADA2(READS_QC.out.reads)
+    DADA2(extended_reads_qc.qc_pass)
     ch_versions = ch_versions.mix(DADA2.out.versions.first())
 
     def dada2_stats_fail = DADA2.out.dada2_stats_fail.map { meta, stats_fail ->
