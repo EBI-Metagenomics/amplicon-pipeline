@@ -18,8 +18,9 @@ workflow  READS_QC {
     ch_versions = Channel.empty()
 
     BBMAP_REFORMAT_STANDARDISE(ch_reads, 'fastq.gz')
+    ch_reformated_reads = BBMAP_REFORMAT_STANDARDISE.out.reformated
 
-    SEQFU_CHECK(BBMAP_REFORMAT_STANDARDISE.out.reformated)
+    SEQFU_CHECK(ch_reformated_reads)
     ch_versions = ch_versions.mix(SEQFU_CHECK.out.versions.first())
 
     passed_seqfu_reads = SEQFU_CHECK.out.tsv
@@ -28,7 +29,7 @@ workflow  READS_QC {
             seqfu_res[0] == "OK"
         }
         .map { map, seqfu_res -> map }
-        .join(ch_reads)
+        .join(ch_reformated_reads)
 
     FASTQSUFFIXHEADERCHECK(passed_seqfu_reads)
     ch_versions = ch_versions.mix(FASTQSUFFIXHEADERCHECK.out.versions.first())
@@ -38,7 +39,7 @@ workflow  READS_QC {
             sufhd_res.countLines() == 0
         }
         .map { meta, _ -> [ meta ] }
-        .join(ch_reads)
+        .join(ch_reformated_reads)
 
     if ( filter_amplicon ) {
         generatebcv_input = passed_suffixheader_reads
@@ -61,7 +62,7 @@ workflow  READS_QC {
                             strategy == "AMPLICON"
                         }
                         .map { meta, _ -> [ meta ] }
-                        .join(ch_reads)
+                        .join(ch_reformated_reads)
 
         amplicon_check = LIBRARYSTRATEGYCHECK.out.library_check_out
     } else {
