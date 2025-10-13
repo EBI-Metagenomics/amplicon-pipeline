@@ -223,23 +223,25 @@ workflow AMPLICON_PIPELINE {
     )
     ch_versions = ch_versions.mix(MAPSEQ_OTU_KRONA_UNITE.out.versions)
 
-    // Infer amplified variable regions for SSU, extract reads for each amplified region if there are more than one //
-    AMP_REGION_INFERENCE(
-        RRNA_EXTRACTION.out.cmsearch_deoverlap_out,
-        READS_QC_MERGE.out.reads_se_and_merged
-    )
-    ch_versions = ch_versions.mix(AMP_REGION_INFERENCE.out.versions)
+    // // Infer amplified variable regions for SSU, extract reads for each amplified region if there are more than one //
+    // AMP_REGION_INFERENCE(
+    //     RRNA_EXTRACTION.out.cmsearch_deoverlap_out,
+    //     READS_QC_MERGE.out.reads_se_and_merged
+    // )
+    // ch_versions = ch_versions.mix(AMP_REGION_INFERENCE.out.versions)
 
     // Identify whether primers exist or not in reads, separated by different amplified regions if more than one exists in a run //
     PRIMER_IDENTIFICATION(
-        AMP_REGION_INFERENCE.out.extracted_var_out,
+        // AMP_REGION_INFERENCE.out.extracted_var_out,
+        READS_QC_MERGE.out.reads_se_and_merged,
         std_primer_library
     )
     ch_versions = ch_versions.mix(PRIMER_IDENTIFICATION.out.versions)
 
     // Join primer identification flags with reads belonging to each run+amp_region //
     auto_trimming_input = PRIMER_IDENTIFICATION.out.conductor_out
-                          .join(AMP_REGION_INFERENCE.out.extracted_var_out, by: [0])
+                          .join(READS_QC_MERGE.out.reads_se_and_merged, by: [0])
+                          // .join(AMP_REGION_INFERENCE.out.extracted_var_out, by: [0])
 
     /* 
     Run subworkflow for automatic primer prediction
