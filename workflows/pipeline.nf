@@ -13,6 +13,7 @@ include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_LSU      } from '../subworkflows/
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_PR2      } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_UNITE    } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_ITSONEDB } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
+include { DADA2                  } from '../modules/local/dada2/main.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -265,21 +266,23 @@ workflow AMPLICON_PIPELINE {
 
 
     // Run the large dada2 imput preparation function //
-    cutadapt_channel = CONCAT_PRIMER_CUTADAPT.out.cutadapt_out
-                       .map { meta, reads -> 
-                         [ meta.subMap('id', 'single_end'), meta['var_region'], meta['var_regions_size'], reads ]
-                       }
+    // cutadapt_channel = CONCAT_PRIMER_CUTADAPT.out.cutadapt_out
+    //                    .map { meta, reads -> 
+    //                      [ meta.subMap('id', 'single_end'), meta['var_region'], meta['var_regions_size'], reads ]
+    //                    }
+    
+    // dada2_input = dada2_input_preparation_function(concat_input, READS_QC.out.reads, cutadapt_channel)
+    // // Run DADA2 ASV generation //
+    // DADA2_SWF(
+    //     dada2_input,
+    //     RRNA_EXTRACTION.out.cmsearch_deoverlap_out
+    // )
+    // ch_versions = ch_versions.mix(DADA2_SWF.out.versions)
 
-    dada2_input = dada2_input_preparation_function(concat_input, READS_QC.out.reads, cutadapt_channel)
-    // Run DADA2 ASV generation //
-    DADA2_SWF(
-        dada2_input,
-        RRNA_EXTRACTION.out.cmsearch_deoverlap_out
+    DADA2(READS_QC.out.reads)
+    ch_versions = ch_versions.mix(DADA2.out.versions.first())
 
-    )
-    ch_versions = ch_versions.mix(DADA2_SWF.out.versions)
-
-    def dada2_stats_fail = DADA2_SWF.out.dada2_stats_fail.map { meta, stats_fail ->
+    def dada2_stats_fail = DADA2.out.dada2_stats_fail.map { meta, stats_fail ->
                                 def key = meta.subMap('id', 'single_end')
                                 return [key, stats_fail]
                             }
@@ -356,7 +359,7 @@ workflow AMPLICON_PIPELINE {
                         [['id':meta.id, 'single_end':meta.single_end], json]
                     }
                     .join(READS_QC_MERGE.out.fastp_summary_json, remainder:true)
-                    .join(DADA2_SWF.out.dada2_report.map{ meta, tsv ->
+                    .join(DADA2.out.dada2_stats.map{ meta, tsv ->
                         [['id':meta.id, 'single_end':meta.single_end], tsv]}, remainder:true)
                     .map{ meta, cutadapt, fastp, dada2 ->
                             def final_inputs = [cutadapt, fastp, dada2]
@@ -434,7 +437,7 @@ workflow AMPLICON_PIPELINE {
     all_failed_runs.collectFile(name: "qc_failed_runs.csv", storeDir: "${params.outdir}", newLine: true, cache: false)
 
     // Extract passed runs, describe whether those passed runs also ASV results //
-    DADA2_SWF.out.dada2_report.map { meta, dada2_report -> [ ["id": meta.id, "single_end": meta.single_end], dada2_report ] }
+    DADA2.out.dada2_stats.map { meta, dada2_report -> [ ["id": meta.id, "single_end": meta.single_end], dada2_report ] }
     .concat(extended_reads_qc.qc_pass, dada2_stats_fail)
     .groupTuple()
     .map { meta, results ->
