@@ -3,6 +3,7 @@ include { SEQFU_CHECK            } from '../../../modules/ebi-metagenomics/seqfu
 include { PIMENTO_GENERATEBCV    } from '../../../modules/ebi-metagenomics/pimento/generatebcv/main'
 include { LIBRARYSTRATEGYCHECK    } from '../../../modules/ebi-metagenomics/librarystrategycheck/main'
 include { FASTQSUFFIXHEADERCHECK } from '../../../modules/ebi-metagenomics/fastqsuffixheadercheck/main'
+include { BBMAP_REFORMAT_STANDARDISE } from '../../../modules/local/bbmap/reformat_standardise/main'
 include { FASTP                  } from '../../../modules/ebi-metagenomics/fastp/main'
 include { SEQTK_SEQ              } from '../../../modules/ebi-metagenomics/seqtk/seq/main'
 
@@ -16,7 +17,9 @@ workflow  READS_QC {
     main:
     ch_versions = Channel.empty()
 
-    SEQFU_CHECK(ch_reads)
+    BBMAP_REFORMAT_STANDARDISE(ch_reads, 'fastq.gz')
+
+    SEQFU_CHECK(BBMAP_REFORMAT_STANDARDISE.out.reformated)
     ch_versions = ch_versions.mix(SEQFU_CHECK.out.versions.first())
 
     passed_seqfu_reads = SEQFU_CHECK.out.tsv
