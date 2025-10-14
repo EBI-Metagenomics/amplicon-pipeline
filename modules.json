@@ -9,8 +9,7 @@
                         "branch": "main",
                         "git_sha": "696324c637a7e0cf06fe331faffee42e36826898",
                         "installed_by": [
-                            "modules",
-                            "rrna_extraction"
+                            "modules"
                         ],
                         "patch": "modules/ebi-metagenomics/cmsearchtbloutdeoverlap/cmsearchtbloutdeoverlap.diff"
                     },
@@ -28,21 +27,6 @@
                         "installed_by": [
                             "modules"
                         ]
-                    },
-                    "easel/eslsfetch": {
-                        "branch": "main",
-                        "git_sha": "f1bf089cb679ca1e363aa81c99a512114402472c",
-                        "installed_by": [
-                            "rrna_extraction"
-                        ]
-                    },
-                    "extractcoords": {
-                        "branch": "main",
-                        "git_sha": "b8ce29264034badcba2e6bbdd69013220a3fa973",
-                        "installed_by": [
-                            "rrna_extraction"
-                        ],
-                        "patch": "modules/ebi-metagenomics/extractcoords/extractcoords.diff"
                     },
                     "fastp": {
                         "branch": "main",
@@ -62,8 +46,7 @@
                         "branch": "main",
                         "git_sha": "caafb0cac8335cc1834a01091d70bb6ad60a5bf8",
                         "installed_by": [
-                            "modules",
-                            "rrna_extraction"
+                            "modules"
                         ]
                     },
                     "krona/ktimporttext": {
@@ -131,13 +114,6 @@
                     "reads_qc": {
                         "branch": "main",
                         "git_sha": "2ce9d8fef2b2d7bd7995a2ec4de0e41dc06d757e",
-                        "installed_by": [
-                            "subworkflows"
-                        ]
-                    },
-                    "rrna_extraction": {
-                        "branch": "main",
-                        "git_sha": "dee130784845e25b91a00820d5fd3dd5ba5e1052",
                         "installed_by": [
                             "subworkflows"
                         ]
