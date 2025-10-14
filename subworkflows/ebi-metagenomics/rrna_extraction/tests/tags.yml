@@ -1,2 +1,0 @@
-subworkflows/rrna_extraction:
-  - subworkflows/ebi-metagenomics/rrna_extraction/**
