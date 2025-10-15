@@ -1,0 +1,49 @@
+{
+    "versions": {
+        "content": [
+            [
+                "versions.yml:md5,cfb91b02c61394ebf3a823094a610492"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-03-19T13:37:59.141979"
+    },
+    "stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.cmscan_matches.tbl.gz:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,cfb91b02c61394ebf3a823094a610492"
+                ],
+                "cmscan_tbl": [
+                    [
+                        {
+                            "id": "test",
+                            "single_end": false
+                        },
+                        "test.cmscan_matches.tbl.gz:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,cfb91b02c61394ebf3a823094a610492"
+                ]
+            }
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.10.5"
+        },
+        "timestamp": "2025-03-21T18:58:45.320053"
+    }
+}
