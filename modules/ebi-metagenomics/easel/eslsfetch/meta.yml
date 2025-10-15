@@ -1,0 +1,49 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/yaml-schema.json
+name: "easel_eslsfetch"
+description: Extract fasta sequences by name from a cmsearchdeoverlap result
+keywords:
+  - fasta
+  - cmsearch
+  - easel
+tools:
+  - "easel":
+      description: "Easel is an ANSI C code library for computational analysis of biological sequences using probabilistic models."
+      homepage: "https://github.com/EddyRivasLab/easel"
+      documentation: "https://github.com/EddyRivasLab/easel"
+      tool_dev_url: "https://github.com/EddyRivasLab/easel"
+      licence: ["BSD"]
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'test', single_end:false ]`
+  - fasta:
+      type: file
+      description: Fasta sequence file from amplicon sequencing
+      pattern: "*.{fasta, fasta.gz, fa, fa.gz}"
+  - cmsearch_deoverlap_out:
+      type: file
+      description: Tabular output from 'cmsearchtbloutdeoverlap' module
+      pattern: "*.{tblout.deoverlap, tab, txt}"
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'test', single_end:false ]`
+  - easel_coords:
+      type: file
+      description: Fasta file output from running esl-sfetch to extract sequences by name
+      pattern: "*.{fasta}"
+  - matched_seqs_with_coords:
+      type: file
+      description: Space-separated cmsearchdeoverlap output formatted for use by esl-sfetch
+      pattern: "*.txt"
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+authors:
+  - "@chrisata"

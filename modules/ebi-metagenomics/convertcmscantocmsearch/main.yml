@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "convertcmscantocmsearch"
+description: Converts cmscan output table into cmsearch table saving human-readable format
+keywords:
+  - cmscan
+  - cmsearch
+tools:
+  - "convertcmscantocmsearch":
+      description: "Assess convert script from mgnify-pipelines-toolkit as conda environment"
+      homepage: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
+      documentation: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
+      tool_dev_url: "https://github.com/EBI-Metagenomics/mgnify-pipelines-toolkit"
+      licence: ["Apache-2.0"]
+      identifier: ""
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+    - cmscan_tblout:
+        type: file
+        description: file with cmscan table
+output:
+  - cmsearch_tblout:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1', single_end:false ]`
+      - "*cmsearch.tbl":
+          type: file
+          description: cmsearch-format output file
+          pattern: "*cmsearch.tbl"
+  - versions:
+      - versions.yml:
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@KateSakharova"
+maintainers:
+  - "@KateSakharova"
