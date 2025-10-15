@@ -139,15 +139,17 @@ tryCatch(
 )
 
 chimera_ids = which(colnames(seqtab) %in% colnames(seqtab.nochim) == FALSE)
+duplicated_asvs = which(duplicated(merged$sequence))
+ids_to_remove = unique(c(rbind(chimera_ids, duplicated_asvs)))
 
 tryCatch(
   {
     # Track reads to their ASVs
     if (!is.na(path_r)){
-      final_f_map = read_asv_tracking(dada_f, drp_f, merged, "forward", chimera_ids)
-      final_r_map = read_asv_tracking(dada_r, drp_r, merged, "reverse", chimera_ids)
+      final_f_map = read_asv_tracking(dada_f, drp_f, merged, "forward", ids_to_remove)
+      final_r_map = read_asv_tracking(dada_r, drp_r, merged, "reverse", ids_to_remove)
     } else{
-      final_f_map = read_asv_tracking(dada_f, drp_f, merged, "single", chimera_ids)
+      final_f_map = read_asv_tracking(dada_f, drp_f, merged, "single", ids_to_remove)
     }
   }, error = function(msg){
     message(paste("Caught an error at the `read_asv_tracking` stage:\n", msg))

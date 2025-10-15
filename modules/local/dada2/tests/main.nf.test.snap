@@ -8,17 +8,21 @@
                         "single_end": false
                     },
                     [
-                        "test_1_map.txt:md5,95af731d6fa626206f9cc99e14f753b9",
-                        "test_2_map.txt:md5,0843e375a960cc79e3a3f7ed3a3dda8e"
+                        "test_1_map.txt:md5,93a753df1317f72cb181045bc2be3949",
+                        "test_2_map.txt:md5,93a753df1317f72cb181045bc2be3949"
                     ],
-                    "test_asvs.fasta:md5,c2bd49dd4d800233c146e03bf10e7250",
+                    "test_asvs.fasta:md5,3150f757e54a9f7fcc911d44f6495b4e",
                     [
-                        "test_1_filt.fastq.gz:md5,a6909a9f9d30ab033b3b1ff5456f4352",
-                        "test_2_filt.fastq.gz:md5,8dff2a0f3928a5753b59f51a2ec27fe1"
+                        "test_1_filt.fastq.gz:md5,35819d59fab6649520fa36e63a405da4",
+                        "test_2_filt.fastq.gz:md5,54d86d90378ecdb21e57e545f081f4a4"
                     ]
                 ]
             ]
         ],
-        "timestamp": "2024-05-08T15:16:27.863119401"
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.7"
+        },
+        "timestamp": "2025-10-06T10:13:43.129627"
     }
 }

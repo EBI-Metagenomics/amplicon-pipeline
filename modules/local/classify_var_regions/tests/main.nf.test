@@ -79,9 +79,8 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert snapshot(process.out.classify_var_regions).match("classify_var_regions_double") },
-                { assert snapshot(process.out.cdch_out).match("cdch_out_success_double") },
-                { assert snapshot(process.out.cdch_out).match("classify_var_regions_concat") }
-
+                { assert path(process.out.cdch_out.get(0).get(1)).readLines().contains("test\tECO_0000363\tautomatic assertion\t18S\tV9") },
+                { assert path(process.out.cdch_out.get(0).get(1)).readLines().contains("test\tECO_0000363\tautomatic assertion\t16S\tV3-V4") }
             )
         }
 
