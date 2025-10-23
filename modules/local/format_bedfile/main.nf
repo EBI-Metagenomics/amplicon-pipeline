@@ -15,7 +15,7 @@ process FORMAT_BEDFILE {
 
     script:
     """
-    awk '\$2 > \$3 { var = \$3; \$3 = \$2; \$2 = var } 1 {print \$4,\$2,\$3}' OFS='\t' $concat_ssu_lsu_coords > ${meta.id}_maskfile.bed
+    awk '\$2 > \$3 { var = \$3; \$3 = \$2; \$2 = var } 1 {print \$4,\$2 - 1,\$3}' OFS='\t' $concat_ssu_lsu_coords > ${meta.id}_maskfile.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
