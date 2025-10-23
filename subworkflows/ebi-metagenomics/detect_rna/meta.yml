@@ -1,0 +1,202 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ebi-metagenomics/nf-modules/master/subworkflows/yaml-schema.json
+name: "detect_rna"
+description: Extraction of specific cmsearch-identified RNA sequences from a fasta
+  file using EASEL
+keywords:
+  - RNA
+  - fasta
+  - easel
+  - cmsearch
+  - cmscan
+  - covariance models
+components:
+  - seqkit/split2:
+      git_remote: https://github.com/nf-core/modules.git
+  - cat/cat:
+      git_remote: https://github.com/nf-core/modules.git
+  - infernal/cmsearch
+  - infernal/cmscan
+  - convertcmscantocmsearch
+  - cmsearchtbloutdeoverlap
+  - easel/eslsfetch
+  - extractcoords
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. `[ id:'sample1', single_end:false ]`
+    ch_fasta:
+      type: file
+      description: |
+        The input channel containing the fasta files
+        Structure: [ val(meta), path(fasta) ]
+      pattern: "*.{fasta, fasta.gz, fa, fa.gz}"
+  - rfam:
+      type: directory
+      description: |
+        The folder containing Rfam database for use with cmsearch/cmscan
+        Structure: path(cm)
+  - claninfo:
+      type: file
+      description: |
+        The input file containing the claninfo to use for cmsearchtbloutdeoverlap
+        Structure: path(claninfo)
+      pattern: "*.claninfo"
+  - mode:
+      type: value
+      description: choose cmsearch or cmscan method to use
+  - separate_subunits:
+      type: boolean
+      description: Specify true to separate hits into the different RNA subunits
+  - chunk_flag:
+      type: boolean
+      description: |
+        Specify true to use seqkit/split2 to chunk contigs into sequences of specific length e.g. 50M. 
+        IMPORTANT NOTE, YOU HAVE TO SPECIFY CHUNK LENGTH USING `ext.args`, e.g. `--by-length 50M`.
+        See nextflow.config for unit test for a full example
+output:
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+        Structure: [ path(versions.yml) ]
+      pattern: "versions.yml"
+  - cmsearch_deoverlap_coords:
+      description: |
+        Channel containing deoverlapped cmsearch .tblout files
+        Structure: [ val(meta), path("*.tblout.deoverlapped") ]
+      meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+      "*.tblout.deoverlapped":
+        type: file
+        description: Deoverlapped .tblout file
+        pattern: "*.tblout.deoverlapped"
+  - easel_coords:
+      description: |
+        Channel containing fasta output from esl-sfetch
+        Structure: [ val(meta), path("*.fasta") ]
+      meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+      "*.fasta":
+        type: file
+        description: Fasta file output from running esl-sfetch to extract sequences by name
+        pattern: "*.{fasta}"
+  - ssu_fasta:
+      description: |
+        Channel containing SSU fasta sequences
+        Structure: [ val(meta), path("sequence-categorisation/*SSU.fasta") ]
+      meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+      "sequence-categorisation/*SSU.fasta":
+        type: file
+        description: Fasta file containing the SSU sequences
+        pattern: "*.fasta"
+        ontologies: []
+  - lsu_fasta:
+      description: |
+        Channel containing LSU fasta sequences
+        Structure: [ val(meta), path("sequence-categorisation/*LSU.fasta") ]
+      meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+      "sequence-categorisation/*LSU.fasta":
+        type: file
+        description: Fasta file containing the LSU sequences
+        pattern: "*.fasta"
+        ontologies: []
+  - rrna_bacteria:
+      description: |
+        Channel containing bacterial rRNA sequences
+        Structure: [ val(meta), path("sequence-categorisation/*rRNA_bacteria*.fasta") ]
+      meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+      "sequence-categorisation/*rRNA_bacteria*.fasta":
+        type: file
+        description: Fasta file containing bacterial rRNA
+        pattern: "*.fasta"
+        ontologies: []
+  - rrna_archaea:
+      description: |
+        Channel containing archaeal rRNA sequences
+        Structure: [ val(meta), path("sequence-categorisation/*rRNA_archaea*.fasta") ]
+      meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+      "sequence-categorisation/*rRNA_archaea*.fasta":
+        type: file
+        description: Fasta file containing archaeal rRNA
+        pattern: "*.fasta"
+        ontologies: []
+  - eukarya:
+      description: |
+        Channel containing eukaryan rRNA sequences
+        Structure: [ val(meta), path("sequence-categorisation/*rRNA_eukarya*.fasta") ]
+      meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+      "sequence-categorisation/*rRNA_eukarya*.fasta":
+        type: file
+        description: Fasta file containing eukaryan rRNA
+        pattern: "*.fasta"
+        ontologies: []
+  - fiveS_fasta:
+      description: |
+        Channel containing 5S rRNA sequences
+        Structure: [ val(meta), path("sequence-categorisation/*5S.fasta") ]
+      meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+      "sequence-categorisation/*5S.fasta":
+        type: file
+        description: "5S rRNA nucleotide sequences"
+        ontologies: []
+  - five_eightS_fasta:
+      description: |
+        Channel containing 5.8S rRNA sequences
+        Structure: [ val(meta), path("sequence-categorisation/*5_8S.fasta") ]
+      meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+      "sequence-categorisation/*5_8S.fasta":
+        type: file
+        description: "5 and 8S rRNA nucleotide sequences"
+        ontologies: []
+  - ncrna_fasta:
+      description: |
+        Channel containing non-coding RNA sequences
+        Structure: [ val(meta), path("sequence-categorisation/*other_ncRNA.fasta") ]
+      meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1', single_end:false ]`
+      "sequence-categorisation/*other_ncRNA.fasta":
+        type: file
+        description: "non-coding RNA nucleotide sequences"
+        ontologies: []
+
+authors:
+  - "@Kate_Sakharova"

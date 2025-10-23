@@ -25,8 +25,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out.format_bedfile_out).match() },
-                { assert path(process.out.format_bedfile_out.get(0).get(1)).md5 == "c4995d75a92f483fbecf983670ece17f" }
+                { assert snapshot(process.out.format_bedfile_out).match() }
             )
             
         }

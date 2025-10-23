@@ -4,10 +4,9 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { DOWNLOAD_FROM_FIRE                            } from '../modules/ebi-metagenomics/download_from_fire/main'
 include { READS_QC                                      } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
 include { READS_QC as READS_QC_MERGE                    } from '../subworkflows/ebi-metagenomics/reads_qc/main.nf'
-include { RRNA_EXTRACTION                               } from '../subworkflows/ebi-metagenomics/rrna_extraction/main'
+include { DETECT_RNA                                    } from '../subworkflows/ebi-metagenomics/detect_rna/main'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_SSU      } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_LSU      } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
 include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_PR2      } from '../subworkflows/ebi-metagenomics/mapseq_otu_krona/main'
@@ -37,6 +36,7 @@ include { EXTRACT_ASVS_LEFT as EXTRACT_ASVS_LEFT_PR2    } from '../modules/local
     IMPORT NF-CORE MODULES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+include { DOWNLOAD_FROM_FIRE                              } from '../modules/ebi-metagenomics/downloadfromfire/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS                   } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC as MULTIQC_RUN                        } from '../modules/nf-core/multiqc/main.nf'
 include { MULTIQC as MULTIQC_STUDY                      } from '../modules/nf-core/multiqc/main.nf'
@@ -178,35 +178,38 @@ workflow AMPLICON_PIPELINE {
                             .set { extended_reads_qc }
 
     // rRNA extraction subworkflow to find rRNA reads for SSU+LSU //
-    RRNA_EXTRACTION(
+    DETECT_RNA(
         extended_reads_qc.qc_pass,
         file( params.rrnas_rfam_covariance_model, checkIfExists: true ),
-        file( params.rrnas_rfam_claninfo, checkIfExists: true )
+        file( params.rrnas_rfam_claninfo, checkIfExists: true ),
+        "cmsearch",
+        true,
+        false
     )
-    ch_versions = ch_versions.mix(RRNA_EXTRACTION.out.versions)
+    ch_versions = ch_versions.mix(DETECT_RNA.out.versions)
 
     // Masking subworkflow to find rRNA reads for ITS //
     MASK_FASTA_SWF(
         extended_reads_qc.qc_pass,
-        RRNA_EXTRACTION.out.concat_ssu_lsu_coords
+        DETECT_RNA.out.concat_ssu_lsu_coords
     )
     ch_versions = ch_versions.mix(MASK_FASTA_SWF.out.versions)
 
     // Next five subworkflow calls are MAPseq annotation + Krona generation for SSU+LSU+ITS //
     MAPSEQ_OTU_KRONA_SSU(
-        RRNA_EXTRACTION.out.ssu_fasta,
+        DETECT_RNA.out.ssu_fasta,
         ssu_mapseq_krona_tuple
     )
     ch_versions = ch_versions.mix(MAPSEQ_OTU_KRONA_SSU.out.versions)
 
     MAPSEQ_OTU_KRONA_PR2(
-        RRNA_EXTRACTION.out.ssu_fasta,
+        DETECT_RNA.out.ssu_fasta,
         pr2_mapseq_krona_tuple
     )
     ch_versions = ch_versions.mix(MAPSEQ_OTU_KRONA_PR2.out.versions)
 
     MAPSEQ_OTU_KRONA_LSU(
-        RRNA_EXTRACTION.out.lsu_fasta,
+        DETECT_RNA.out.lsu_fasta,
         lsu_mapseq_krona_tuple
     )
     ch_versions = ch_versions.mix(MAPSEQ_OTU_KRONA_LSU.out.versions)
@@ -225,7 +228,7 @@ workflow AMPLICON_PIPELINE {
 
     // Infer amplified variable regions for SSU, extract reads for each amplified region if there are more than one //
     AMP_REGION_INFERENCE(
-        RRNA_EXTRACTION.out.cmsearch_deoverlap_out,
+        DETECT_RNA.out.cmsearch_deoverlap_coords,
         READS_QC_MERGE.out.reads_se_and_merged
     )
     ch_versions = ch_versions.mix(AMP_REGION_INFERENCE.out.versions)
@@ -272,7 +275,7 @@ workflow AMPLICON_PIPELINE {
     // Run DADA2 ASV generation //
     DADA2_SWF(
         dada2_input,
-        RRNA_EXTRACTION.out.cmsearch_deoverlap_out
+        DETECT_RNA.out.cmsearch_deoverlap_coords
 
     )
     ch_versions = ch_versions.mix(DADA2_SWF.out.versions)

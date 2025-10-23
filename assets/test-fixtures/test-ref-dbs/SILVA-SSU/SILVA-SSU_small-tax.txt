@@ -1,0 +1,5 @@
+#cutoff: 0.00:0.08 0.00:0.08 0.70:0.35 0.70:0.35 0.70:0.35 0.80:0.25 0.92:0.08 0.95:0.05
+#name: SILVA
+#levels: Superkingdom Kingdom Phylum Class Order Family Genus Species
+AF498709.1.1397	sk__Bacteria;k__;p__Acidobacteriota;c__Terriglobia;o__Terriglobales;f__Acidobacteriaceae;g__;s__bacterium_Ellin327
+EU680462.1.1474	sk__Bacteria;k__;p__Acidobacteriota;c__;o__;f__;g__;s__

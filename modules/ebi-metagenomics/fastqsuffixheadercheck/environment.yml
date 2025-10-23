@@ -5,4 +5,4 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - "bioconda::mgnify-pipelines-toolkit=0.1.6"
+  - "bioconda::mgnify-pipelines-toolkit=1.2.11"
