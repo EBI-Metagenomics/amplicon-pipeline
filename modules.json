@@ -24,7 +24,7 @@
           },
           "downloadfromfire": {
             "branch": "main",
-            "git_sha": "0ed5e91ea0790d0fa12387bacc1c93915c6bcfd8",
+            "git_sha": "afc056e9aa0376982a10d458402e200c05d87609",
             "installed_by": ["modules"]
           },
           "easel/eslsfetch": {

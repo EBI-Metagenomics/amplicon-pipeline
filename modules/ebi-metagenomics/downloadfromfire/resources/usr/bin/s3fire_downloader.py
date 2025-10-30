@@ -3,6 +3,7 @@
 import argparse
 import logging
 import os
+import re
 
 import boto3
 from botocore import UNSIGNED
@@ -21,27 +22,30 @@ logger = logging.getLogger(__name__)
 
 def transform_ftp_to_s3(ftp_path: str) -> tuple[str, str]:
     """
-    Transforms an FTP path to a FIRE S3 object key, it also returns if it's public or private.
-
+    Transforms an FTP or HTTP path to a FIRE S3 object key, it also returns if it's public or private.
     :param ftp_path: The FTP path of the file to be transformed.
     :type ftp_path: str
     :return: A tuple containing the S3 object key and the corresponding bucket name.
     :rtype: tuple[str, str]
     :raises ValueError: If the FTP path does not match the expected format.
     """
-    if ftp_path.startswith("https"):
-        ftp_path = ftp_path.replace("https://", "ftp://")
-    if ftp_path.startswith(PUBLIC_FTP_PATH):
-        s3_key = ftp_path.replace(PUBLIC_FTP_PATH, "")
-        logger.info(f"Detected a public file for FTP path: {ftp_path}")
+    # Normalize protocol to ftp://
+    normalized_path = re.sub(r"^(https?|ftp)://", "ftp://", ftp_path)
+    if not normalized_path.startswith("ftp://"):
+        normalized_path = f"ftp://{normalized_path}"
+
+    # Check if public or private
+    if normalized_path.startswith(PUBLIC_FTP_PATH):
+        s3_key = normalized_path.replace(PUBLIC_FTP_PATH, "")
+        logger.info(f"Detected a public file for FTP path: {normalized_path}")
         return s3_key, PUBLIC_BUCKET
-    elif ftp_path.startswith(PRIVATE_FTP_PATH):
-        s3_key = ftp_path.replace(PRIVATE_FTP_PATH, "")
-        logger.info(f"Detected a private file for FTP path: {ftp_path}")
+    elif normalized_path.startswith(PRIVATE_FTP_PATH):
+        s3_key = normalized_path.replace(PRIVATE_FTP_PATH, "")
+        logger.info(f"Detected a private file for FTP path: {normalized_path}")
         return s3_key, PRIVATE_BUCKET
     else:
         raise ValueError(
-            f"Invalid FTP path: {ftp_path}. Must start with {PUBLIC_FTP_PATH} or {PRIVATE_FTP_PATH}."
+            f"Invalid FTP path: {normalized_path}. Must start with {PUBLIC_FTP_PATH} or {PRIVATE_FTP_PATH}."
         )
 
 
