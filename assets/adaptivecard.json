@@ -17,7 +17,7 @@
                         "size": "Large",
                         "weight": "Bolder",
                         "color": "<% if (success) { %>Good<% } else { %>Attention<%} %>",
-                        "text": "ebi-metagenomics/ampliconpipeline v${version} - ${runName}",
+                        "text": "ebi-metagenomics/amplicon-analysis-pipeline v${version} - ${runName}",
                         "wrap": true
                     },
                     {
