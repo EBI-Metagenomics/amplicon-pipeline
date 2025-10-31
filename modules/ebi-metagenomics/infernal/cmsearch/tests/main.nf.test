@@ -6,7 +6,7 @@ nextflow_process {
     config "./nextflow.config"
 
     tag "modules"
-    tag "modules_nfcore"
+    tag "modules_ebimetagenomicsgit"
     tag "infernal"
     tag "cmsearch"
     tag "infernal/cmsearch"
@@ -19,7 +19,7 @@ nextflow_process {
                     [ id:'test', single_end:false ],                              // meta map
                     file("${moduleDir}/tests/example.fa.gz", checkIfExists: true) // seqdb
                     ]
-                input[1] = [file("${moduleDir}/tests/tRNA5.c.cm", checkIfExists: true)]
+                input[1] = [file("${moduleDir}/tests/rfam", checkIfExists: true)]
                 """
             }
         }
@@ -31,8 +31,6 @@ nextflow_process {
                 { assert snapshot(process.out.versions).match('versions') }
             )
         }
-                
-
     }
 
     test("stub") {
@@ -46,7 +44,7 @@ nextflow_process {
                     [ id:'test', single_end:false ], // meta map
                     file("${moduleDir}/tests/example.fa.gz", checkIfExists: true)
                     ]
-                input[1] = file("${moduleDir}/tests/tRNA5.c.cm", checkIfExists: true)
+                input[1] = file("${moduleDir}/tests/rfam", checkIfExists: true)
                 """
             }
         }

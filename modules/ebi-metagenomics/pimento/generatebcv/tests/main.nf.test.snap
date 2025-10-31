@@ -14,16 +14,16 @@
             [
                 {
                     "PIMENTO_GENERATEBCV": {
-                        "mi-pimento": "1.0.1"
+                        "mi-pimento": "1.0.2"
                     }
                 }
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.5"
+            "nextflow": "25.04.7"
         },
-        "timestamp": "2025-06-18T14:38:12.95981"
+        "timestamp": "2025-10-06T12:13:04.10164"
     },
     "pimento/generatebcv - none": {
         "content": [
@@ -40,16 +40,16 @@
             [
                 {
                     "PIMENTO_GENERATEBCV": {
-                        "mi-pimento": "1.0.1"
+                        "mi-pimento": "1.0.2"
                     }
                 }
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.5"
+            "nextflow": "25.04.7"
         },
-        "timestamp": "2025-06-18T14:38:04.488138"
+        "timestamp": "2025-10-06T12:12:54.406761"
     },
     "pimento/generatebcv - F": {
         "content": [
@@ -66,16 +66,16 @@
             [
                 {
                     "PIMENTO_GENERATEBCV": {
-                        "mi-pimento": "1.0.1"
+                        "mi-pimento": "1.0.2"
                     }
                 }
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.5"
+            "nextflow": "25.04.7"
         },
-        "timestamp": "2025-06-18T14:37:46.746505"
+        "timestamp": "2025-10-06T12:12:34.459818"
     },
     "pimento/generatebcv - FR": {
         "content": [
@@ -92,16 +92,16 @@
             [
                 {
                     "PIMENTO_GENERATEBCV": {
-                        "mi-pimento": "1.0.1"
+                        "mi-pimento": "1.0.2"
                     }
                 }
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.5"
+            "nextflow": "25.04.7"
         },
-        "timestamp": "2025-06-18T14:37:37.09592"
+        "timestamp": "2025-10-06T12:12:23.653155"
     },
     "pimento/generatebcv - R": {
         "content": [
@@ -118,15 +118,15 @@
             [
                 {
                     "PIMENTO_GENERATEBCV": {
-                        "mi-pimento": "1.0.1"
+                        "mi-pimento": "1.0.2"
                     }
                 }
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.10.5"
+            "nextflow": "25.04.7"
         },
-        "timestamp": "2025-06-18T14:37:55.942524"
+        "timestamp": "2025-10-06T12:12:44.720827"
     }
 }
