@@ -94,7 +94,7 @@ SRR17062740,/path/to/reads/SRR17062740_1.fastq.gz,/path/to/reads/SRR17062740_2.f
 You can run the current version of the pipeline on SLURM like this:
 
 ```bash
-nextflow run ebi-metagenomics/amplicon-pipeline \
+nextflow run ebi-metagenomics/amplicon-analysis-pipeline \
     -r main \
     -profile codon_slurm \
     --input /path/to/samplesheet.csv \
@@ -104,7 +104,7 @@ nextflow run ebi-metagenomics/amplicon-pipeline \
 If you want to run the pipeline on deeply-sequenced reads, DADA2 can become a serious bottleneck. To counter this on SLURM, you can specify the `large_samples` profile which will massively boost the resources those processes will ask for. We will improve this to be more dynamic in the future, so for now **use it with caution to avoid causing a standstill in the cluster.** Here's an example:
 
 ```bash
-nextflow run ebi-metagenomics/amplicon-pipeline \
+nextflow run ebi-metagenomics/amplicon-analysis-pipeline \
     -r main \
     -profile codon_slurm,large_samples \
     --input /path/to/samplesheet.csv \
