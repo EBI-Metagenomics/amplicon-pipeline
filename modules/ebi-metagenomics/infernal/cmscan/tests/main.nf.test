@@ -1,0 +1,61 @@
+nextflow_process {
+
+    name "Test Process INERNAL/CMSCAN"
+    script "../main.nf"
+    process "INFERNAL_CMSCAN"
+    config "./nextflow.config"
+
+    tag "modules"
+    tag "modules_ebimetagenomics"
+    tag "infernal"
+    tag "cmscan"
+    tag "infernal/cmscan"
+
+    test("infernal cmscan") {
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ],                              // meta map
+                    file("${moduleDir}/tests/example.fa.gz", checkIfExists: true) // seqdb
+                    ]
+                input[1] = [file("${moduleDir}/tests/rfam/", checkIfExists: true)]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(path(process.out.cmscan_tbl.get(0).get(1)).contains("# [ok]")) },
+                { assert snapshot(process.out.versions).match('versions') }
+            )
+        }
+    }
+
+    test("stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'test', single_end:false ], // meta map
+                    file("${moduleDir}/tests/example.fa.gz", checkIfExists: true)
+                    ]
+                input[1] = file("${moduleDir}/tests/rfam", checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

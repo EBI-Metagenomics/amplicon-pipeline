@@ -260,7 +260,7 @@
         },
         "rrnas_rfam_covariance_model": {
           "type": "string",
-          "format": "file-path",
+          "format": "directory-path",
           "description": "Path to the Rfam rRNA covariance models file. This file is generated with https://github.com/EBI-Metagenomics/taxdb_generation_nf and is available in our team FTP."
         },
         "rrnas_rfam_claninfo": {

@@ -1,0 +1,4 @@
+#cutoff: 0.00:0.08 0.00:0.08 0.70:0.35 0.70:0.35 0.70:0.35 0.80:0.25 0.92:0.08 0.95:0.05
+#name: SILVA
+#levels: Superkingdom Kingdom Phylum Class Order Family Genus Species
+BH771024.2378.5276	sk__Bacteria;k__;p__Bacillota;c__Bacilli;o__Lactobacillales;f__Streptococcaceae;g__Lactococcus;s__
