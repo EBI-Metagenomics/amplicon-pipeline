@@ -1,7 +1,7 @@
 
 process PRIMER_VALIDATION_CLASSIFY_VAR_REGIONS {
     tag "$meta.id"
-    label 'very_light'
+    label 'light'
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         "https://depot.galaxyproject.org/singularity/mgnify-pipelines-toolkit:${params.mpt_version}":
         "biocontainers/mgnify-pipelines-toolkit:${params.mpt_version}" }"
