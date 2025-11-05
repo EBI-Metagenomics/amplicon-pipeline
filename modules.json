@@ -37,11 +37,6 @@
             "git_sha": "b8ce29264034badcba2e6bbdd69013220a3fa973",
             "installed_by": ["detect_rna"]
           },
-          "fastp": {
-            "branch": "main",
-            "git_sha": "d4edb49a9072e8dcfd0fd4bfb85be6c005f86409",
-            "installed_by": ["reads_qc"]
-          },
           "fastqsuffixheadercheck": {
             "branch": "main",
             "git_sha": "2ce9d8fef2b2d7bd7995a2ec4de0e41dc06d757e",
@@ -87,11 +82,6 @@
           "seqfu/check": {
             "branch": "main",
             "git_sha": "d1f512bffa29ba7a89468ce29e0153e11b57cc94",
-            "installed_by": ["reads_qc"]
-          },
-          "seqtk/seq": {
-            "branch": "main",
-            "git_sha": "d4edb49a9072e8dcfd0fd4bfb85be6c005f86409",
             "installed_by": ["reads_qc"]
           }
         }
@@ -157,7 +147,7 @@
           },
           "seqtk/subseq": {
             "branch": "master",
-            "git_sha": "8fc1d24c710ebe1d5de0f2447ec9439fd3d9d66a",
+            "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
             "installed_by": ["modules"],
             "patch": "modules/nf-core/seqtk/subseq/seqtk-subseq.diff"
           }
