@@ -40,9 +40,9 @@ At this stage, the only sequence amplicons that this pipeline is built for are:
 
 | Tool                                                                                            | Version  | Purpose                                                |
 | ----------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------ |
-| [fastp](https://github.com/OpenGene/fastp)                                                      | 0.23.4   | Read quality control                                   |
+| [fastp](https://github.com/OpenGene/fastp)                                                      | 1.0.1    | Read quality control                                   |
 | [SeqFu](https://github.com/telatin/seqfu2)                                                      | 1.20.3   | FASTQ sanity checking                                  |
-| [seqtk](https://github.com/lh3/seqtk)                                                           | 1.3-r106 | FASTQ file manipulation                                |
+| [seqtk](https://github.com/lh3/seqtk)                                                           | 1.4      | FASTQ file manipulation                                |
 | [SeqKit](https://bioinf.shenwei.me/seqkit/)                                                     | 2.9.0    | FASTQ file manipulation                                |
 | [easel](https://github.com/EddyRivasLab/easel)                                                  | 0.49     | FASTA file manipulation                                |
 | [bedtools](https://bedtools.readthedocs.io/en/latest/)                                          | 2.30.0   | FASTA sequence masking                                 |
