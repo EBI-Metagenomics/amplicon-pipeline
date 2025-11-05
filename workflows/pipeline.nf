@@ -158,6 +158,7 @@ workflow AMPLICON_PIPELINE {
     READS_QC_MERGE(
         true, // check if amplicon
         ch_input,
+        "",  // don't discard trimmed reads
         true // merge
     )
     ch_versions = ch_versions.mix(READS_QC_MERGE.out.versions)
@@ -166,6 +167,7 @@ workflow AMPLICON_PIPELINE {
     READS_QC(
         false, // check if amplicon
         ch_input,
+        "",  // don't discard trimmed reads
         false // merge
     )
     ch_versions = ch_versions.mix(READS_QC.out.versions)
