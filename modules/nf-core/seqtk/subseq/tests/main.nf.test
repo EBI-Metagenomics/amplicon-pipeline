@@ -3,23 +3,22 @@ nextflow_process {
     name "Test Process SEQTK_SUBSEQ"
     script "modules/nf-core/seqtk/subseq/main.nf"
     process "SEQTK_SUBSEQ"
-    config "./standard.config"
 
     tag "modules"
     tag "modules_nfcore"
     tag "seqtk"
     tag "seqtk/subseq"
 
-    test("sarscov2_subseq_fa") {
+    test("seqtk/subseq patch") {
 
         when {
             process {
                 """
                 input[0] =  [
-                                [ id:'test' ],
-                                file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta', checkIfExists: true)
+                                [ id:'ERR4334351' ],
+                                file('${projectDir}/modules/nf-core/seqtk/subseq/tests/ERR4334351.16S.V3-V4.txt', checkIfExists: true),
+                                file('${projectDir}/modules/nf-core/seqtk/subseq/tests/ERR4334351.merged.fastq', checkIfExists: true)
                             ]
-                input[1] =  file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/bed/test.bed.gz', checkIfExists: true)
                 """
             }
         }
@@ -33,16 +32,16 @@ nextflow_process {
 
     }
 
-    test("sarscov2_subseq_fa_stub") {
+    test("seqtk/subseq patch stub") {
         options "-stub"
         when {
             process {
                 """
                 input[0] =  [
-                                [ id:'test' ],
-                                file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/genome.fasta', checkIfExists: true)
+                                [ id:'ERR4334351' ],
+                                file('${projectDir}/modules/nf-core/seqtk/subseq/tests/ERR4334351.16S.V3-V4.txt', checkIfExists: true),
+                                file('${projectDir}/modules/nf-core/seqtk/subseq/tests/ERR4334351.merged.fastq', checkIfExists: true)
                             ]
-                input[1] =  file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/bed/test.bed.gz', checkIfExists: true)
                 """
             }
         }
