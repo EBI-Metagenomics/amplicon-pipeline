@@ -9,7 +9,7 @@ workflow AMP_REGION_INFERENCE {
         reads_merged
     main:
 
-        ch_versions = Channel.empty()
+        ch_versions = channel.empty()
 
         CLASSIFY_VAR_REGIONS(
             cmsearch_deoverlap_out,
