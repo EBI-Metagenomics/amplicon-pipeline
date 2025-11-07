@@ -6,7 +6,7 @@ nextflow_process {
     tag "modules"
     tag "make_asv_count_tables"
 
-    test("Should run without failures") {
+    test("make_asv_count_tables test") {
 
         when {
             params {
@@ -35,7 +35,7 @@ nextflow_process {
         then {
             assertAll(
                 { assert process.success },
-                { assert snapshot(process.out.asv_count_tables_out).match("asv_count_tables_out") }
+                { assert snapshot(process.out).match() }
             )
         }
 
