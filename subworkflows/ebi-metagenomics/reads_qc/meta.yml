@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/ebi-metagenomics/nf-modules/master/subworkflows/yaml-schema.json
 name: "reads_qc"
 description: |
   Quality control and merging of fastq-format short-reads using fastp, generating fasta
@@ -12,8 +12,11 @@ components:
   - seqfu/check
   - fastqsuffixheadercheck
   - assessmcpproportions
-  - fastp
-  - seqtk/seq
+  - fastp:
+      git_remote: https://github.com/nf-core/modules.git
+  - seqtk/seq:
+      git_remote: https://github.com/nf-core/modules.git
+
 input:
   - meta:
       type: map
@@ -28,6 +31,9 @@ input:
       description: |
         List of input FastQ files of size 1 and 2 for single-end and paired-end data,
         respectively.
+  - discard_trimmed_reads:
+      type: boolean
+      description: Specify true to discard all trimmed reads
   - save_merged:
       type: boolean
       description: Specify true to save all merged reads to the a file ending in `*.merged.fastq.gz`

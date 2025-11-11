@@ -11,9 +11,21 @@ nextflow_workflow {
     tag "seqfu/check"
     tag "fastqsuffixheadercheck"
     tag "assessmcpproportions"
-    tag "fastp"
-    tag "seqtk"
-    tag "seqtk/seq"
+    tag "subworkflows/../../modules/nf-core/fastp"
+    tag "subworkflows/../../modules/nf-core/seqtk"
+    tag "subworkflows/../../modules/nf-core/seqtk/seq"
+
+    setup {
+        nfcoreInitialise("${launchDir}/library/")
+        nfcoreInstall(
+            "${launchDir}/library/",
+            [
+                "fastp",
+                "seqtk/seq"
+            ]
+        )
+        nfcoreLink("${launchDir}/library/", "${baseDir}/modules/")
+    }
 
     test("test_reads_qc_success") {
 
@@ -32,7 +44,8 @@ nextflow_workflow {
                             ]
                         ]
                     ])
-                input[2] = true
+                input[2] = ""
+                input[3] = true
                 """
             }
         }
@@ -51,6 +64,56 @@ nextflow_workflow {
                     ).match()
                 }
             )
+        }
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+
+        test("test_reads_qc_success_PE_and_SE") {
+
+        when {
+            params {
+                save_trimmed_fail = true
+            }
+            workflow {
+                """
+                input[0] = true
+                input[1] = Channel.fromList([
+                        [
+                            [ id:'SRR21814853', single_end:false ], // meta map
+                            [ file("${moduleDir}/tests/fixtures/SRR21814853_1.fastq.gz", checkIfExists: true),
+                            file("${moduleDir}/tests/fixtures/SRR21814853_2.fastq.gz", checkIfExists: true)
+                            ]
+                        ],
+                        [
+                            [ id:'SRR9674626', single_end:true ], // meta map
+                            file("${moduleDir}/tests/fixtures/SRR9674626.fastq.gz", checkIfExists: true),
+                        ]
+                    ])
+                input[2] = ""
+                input[3] = true
+                """
+            }
+        }
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(
+                    workflow.out.seqfu_check,
+                    workflow.out.suffix_header_check,
+                    workflow.out.amplicon_check,
+                    workflow.out.reads,
+                    workflow.out.reads_se_and_merged,
+                    workflow.out.fastp_summary_json,
+                    workflow.out.reads_fasta,
+                    workflow.out.versions.collect { path(it).yaml }
+                    ).match()
+                }
+            )
+        }
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
         }
     }
 
@@ -77,7 +140,8 @@ nextflow_workflow {
                         ]
                     ]
                 ])
-                input[2] = true
+                input[2] = ""
+                input[3] = true
                 """
             }
         }
@@ -96,6 +160,9 @@ nextflow_workflow {
                     ).match()
                 }
             )
+        }
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
         }
     }
 
@@ -122,7 +189,8 @@ nextflow_workflow {
                         ]
                     ]
                 ])
-                input[2] = true
+                input[2] = ""
+                input[3] = true
                 """
             }
         }
@@ -141,6 +209,9 @@ nextflow_workflow {
                     ).match()
                 }
             )
+        }
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
         }
     }
 
@@ -161,7 +232,8 @@ nextflow_workflow {
                         ]
                     ]
                 ])
-                input[2] = true
+                input[2] = ""
+                input[3] = true
                 """
             }
         }
@@ -180,6 +252,9 @@ nextflow_workflow {
                     ).match()
                 }
             )
+        }
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
         }
     }
 
@@ -200,7 +275,8 @@ nextflow_workflow {
                             ]
                         ]
                     ])
-                input[2] = true
+                input[2] = ""
+                input[3] = true
                 """
             }
         }
@@ -219,6 +295,9 @@ nextflow_workflow {
                     ).match()
                 }
             )
+        }
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
         }
     }
 }

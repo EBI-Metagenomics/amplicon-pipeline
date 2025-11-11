@@ -1,0 +1,58 @@
+nextflow_process {
+
+    name "Test Process SEQTK_SUBSEQ"
+    script "modules/nf-core/seqtk/subseq/main.nf"
+    process "SEQTK_SUBSEQ"
+
+    tag "modules"
+    tag "modules_nfcore"
+    tag "seqtk"
+    tag "seqtk/subseq"
+
+    test("seqtk/subseq patch") {
+
+        when {
+            process {
+                """
+                input[0] =  [
+                                [ id:'ERR4334351' ],
+                                file('${projectDir}/modules/nf-core/seqtk/subseq/tests/ERR4334351.16S.V3-V4.txt', checkIfExists: true),
+                                file('${projectDir}/modules/nf-core/seqtk/subseq/tests/ERR4334351.merged.fastq', checkIfExists: true)
+                            ]
+                """
+            }
+        }
+
+        then {
+            assertAll (
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+    test("seqtk/subseq patch stub") {
+        options "-stub"
+        when {
+            process {
+                """
+                input[0] =  [
+                                [ id:'ERR4334351' ],
+                                file('${projectDir}/modules/nf-core/seqtk/subseq/tests/ERR4334351.16S.V3-V4.txt', checkIfExists: true),
+                                file('${projectDir}/modules/nf-core/seqtk/subseq/tests/ERR4334351.merged.fastq', checkIfExists: true)
+                            ]
+                """
+            }
+        }
+
+        then {
+            assertAll (
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+
+    }
+
+}

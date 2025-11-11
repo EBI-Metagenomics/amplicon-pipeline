@@ -158,6 +158,7 @@ workflow AMPLICON_PIPELINE {
     READS_QC_MERGE(
         true, // check if amplicon
         ch_input,
+        "",  // don't discard trimmed reads
         true // merge
     )
     ch_versions = ch_versions.mix(READS_QC_MERGE.out.versions)
@@ -166,6 +167,7 @@ workflow AMPLICON_PIPELINE {
     READS_QC(
         false, // check if amplicon
         ch_input,
+        "",  // don't discard trimmed reads
         false // merge
     )
     ch_versions = ch_versions.mix(READS_QC.out.versions)
@@ -307,8 +309,8 @@ workflow AMPLICON_PIPELINE {
     These final modules make sure the set of ASVs being reported in the different outputs
     are consistent i.e. ASVs in read count files, ASV sequences in FASTA files, etc.
     */
-    extract_asv_read_counts_input = MAPSEQ_ASV_KRONA_SILVA.out.asvs_left
-        .join(MAPSEQ_ASV_KRONA_PR2.out.asvs_left)
+    extract_asv_read_counts_input = MAPSEQ_ASV_KRONA_SILVA.out.asv_read_counts
+        .join(MAPSEQ_ASV_KRONA_PR2.out.asv_read_counts)
 
     EXTRACT_ASV_READ_COUNTS(extract_asv_read_counts_input)
     ch_versions = ch_versions.mix(EXTRACT_ASV_READ_COUNTS.out.versions)
