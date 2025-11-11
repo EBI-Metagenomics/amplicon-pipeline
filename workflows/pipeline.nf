@@ -63,21 +63,22 @@ workflow AMPLICON_PIPELINE {
     */
 
     // Regular ASV resolution method //
-    dada2_krona_silva_tuple = tuple(
-        file(params.ssu_db_fasta, checkIfExists: true),
-        file(params.ssu_db_tax, checkIfExists: true),
-        file(params.ssu_db_otu, checkIfExists: true),
-        file(params.ssu_db_mscluster, checkIfExists: true),
-        params.dada2_silva_label
-    )
-    dada2_krona_pr2_tuple = tuple(
-        file(params.pr2_db_fasta, checkIfExists: true),
-        file(params.pr2_db_tax, checkIfExists: true),
-        file(params.pr2_db_otu, checkIfExists: true),
-        file(params.pr2_db_mscluster, checkIfExists: true),
-        params.dada2_pr2_label
-    )
-
+    if (!params.skip_asv) {
+        dada2_krona_silva_tuple = tuple(
+            file(params.ssu_db_fasta, checkIfExists: true),
+            file(params.ssu_db_tax, checkIfExists: true),
+            file(params.ssu_db_otu, checkIfExists: true),
+            file(params.ssu_db_mscluster, checkIfExists: true),
+            params.dada2_silva_label
+        )
+        dada2_krona_pr2_tuple = tuple(
+            file(params.pr2_db_fasta, checkIfExists: true),
+            file(params.pr2_db_tax, checkIfExists: true),
+            file(params.pr2_db_otu, checkIfExists: true),
+            file(params.pr2_db_mscluster, checkIfExists: true),
+            params.dada2_pr2_label
+        )
+    }
 
     // Initialise standard primer library for PIMENTO if user-given//
     // If there are no primers provided, it will fallback to use the default PIMENTO standard primer library
