@@ -162,8 +162,8 @@ workflow AMPLICON_PIPELINE {
         .filter { it -> it }
         .map { _meta, files -> [tuple(
             file(files.fasta), 
-            file(files.otu), 
             file(files.tax), 
+            file(files.otu), 
             file(files.mscluster), 
             files.label
         )]}
@@ -188,8 +188,8 @@ workflow AMPLICON_PIPELINE {
         .filter { it -> it }
         .map { _meta, files -> [tuple(
             file(files.fasta), 
-            file(files.otu), 
             file(files.tax), 
+            file(files.otu), 
             file(files.mscluster), 
             files.label
         )]}
@@ -214,8 +214,8 @@ workflow AMPLICON_PIPELINE {
         .filter { it -> it }
         .map { _meta, files -> [tuple(
             file(files.fasta), 
-            file(files.otu), 
             file(files.tax), 
+            file(files.otu), 
             file(files.mscluster), 
             files.label
         )]}
@@ -240,8 +240,8 @@ workflow AMPLICON_PIPELINE {
         .filter { it -> it }
         .map { _meta, files -> [tuple(
             file(files.fasta), 
-            file(files.otu), 
             file(files.tax), 
+            file(files.otu), 
             file(files.mscluster), 
             files.label
         )]}
@@ -266,8 +266,8 @@ workflow AMPLICON_PIPELINE {
         .filter { it -> it }
         .map { _meta, files -> [tuple(
             file(files.fasta), 
-            file(files.otu), 
             file(files.tax), 
+            file(files.otu), 
             file(files.mscluster), 
             files.label
         )]}
@@ -348,8 +348,8 @@ workflow AMPLICON_PIPELINE {
             .filter { it -> it }
             .map { _meta, files -> [tuple(
                 file(files.fasta), 
-                file(files.otu), 
                 file(files.tax), 
+                file(files.otu), 
                 file(files.mscluster), 
                 files.label
             )]}
@@ -374,8 +374,8 @@ workflow AMPLICON_PIPELINE {
             .filter { it -> it }
             .map { _meta, files -> [tuple(
                 file(files.fasta), 
-                file(files.otu), 
                 file(files.tax), 
+                file(files.otu), 
                 file(files.mscluster), 
                 files.label
             )]}

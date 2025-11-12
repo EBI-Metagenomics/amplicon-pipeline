@@ -147,7 +147,7 @@
         "ssu_label": {
           "type": "string",
           "default": "SILVA-SSU",
-          "description": "SILVA SU Label"
+          "description": "SILVA SSU Label"
         },
         "lsu_db_fasta": {
           "type": "string",
