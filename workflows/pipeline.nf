@@ -62,24 +62,6 @@ workflow AMPLICON_PIPELINE {
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     */
 
-    // Regular ASV resolution method //
-    if (!params.skip_asv) {
-        dada2_krona_silva_tuple = tuple(
-            file(params.ssu_db_fasta, checkIfExists: true),
-            file(params.ssu_db_tax, checkIfExists: true),
-            file(params.ssu_db_otu, checkIfExists: true),
-            file(params.ssu_db_mscluster, checkIfExists: true),
-            params.dada2_silva_label
-        )
-        dada2_krona_pr2_tuple = tuple(
-            file(params.pr2_db_fasta, checkIfExists: true),
-            file(params.pr2_db_tax, checkIfExists: true),
-            file(params.pr2_db_otu, checkIfExists: true),
-            file(params.pr2_db_mscluster, checkIfExists: true),
-            params.dada2_pr2_label
-        )
-    }
-
     // Initialise standard primer library for PIMENTO if user-given//
     // If there are no primers provided, it will fallback to use the default PIMENTO standard primer library
     std_primer_library = []
@@ -359,11 +341,31 @@ workflow AMPLICON_PIPELINE {
         DADA2_SWF(
             dada2_input,
             DETECT_RNA.out.cmsearch_deoverlap_coords
-
         )
         ch_versions = ch_versions.mix(DADA2_SWF.out.versions)
 
         // ASV taxonomic assignments + generate Krona plots for each run+amp_region //
+        dada2_krona_silva_tuple = channel
+            .from(
+                params.ssu_dbs.collect { k, v ->
+                    if (v instanceof Map) {
+                        if (v.containsKey('label')) {
+                            return [[id: k], v]
+                        }
+                    }
+                }
+            )
+            .filter { it -> it }
+            .map { meta, files -> [
+                meta, 
+                [
+                    file(files.fasta), 
+                    file(files.otu), 
+                    file(files.tax), 
+                    file(files.mscluster), 
+                    files.label
+                ]
+            ]}
         MAPSEQ_ASV_KRONA_SILVA(
             DADA2_SWF.out.dada2_out,
             AMP_REGION_INFERENCE.out.concat_var_regions,
@@ -372,6 +374,27 @@ workflow AMPLICON_PIPELINE {
         )
         ch_versions = ch_versions.mix(MAPSEQ_ASV_KRONA_SILVA.out.versions)
 
+        dada2_krona_pr2_tuple = channel
+            .from(
+                params.pr2_dbs.collect { k, v ->
+                    if (v instanceof Map) {
+                        if (v.containsKey('label')) {
+                            return [[id: k], v]
+                        }
+                    }
+                }
+            )
+            .filter { it -> it }
+            .map { meta, files -> [
+                meta, 
+                [
+                    file(files.fasta), 
+                    file(files.otu), 
+                    file(files.tax), 
+                    file(files.mscluster), 
+                    files.label
+                ]
+            ]}
         MAPSEQ_ASV_KRONA_PR2(
             DADA2_SWF.out.dada2_out,
             AMP_REGION_INFERENCE.out.concat_var_regions,

@@ -15,21 +15,40 @@ workflow MAPSEQ_ASV_KRONA {
 
     main:
 
-        ch_versions = Channel.empty()
+        ch_versions = channel.empty()
 
         mapseq_input = dada2_output
-                       .map { meta, maps, asv_seqs, filt_reads ->
-                            [ meta, asv_seqs ]
-                        }
+            .map { meta, _maps, asv_seqs, _filt_reads ->
+                [ meta, asv_seqs ]
+            }
+            .combine (
+                krona_tuple.map { fasta, tax, otu, _mscluster, _label -> 
+                    [fasta, tax, otu] 
+                }
+            )
+            .multiMap{ meta, input, reference ->
+                input: [meta, input]
+                reference: [meta, reference]
+            }
         MAPSEQ(
-            mapseq_input,
-            tuple(krona_tuple[0], krona_tuple[1], krona_tuple[3])
+            mapseq_input.input,
+            mapseq_input.reference,
         )
         ch_versions = ch_versions.mix(MAPSEQ.out.versions.first())
 
+        mapseq2asvtable_input = MAPSEQ.out.mseq
+            .combine (
+                krona_tuple.map { _fasta, _tax, _otu, _mscluster, label -> 
+                    label 
+                }
+            )
+            .multiMap{ meta, mseq, ref_label ->
+                mseq: [meta, mseq]
+                ref_label: [meta, ref_label]
+            }
         MAPSEQ2ASVTABLE(
-            MAPSEQ.out.mseq,
-            krona_tuple[4] // db_label
+            mapseq2asvtable_input.mseq,
+            mapseq2asvtable_input.ref_label
         )
         ch_versions = ch_versions.mix(MAPSEQ2ASVTABLE.out.versions.first())
 
@@ -42,7 +61,7 @@ workflow MAPSEQ_ASV_KRONA {
 
         // Transpose by var region in case any samples have more than one. Also reorder the inputs slightly
         split_input = dada2_output
-                      .map { meta, maps, asv_seqs, filt_reads -> 
+                      .map { meta, maps, _asv_seqs, filt_reads -> 
                         [ meta.subMap('id', 'single_end', 'var_regions_size'), meta['var_region'], maps, filt_reads ]
                        }
                       .transpose(by: 1)
@@ -59,7 +78,7 @@ workflow MAPSEQ_ASV_KRONA {
                                     [ meta.subMap('id', 'single_end'), var_region, meta['var_regions_size'], maps, asvtaxtable, filt_reads, extracted_var ]
                                 }
                                .join(concat_var_regions, by: 0)
-                               .map { meta, var_region, var_regions_size, maps, asvtaxtable, filt_reads, __, concat_str, concat_vars ->
+                               .map { meta, _var_region, var_regions_size, maps, asvtaxtable, filt_reads, __, concat_str, concat_vars ->
                                     [ meta + ['var_regions_size':var_regions_size], concat_str, maps, asvtaxtable, filt_reads, concat_vars ]
                                }
         // Add in the concatenated var region channel to the rest of the input
@@ -69,9 +88,19 @@ workflow MAPSEQ_ASV_KRONA {
                                         [ meta + ['var_region': var_region], maps, asvtaxtable, filt_reads, extracted_var ]
                                       }
         
+        make_table_input = final_asv_count_table_input
+            .combine (
+                krona_tuple.map { _fasta, _tax, _otu, _mscluster, label -> 
+                    label 
+                }
+            )
+            .multiMap{ meta, input, ref_label ->
+                input: [meta, input]
+                ref_label: [meta, ref_label]
+            }
         MAKE_ASV_COUNT_TABLES(
-            final_asv_count_table_input,
-            krona_tuple[4]
+            make_table_input.input,
+            make_table_input.ref_label
         )
         ch_versions = ch_versions.mix(MAKE_ASV_COUNT_TABLES.out.versions.first())
 
