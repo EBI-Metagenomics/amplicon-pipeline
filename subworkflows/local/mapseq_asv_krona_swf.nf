@@ -11,45 +11,29 @@ workflow MAPSEQ_ASV_KRONA {
         dada2_output
         concat_var_regions
         extracted_var_path
-        krona_tuple
+        dbs_in
 
     main:
 
         ch_versions = channel.empty()
 
-        mapseq_input = dada2_output
-            .map { meta, _maps, asv_seqs, _filt_reads ->
-                [ meta, asv_seqs ]
+        input = dada2_output
+            .combine(dbs_in)
+            .map { seqs_meta, seqs, db_meta, db_files ->
+                def meta = seqs_meta + ['db_id': db_meta.id, 'db_label': db_files[4]]
+                def (fasta, tax, otu, mscluster, label) = db_files
+                return [meta, seqs, fasta, tax, otu, mscluster, label]
             }
-            .combine (
-                krona_tuple.map { fasta, tax, otu, _mscluster, _label -> 
-                    [fasta, tax, otu] 
-                }
-            )
-            .multiMap{ meta, input, reference ->
-                input: [meta, input]
-                reference: [meta, reference]
-            }
-        MAPSEQ(
-            mapseq_input.input,
-            mapseq_input.reference,
-        )
+
+        mapseq_in = input.map{ meta, reads, fasta, tax, otu, _mscluster, label -> 
+            [meta, reads, fasta, tax, otu, label]
+        }
+        MAPSEQ(mapseq_in)
         ch_versions = ch_versions.mix(MAPSEQ.out.versions.first())
 
-        mapseq2asvtable_input = MAPSEQ.out.mseq
-            .combine (
-                krona_tuple.map { _fasta, _tax, _otu, _mscluster, label -> 
-                    label 
-                }
-            )
-            .multiMap{ meta, mseq, ref_label ->
-                mseq: [meta, mseq]
-                ref_label: [meta, ref_label]
-            }
-        MAPSEQ2ASVTABLE(
-            mapseq2asvtable_input.mseq,
-            mapseq2asvtable_input.ref_label
-        )
+        mapseq2biom_in = MAPSEQ.out.mseq
+            .map { meta, mapseq_out -> [meta, mapseq_out, meta.db_label] }
+        MAPSEQ2ASVTABLE(mapseq2biom_in)
         ch_versions = ch_versions.mix(MAPSEQ2ASVTABLE.out.versions.first())
 
         // Transpose by var region in case any samples have more than one
@@ -89,19 +73,8 @@ workflow MAPSEQ_ASV_KRONA {
                                       }
         
         make_table_input = final_asv_count_table_input
-            .combine (
-                krona_tuple.map { _fasta, _tax, _otu, _mscluster, label -> 
-                    label 
-                }
-            )
-            .multiMap{ meta, input, ref_label ->
-                input: [meta, input]
-                ref_label: [meta, ref_label]
-            }
-        MAKE_ASV_COUNT_TABLES(
-            make_table_input.input,
-            make_table_input.ref_label
-        )
+            .map{ meta, table_input -> [meta, table_input, meta.db_label] }
+        MAKE_ASV_COUNT_TABLES(make_table_input)
         ch_versions = ch_versions.mix(MAKE_ASV_COUNT_TABLES.out.versions.first())
 
         KRONA_KTIMPORTTEXT(

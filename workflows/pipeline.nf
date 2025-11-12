@@ -55,6 +55,34 @@ include { samplesheetToList                             } from 'plugin/nf-schema
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+def mapseq_db_preparation(db) {
+    def ch = channel
+        .from(
+            params[db].collect { k, v ->
+                if (v instanceof Map) {
+                    if (v.containsKey('label')) {
+                        return [[id: k], v]
+                    }
+                }
+            }
+        )
+        .filter { it -> it }
+        .map { meta, files -> 
+            [
+                meta, 
+                tuple(
+                    file(files.fasta), 
+                    file(files.tax), 
+                    file(files.otu), 
+                    file(files.mscluster), 
+                    files.label
+                )
+            ]
+        }
+
+    return ch
+}
+
 workflow AMPLICON_PIPELINE {
 
     /*
@@ -72,9 +100,9 @@ workflow AMPLICON_PIPELINE {
     }
 
     // Read input samplesheet and validate it using schema_input.json //
-    samplesheet = Channel.fromList(samplesheetToList(params.input, "./assets/schema_input.json"))
+    samplesheet = channel.fromList(samplesheetToList(params.input, "./assets/schema_input.json"))
 
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
     // Organise input tuple channel //
     groupReads = { meta, fq1, fq2 ->
@@ -148,135 +176,26 @@ workflow AMPLICON_PIPELINE {
     )
     ch_versions = ch_versions.mix(MASK_FASTA_SWF.out.versions)
 
+
     // Next five subworkflow calls are MAPseq annotation + Krona generation for SSU+LSU+ITS //
-    ssu_in = channel
-        .from(
-            params.ssu_dbs.collect { k, v ->
-                if (v instanceof Map) {
-                    if (v.containsKey('label')) {
-                        return [[id: k], v]
-                    }
-                }
-            }
-        )
-        .filter { it -> it }
-        .map { _meta, files -> [tuple(
-            file(files.fasta), 
-            file(files.tax), 
-            file(files.otu), 
-            file(files.mscluster), 
-            files.label
-        )]}
-        .combine(DETECT_RNA.out.ssu_fasta)
-        .multiMap { db, meta, seqs ->
-            seqs: [meta, seqs]
-            db: db
-        }
-    MAPSEQ_OTU_KRONA_SSU(ssu_in.seqs, ssu_in.db)
+    ssu_db_in = mapseq_db_preparation('ssu_dbs')
+    MAPSEQ_OTU_KRONA_SSU(DETECT_RNA.out.ssu_fasta, ssu_db_in)
     ch_versions = ch_versions.mix(MAPSEQ_OTU_KRONA_SSU.out.versions)
 
-    pr2_in = channel
-        .from(
-            params.pr2_dbs.collect { k, v ->
-                if (v instanceof Map) {
-                    if (v.containsKey('label')) {
-                        return [[id: k], v]
-                    }
-                }
-            }
-        )
-        .filter { it -> it }
-        .map { _meta, files -> [tuple(
-            file(files.fasta), 
-            file(files.tax), 
-            file(files.otu), 
-            file(files.mscluster), 
-            files.label
-        )]}
-        .combine(DETECT_RNA.out.ssu_fasta)
-        .multiMap { db, meta, seqs ->
-            seqs: [meta, seqs]
-            db: db
-        }
-    MAPSEQ_OTU_KRONA_PR2(pr2_in.seqs, pr2_in.db)
+    pr2_db_in = mapseq_db_preparation('pr2_dbs')
+    MAPSEQ_OTU_KRONA_PR2(DETECT_RNA.out.ssu_fasta, pr2_db_in)
     ch_versions = ch_versions.mix(MAPSEQ_OTU_KRONA_PR2.out.versions)
 
-    lsu_in = channel
-        .from(
-            params.lsu_dbs.collect { k, v ->
-                if (v instanceof Map) {
-                    if (v.containsKey('label')) {
-                        return [[id: k], v]
-                    }
-                }
-            }
-        )
-        .filter { it -> it }
-        .map { _meta, files -> [tuple(
-            file(files.fasta), 
-            file(files.tax), 
-            file(files.otu), 
-            file(files.mscluster), 
-            files.label
-        )]}
-        .combine(DETECT_RNA.out.lsu_fasta)
-        .multiMap { db, meta, seqs ->
-            seqs: [meta, seqs]
-            db: db
-        }
-    MAPSEQ_OTU_KRONA_LSU(lsu_in.seqs, lsu_in.db)
+    lsu_db_in = mapseq_db_preparation('lsu_dbs')
+    MAPSEQ_OTU_KRONA_LSU(DETECT_RNA.out.lsu_fasta, lsu_db_in)
     ch_versions = ch_versions.mix(MAPSEQ_OTU_KRONA_LSU.out.versions)
 
-    its_in = channel
-        .from(
-            params.its_dbs.collect { k, v ->
-                if (v instanceof Map) {
-                    if (v.containsKey('label')) {
-                        return [[id: k], v]
-                    }
-                }
-            }
-        )
-        .filter { it -> it }
-        .map { _meta, files -> [tuple(
-            file(files.fasta), 
-            file(files.tax), 
-            file(files.otu), 
-            file(files.mscluster), 
-            files.label
-        )]}
-        .combine(MASK_FASTA_SWF.out.masked_out)
-        .multiMap { db, meta, seqs ->
-            seqs: [meta, seqs]
-            db: db
-        }
-    MAPSEQ_OTU_KRONA_ITSONEDB(its_in.seqs, its_in.db)
+    its_db_in = mapseq_db_preparation('its_dbs')
+    MAPSEQ_OTU_KRONA_ITSONEDB(MASK_FASTA_SWF.out.masked_out, its_db_in)
     ch_versions = ch_versions.mix(MAPSEQ_OTU_KRONA_ITSONEDB.out.versions)
 
-    unite_in = channel
-        .from(
-            params.unite_dbs.collect { k, v ->
-                if (v instanceof Map) {
-                    if (v.containsKey('label')) {
-                        return [[id: k], v]
-                    }
-                }
-            }
-        )
-        .filter { it -> it }
-        .map { _meta, files -> [tuple(
-            file(files.fasta), 
-            file(files.tax), 
-            file(files.otu), 
-            file(files.mscluster), 
-            files.label
-        )]}
-        .combine(MASK_FASTA_SWF.out.masked_out)
-        .multiMap { db, meta, seqs ->
-            seqs: [meta, seqs]
-            db: db
-        }
-    MAPSEQ_OTU_KRONA_UNITE(unite_in.seqs, unite_in.db)
+    unite_db_in = mapseq_db_preparation('unite_dbs')
+    MAPSEQ_OTU_KRONA_UNITE(MASK_FASTA_SWF.out.masked_out, unite_db_in)
     ch_versions = ch_versions.mix(MAPSEQ_OTU_KRONA_UNITE.out.versions)
 
 
@@ -335,55 +254,21 @@ workflow AMPLICON_PIPELINE {
         ch_versions = ch_versions.mix(DADA2_SWF.out.versions)
 
         // ASV taxonomic assignments + generate Krona plots for each run+amp_region //
-        dada2_krona_silva_tuple = channel
-            .from(
-                params.ssu_dbs.collect { k, v ->
-                    if (v instanceof Map) {
-                        if (v.containsKey('label')) {
-                            return [[id: k], v]
-                        }
-                    }
-                }
-            )
-            .filter { it -> it }
-            .map { _meta, files -> [tuple(
-                file(files.fasta), 
-                file(files.tax), 
-                file(files.otu), 
-                file(files.mscluster), 
-                files.label
-            )]}
+        ssu_db_asv_in = mapseq_db_preparation('ssu_dbs')
         MAPSEQ_ASV_KRONA_SILVA(
             DADA2_SWF.out.dada2_out,
             AMP_REGION_INFERENCE.out.concat_var_regions,
             AMP_REGION_INFERENCE.out.extracted_var_path,
-            dada2_krona_silva_tuple,
+            ssu_db_asv_in,
         )
         ch_versions = ch_versions.mix(MAPSEQ_ASV_KRONA_SILVA.out.versions)
 
-        dada2_krona_pr2_tuple = channel
-            .from(
-                params.pr2_dbs.collect { k, v ->
-                    if (v instanceof Map) {
-                        if (v.containsKey('label')) {
-                            return [[id: k], v]
-                        }
-                    }
-                }
-            )
-            .filter { it -> it }
-            .map { _meta, files -> [tuple(
-                file(files.fasta), 
-                file(files.tax), 
-                file(files.otu), 
-                file(files.mscluster), 
-                files.label
-            )]}
+        pr2_db_asv_in = mapseq_db_preparation('pr2_dbs')
         MAPSEQ_ASV_KRONA_PR2(
             DADA2_SWF.out.dada2_out,
             AMP_REGION_INFERENCE.out.concat_var_regions,
             AMP_REGION_INFERENCE.out.extracted_var_path,
-            dada2_krona_pr2_tuple,
+            pr2_db_asv_in,
         )
         ch_versions = ch_versions.mix(MAPSEQ_ASV_KRONA_PR2.out.versions)
 
@@ -399,7 +284,7 @@ workflow AMPLICON_PIPELINE {
         ch_versions = ch_versions.mix(EXTRACT_ASV_READ_COUNTS.out.versions)
 
         extract_asvs_input = EXTRACT_ASV_READ_COUNTS.out.asvs_left
-                        .filter { meta, asvs_left ->
+                        .filter { meta, _asvs_left ->
                             meta.var_region != "concat"
                          }
                         .map{ meta, asvs_left ->
@@ -407,7 +292,7 @@ workflow AMPLICON_PIPELINE {
                             [ key, asvs_left ]
                         }
                         .groupTuple(by:0)
-                        .join(DADA2_SWF.out.dada2_out.map{meta, maps, asv_seqs, filt_reads ->
+                        .join(DADA2_SWF.out.dada2_out.map{meta, _maps, asv_seqs, _filt_reads ->
                                             [['id':meta.id], asv_seqs]
                                             }
                                 )
@@ -423,10 +308,10 @@ workflow AMPLICON_PIPELINE {
                                             }
                             )
 
-        EXTRACT_ASVS_LEFT_SILVA(extract_asvs_input_silva, dada2_krona_silva_tuple[4])
+        EXTRACT_ASVS_LEFT_SILVA(extract_asvs_input_silva.map{ meta, data -> [meta, data, meta.db_label] })
         ch_versions = ch_versions.mix(EXTRACT_ASVS_LEFT_SILVA.out.versions.first())
 
-        EXTRACT_ASVS_LEFT_PR2(extract_asvs_input_pr2, dada2_krona_pr2_tuple[4])
+        EXTRACT_ASVS_LEFT_PR2(extract_asvs_input_pr2.map{ meta, data -> [meta, data, meta.db_label] })
         ch_versions = ch_versions.mix(EXTRACT_ASVS_LEFT_PR2.out.versions.first())
     } 
 
@@ -477,7 +362,7 @@ workflow AMPLICON_PIPELINE {
 
     // MultiQC for study !! assuming we do not have multiple studies in one samplesheet !! //
     multiqc_study = multiqc_input.flatten().collect()
-        .map{ item ->item.findAll { !(it instanceof Map) }}
+        .map{ item ->item.findAll { it -> !(it instanceof Map) }}
         .map { dataList ->
             [['id': 'study_multiqc_report'], dataList ]
         }
@@ -498,7 +383,7 @@ workflow AMPLICON_PIPELINE {
     // Extract runs that failed SeqFu check //
     READS_QC.out.seqfu_check
         .splitCsv(sep: "\t", elem: 1)
-        .filter { meta, seqfu_res ->
+        .filter { _meta, seqfu_res ->
             seqfu_res[0] != "OK"
         }
         .map { meta, __ -> "${meta.id},seqfu_fail" }
@@ -506,7 +391,7 @@ workflow AMPLICON_PIPELINE {
 
     // Extract runs that failed Suffix Header check //
     READS_QC.out.suffix_header_check
-        .filter { meta, sfxhd_res ->
+        .filter { _meta, sfxhd_res ->
             sfxhd_res.countLines() != 0
         }
         .map { meta, __ -> "${meta.id},sfxhd_fail"  }
@@ -514,7 +399,7 @@ workflow AMPLICON_PIPELINE {
 
     // Extract runs that failed Library Strategy check //
     READS_QC_MERGE.out.amplicon_check
-        .filter { meta, strategy ->
+        .filter { _meta, strategy ->
             strategy != "AMPLICON"
         }
         .map { meta, __ -> "${meta.id},libstrat_fail" }
@@ -565,7 +450,7 @@ workflow AMPLICON_PIPELINE {
 
                 def json_map = ["id": "${meta.id}", "primers": []]
 
-                primer_val.each { run_id, ev, met, gene, region, name, strand, sequence ->
+                primer_val.each { _run_id, _ev, _met, _gene, region, name, strand, sequence ->
                     def new_primer = [
                         "name": name,
                         "region": region,

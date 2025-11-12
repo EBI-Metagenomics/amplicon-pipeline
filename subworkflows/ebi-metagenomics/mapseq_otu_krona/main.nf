@@ -13,28 +13,31 @@ workflow MAPSEQ_OTU_KRONA {
 
     ch_versions = Channel.empty()
 
-    ch_dbs.multiMap { fasta, tax, otu, mscluster, label ->
-            mapseq_input: [ fasta, tax, mscluster ]
-            mapseq_to_biom_input: [ otu, label ]
-        }.set {
-            input
+    input = ch_fasta
+        .combine(ch_dbs)
+        .map { reads_meta, reads, db_meta, db_files ->
+            def meta = reads_meta + ['db_id': db_meta.id, 'db_label': db_files[4]]
+            def (fasta, tax, otu, mscluster, label) = db_files
+            return [meta, reads, fasta, tax, otu, mscluster, label]
         }
 
-    MAPSEQ(
-        ch_fasta,
-        input.mapseq_input
-    )
+    mapseq_in = input.map{ meta, reads, fasta, tax, otu, _mscluster, label -> 
+        [meta, reads, fasta, tax, otu, label]
+    }
+    MAPSEQ(mapseq_in)
     ch_versions = ch_versions.mix(MAPSEQ.out.versions.first())
 
-    MAPSEQ2BIOM(
-        MAPSEQ.out.mseq,
-        input.mapseq_to_biom_input
-    )
+    mapseq2biom_in = MAPSEQ.out.mseq
+        .join(input)
+        .map { meta, mapseq_out, _reads, _fasta, _tax, _otu, mscluster, label ->
+            [meta, mapseq_out, mscluster, label]
+        }
+    MAPSEQ2BIOM(mapseq2biom_in)
     ch_versions = ch_versions.mix(MAPSEQ2BIOM.out.versions.first())
 
-    KRONA_KTIMPORTTEXT(
-        MAPSEQ2BIOM.out.krona_input
-    )
+    krona_in = MAPSEQ2BIOM.out.krona_input
+        .map { meta, mapseq2biom_out -> [meta, mapseq2biom_out, meta.db_label] }
+    KRONA_KTIMPORTTEXT(krona_in)
     ch_versions = ch_versions.mix(KRONA_KTIMPORTTEXT.out.versions.first())
 
     emit:
