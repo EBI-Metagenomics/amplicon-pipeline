@@ -21,16 +21,16 @@ workflow MAPSEQ_OTU_KRONA {
             return [meta, reads, fasta, tax, otu, mscluster, label]
         }
 
-    mapseq_in = input.map{ meta, reads, fasta, tax, otu, _mscluster, label -> 
-        [meta, reads, fasta, tax, otu, label]
+    mapseq_in = input.map{ meta, reads, fasta, tax, _otu, mscluster, label -> 
+        [meta, reads, fasta, tax, mscluster, label]
     }
     MAPSEQ(mapseq_in)
     ch_versions = ch_versions.mix(MAPSEQ.out.versions.first())
 
     mapseq2biom_in = MAPSEQ.out.mseq
         .join(input)
-        .map { meta, mapseq_out, _reads, _fasta, _tax, _otu, mscluster, label ->
-            [meta, mapseq_out, mscluster, label]
+        .map { meta, mapseq_out, _reads, _fasta, _tax, otu, _mscluster, label ->
+            [meta, mapseq_out, otu, label]
         }
     MAPSEQ2BIOM(mapseq2biom_in)
     ch_versions = ch_versions.mix(MAPSEQ2BIOM.out.versions.first())

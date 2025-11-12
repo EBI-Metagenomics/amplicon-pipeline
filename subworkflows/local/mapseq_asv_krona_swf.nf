@@ -25,8 +25,8 @@ workflow MAPSEQ_ASV_KRONA {
                 return [meta, seqs, fasta, tax, otu, mscluster, label]
             }
 
-        mapseq_in = input.map{ meta, reads, fasta, tax, otu, _mscluster, label -> 
-            [meta, reads, fasta, tax, otu, label]
+        mapseq_in = input.map{ meta, reads, fasta, tax, _otu, mscluster, label -> 
+            [meta, reads, fasta, tax, mscluster, label]
         }
         MAPSEQ(mapseq_in)
         ch_versions = ch_versions.mix(MAPSEQ.out.versions.first())
