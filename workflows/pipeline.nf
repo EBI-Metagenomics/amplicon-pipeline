@@ -160,13 +160,13 @@ workflow AMPLICON_PIPELINE {
             }
         )
         .filter { it -> it }
-        .map { _meta, files -> tuple(
+        .map { _meta, files -> [tuple(
             file(files.fasta), 
             file(files.otu), 
             file(files.tax), 
             file(files.mscluster), 
             files.label
-        )}
+        )]}
         .combine(DETECT_RNA.out.ssu_fasta)
         .multiMap { db, meta, seqs ->
             seqs: [meta, seqs]
@@ -186,13 +186,13 @@ workflow AMPLICON_PIPELINE {
             }
         )
         .filter { it -> it }
-        .map { _meta, files -> tuple(
+        .map { _meta, files -> [tuple(
             file(files.fasta), 
             file(files.otu), 
             file(files.tax), 
             file(files.mscluster), 
             files.label
-        )}
+        )]}
         .combine(DETECT_RNA.out.ssu_fasta)
         .multiMap { db, meta, seqs ->
             seqs: [meta, seqs]
@@ -212,13 +212,13 @@ workflow AMPLICON_PIPELINE {
             }
         )
         .filter { it -> it }
-        .map { _meta, files -> tuple(
+        .map { _meta, files -> [tuple(
             file(files.fasta), 
             file(files.otu), 
             file(files.tax), 
             file(files.mscluster), 
             files.label
-        )}
+        )]}
         .combine(DETECT_RNA.out.lsu_fasta)
         .multiMap { db, meta, seqs ->
             seqs: [meta, seqs]
@@ -238,13 +238,13 @@ workflow AMPLICON_PIPELINE {
             }
         )
         .filter { it -> it }
-        .map { _meta, files -> tuple(
+        .map { _meta, files -> [tuple(
             file(files.fasta), 
             file(files.otu), 
             file(files.tax), 
             file(files.mscluster), 
             files.label
-        )}
+        )]}
         .combine(MASK_FASTA_SWF.out.masked_out)
         .multiMap { db, meta, seqs ->
             seqs: [meta, seqs]
@@ -264,13 +264,13 @@ workflow AMPLICON_PIPELINE {
             }
         )
         .filter { it -> it }
-        .map { _meta, files -> tuple(
+        .map { _meta, files -> [tuple(
             file(files.fasta), 
             file(files.otu), 
             file(files.tax), 
             file(files.mscluster), 
             files.label
-        )}
+        )]}
         .combine(MASK_FASTA_SWF.out.masked_out)
         .multiMap { db, meta, seqs ->
             seqs: [meta, seqs]
@@ -346,13 +346,13 @@ workflow AMPLICON_PIPELINE {
                 }
             )
             .filter { it -> it }
-            .map { _meta, files -> tuple(
+            .map { _meta, files -> [tuple(
                 file(files.fasta), 
                 file(files.otu), 
                 file(files.tax), 
                 file(files.mscluster), 
                 files.label
-            )}
+            )]}
         MAPSEQ_ASV_KRONA_SILVA(
             DADA2_SWF.out.dada2_out,
             AMP_REGION_INFERENCE.out.concat_var_regions,
@@ -372,13 +372,13 @@ workflow AMPLICON_PIPELINE {
                 }
             )
             .filter { it -> it }
-            .map { _meta, files -> tuple(
+            .map { _meta, files -> [tuple(
                 file(files.fasta), 
                 file(files.otu), 
                 file(files.tax), 
                 file(files.mscluster), 
                 files.label
-            )}
+            )]}
         MAPSEQ_ASV_KRONA_PR2(
             DADA2_SWF.out.dada2_out,
             AMP_REGION_INFERENCE.out.concat_var_regions,
