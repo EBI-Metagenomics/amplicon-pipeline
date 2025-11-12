@@ -160,15 +160,12 @@ workflow AMPLICON_PIPELINE {
             }
         )
         .filter { it -> it }
-        .map { meta, files -> [
-            meta, 
-            [
-                file(files.fasta), 
-                file(files.otu), 
-                file(files.tax), 
-                file(files.mscluster), 
-                files.label
-            ]
+        .map { _meta, files -> [
+            file(files.fasta), 
+            file(files.otu), 
+            file(files.tax), 
+            file(files.mscluster), 
+            files.label
         ]}
         .combine(DETECT_RNA.out.ssu_fasta)
         .multiMap { db, seqs ->
@@ -189,15 +186,12 @@ workflow AMPLICON_PIPELINE {
             }
         )
         .filter { it -> it }
-        .map { meta, files -> [
-            meta, 
-            [
-                file(files.fasta), 
-                file(files.otu), 
-                file(files.tax), 
-                file(files.mscluster), 
-                files.label
-            ]
+        .map { _meta, files -> [
+            file(files.fasta), 
+            file(files.otu), 
+            file(files.tax), 
+            file(files.mscluster), 
+            files.label
         ]}
         .combine(DETECT_RNA.out.ssu_fasta)
         .multiMap { db, seqs ->
@@ -218,15 +212,12 @@ workflow AMPLICON_PIPELINE {
             }
         )
         .filter { it -> it }
-        .map { meta, files -> [
-            meta, 
-            [
-                file(files.fasta), 
-                file(files.otu), 
-                file(files.tax), 
-                file(files.mscluster), 
-                files.label
-            ]
+        .map { _meta, files -> [
+            file(files.fasta), 
+            file(files.otu), 
+            file(files.tax), 
+            file(files.mscluster), 
+            files.label
         ]}
         .combine(DETECT_RNA.out.lsu_fasta)
         .multiMap { db, seqs ->
@@ -247,15 +238,12 @@ workflow AMPLICON_PIPELINE {
             }
         )
         .filter { it -> it }
-        .map { meta, files -> [
-            meta, 
-            [
-                file(files.fasta), 
-                file(files.otu), 
-                file(files.tax), 
-                file(files.mscluster), 
-                files.label
-            ]
+        .map { _meta, files -> [
+            file(files.fasta), 
+            file(files.otu), 
+            file(files.tax), 
+            file(files.mscluster), 
+            files.label
         ]}
         .combine(MASK_FASTA_SWF.out.masked_out)
         .multiMap { db, seqs ->
@@ -276,15 +264,12 @@ workflow AMPLICON_PIPELINE {
             }
         )
         .filter { it -> it }
-        .map { meta, files -> [
-            meta, 
-            [
-                file(files.fasta), 
-                file(files.otu), 
-                file(files.tax), 
-                file(files.mscluster), 
-                files.label
-            ]
+        .map { _meta, files -> [
+            file(files.fasta), 
+            file(files.otu), 
+            file(files.tax), 
+            file(files.mscluster), 
+            files.label
         ]}
         .combine(MASK_FASTA_SWF.out.masked_out)
         .multiMap { db, seqs ->
@@ -361,15 +346,12 @@ workflow AMPLICON_PIPELINE {
                 }
             )
             .filter { it -> it }
-            .map { meta, files -> [
-                meta, 
-                [
-                    file(files.fasta), 
-                    file(files.otu), 
-                    file(files.tax), 
-                    file(files.mscluster), 
-                    files.label
-                ]
+            .map { _meta, files -> [
+                file(files.fasta), 
+                file(files.otu), 
+                file(files.tax), 
+                file(files.mscluster), 
+                files.label
             ]}
         MAPSEQ_ASV_KRONA_SILVA(
             DADA2_SWF.out.dada2_out,
@@ -390,15 +372,12 @@ workflow AMPLICON_PIPELINE {
                 }
             )
             .filter { it -> it }
-            .map { meta, files -> [
-                meta, 
-                [
-                    file(files.fasta), 
-                    file(files.otu), 
-                    file(files.tax), 
-                    file(files.mscluster), 
-                    files.label
-                ]
+            .map { _meta, files -> [
+                file(files.fasta), 
+                file(files.otu), 
+                file(files.tax), 
+                file(files.mscluster), 
+                files.label
             ]}
         MAPSEQ_ASV_KRONA_PR2(
             DADA2_SWF.out.dada2_out,
