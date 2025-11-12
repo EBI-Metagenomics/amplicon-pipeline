@@ -168,8 +168,8 @@ workflow AMPLICON_PIPELINE {
             files.label
         ]}
         .combine(DETECT_RNA.out.ssu_fasta)
-        .multiMap { db, seqs ->
-            seqs: seqs
+        .multiMap { db, meta, seqs ->
+            seqs: [meta, seqs]
             db: db
         }
     MAPSEQ_OTU_KRONA_SSU(ssu_in.seqs, ssu_in.db)
@@ -194,8 +194,8 @@ workflow AMPLICON_PIPELINE {
             files.label
         ]}
         .combine(DETECT_RNA.out.ssu_fasta)
-        .multiMap { db, seqs ->
-            seqs: seqs
+        .multiMap { db, meta, seqs ->
+            seqs: [meta, seqs]
             db: db
         }
     MAPSEQ_OTU_KRONA_PR2(pr2_in.seqs, pr2_in.db)
@@ -220,8 +220,8 @@ workflow AMPLICON_PIPELINE {
             files.label
         ]}
         .combine(DETECT_RNA.out.lsu_fasta)
-        .multiMap { db, seqs ->
-            seqs: seqs
+        .multiMap { db, meta, seqs ->
+            seqs: [meta, seqs]
             db: db
         }
     MAPSEQ_OTU_KRONA_LSU(lsu_in.seqs, lsu_in.db)
@@ -246,8 +246,8 @@ workflow AMPLICON_PIPELINE {
             files.label
         ]}
         .combine(MASK_FASTA_SWF.out.masked_out)
-        .multiMap { db, seqs ->
-            seqs: seqs
+        .multiMap { db, meta, seqs ->
+            seqs: [meta, seqs]
             db: db
         }
     MAPSEQ_OTU_KRONA_ITSONEDB(its_in.seqs, its_in.db)
@@ -272,8 +272,8 @@ workflow AMPLICON_PIPELINE {
             files.label
         ]}
         .combine(MASK_FASTA_SWF.out.masked_out)
-        .multiMap { db, seqs ->
-            seqs: seqs
+        .multiMap { db, meta, seqs ->
+            seqs: [meta, seqs]
             db: db
         }
     MAPSEQ_OTU_KRONA_UNITE(unite_in.seqs, unite_in.db)
