@@ -194,7 +194,7 @@ workflow AMPLICON_PIPELINE {
                 files.label
             ]
         ]}
-        .combine(DETECT_RNA.out.pr2_fasta)
+        .combine(DETECT_RNA.out.ssu_fasta)
         .multiMap { db, seqs ->
             seqs: seqs
             db: db
