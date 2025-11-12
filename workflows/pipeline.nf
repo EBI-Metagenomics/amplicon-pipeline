@@ -19,6 +19,7 @@ include { MAPSEQ_OTU_KRONA as MAPSEQ_OTU_KRONA_ITSONEDB } from '../subworkflows/
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+include { BBMAP_REFORMAT_STANDARDISE                    } from '../modules/local/bbmap/reformat_standardise/main'
 include { MASK_FASTA_SWF                                } from '../subworkflows/local/mask_fasta_swf.nf'
 include { AMP_REGION_INFERENCE                          } from '../subworkflows/local/amp_region_inference_swf.nf'
 include { PRIMER_IDENTIFICATION                         } from '../subworkflows/local/primer_identification_swf.nf'
@@ -36,7 +37,7 @@ include { EXTRACT_ASVS_LEFT as EXTRACT_ASVS_LEFT_PR2    } from '../modules/local
     IMPORT NF-CORE MODULES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { DOWNLOAD_FROM_FIRE                              } from '../modules/ebi-metagenomics/downloadfromfire/main'
+include { DOWNLOAD_FROM_FIRE                            } from '../modules/ebi-metagenomics/downloadfromfire/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS                   } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC as MULTIQC_RUN                        } from '../modules/nf-core/multiqc/main.nf'
 include { MULTIQC as MULTIQC_STUDY                      } from '../modules/nf-core/multiqc/main.nf'
@@ -99,6 +100,10 @@ workflow AMPLICON_PIPELINE {
         ch_versions = ch_versions.mix(DOWNLOAD_FROM_FIRE.out.versions.first())
         ch_input = DOWNLOAD_FROM_FIRE.out.downloaded_files
     }
+
+    // De-interleave interleaved paired-end reads
+    BBMAP_REFORMAT_STANDARDISE(ch_input, 'fastq.gz')
+    ch_input = BBMAP_REFORMAT_STANDARDISE.out.reformated
 
     // Sanity checking and quality control of reads //
     READS_QC_MERGE(
